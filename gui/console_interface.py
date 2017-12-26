@@ -14,11 +14,11 @@ class ConsoleInterface(Interface):
     def draw_board(self, board):
         for y in reversed(range(0, 8)):
             for x in range(0, 8):
-                if (x, y) in board:
-                    if board[(x, y)].light():
-                        print(board[(x, y)].letter, end='')
+                if (x, y) in board.pieces:
+                    if board.pieces[(x, y)].light():
+                        print(board.pieces[(x, y)].letter, end='')
                     else:
-                        print(board[(x, y)].letter.lower(), end='')
+                        print(board.pieces[(x, y)].letter.lower(), end='')
                 else:
                     print('.', end='')
 

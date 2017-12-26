@@ -34,8 +34,8 @@ class Board:
         self.pieces[(6, 0)] = self.light_knights[1]
 
         self.dark_knights = [Knight(self.pieces, (1, 7), 'dark'), Knight(self.pieces, (6, 7), 'dark')]
-        self.pieces[(1, 7)] = self.dark_knight[0]
-        self.pieces[(6, 7)] = self.dark_knight[1]
+        self.pieces[(1, 7)] = self.dark_knights[0]
+        self.pieces[(6, 7)] = self.dark_knights[1]
 
         self.light_bishops = [Bishop(self.pieces, (2, 0), 'light'), Bishop(self.pieces, (5, 0), 'light')]
         self.pieces[(2, 0)] = self.light_bishops[0]
