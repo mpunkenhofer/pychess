@@ -7,5 +7,6 @@
 
 class Chess:
     def __init__(self):
+        black_pawns = []
         self.board = []
 
