@@ -11,8 +11,5 @@ class Pawn(Piece):
     def __init__(self, board, pos, color):
         Piece.__init__(self, board, pos, color, 'Pawn', 'P')
 
-    def move(self, pos):
-        pass
-
     def moves(self):
         pass

@@ -11,8 +11,5 @@ class Rook(Piece):
     def __init__(self, board, pos, color):
         Piece.__init__(self, board, pos, color, 'Rook', 'R')
 
-    def move(self, pos):
-        pass
-
     def moves(self):
         pass

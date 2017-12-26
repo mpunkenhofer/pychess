@@ -11,8 +11,5 @@ class Bishop(Piece):
     def __init__(self, board, pos, color):
         Piece.__init__(self, board, pos, color, 'Bishop', 'B')
 
-    def move(self, pos):
-        pass
-
     def moves(self):
         pass
