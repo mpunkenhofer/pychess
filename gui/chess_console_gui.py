@@ -24,5 +24,9 @@ class ChessConsoleGUI(ChessGUI):
 
             print()
 
+    def choose_piece(self, board):
+        return None
 
+    def move_piece(self, piece):
+        return None
 

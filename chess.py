@@ -5,7 +5,7 @@
 #
 
 import sys
-from board import Board
+from general.board import Board
 from gui.chess_console_gui import ChessConsoleGUI
 
 
@@ -17,11 +17,26 @@ class Chess:
     def draw(self):
         self.gui.draw_board(self.board)
 
+    def move(self):
+        piece = self.gui.choose_piece(self.board)
+        move = self.gui.move_piece(self.board, piece)
+        piece.move(move)
+
+    def game_over(self):
+        cmd = input('Enter q to quit!')
+
+        if cmd == 'q':
+            return True
+
+        return False
+
 
 def main():
     chess_game = Chess(ChessConsoleGUI())
-    chess_game.draw()
-    x = input('Enter anything to quit!')
+
+    while not chess_game.game_over():
+        chess_game.move()
+        chess_game.draw()
 
 
 if __name__ == "__main__":

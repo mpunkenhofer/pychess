@@ -80,33 +80,3 @@ class Piece(ABC):
     def dark(self):
         return self.color == 'dark'
 
-
-class Move:
-    def __init__(self):
-        self.__origin = None
-        self.__destination = None
-        self.__capture = None
-
-    @property
-    def origin(self):
-        return self.__origin
-
-    @origin.setter
-    def origin(self, org):
-        self.__origin = org
-
-    @property
-    def destination(self):
-        return self.__destination
-
-    @destination.setter
-    def destination(self, dest):
-        self.__destination = dest
-
-    @property
-    def capture(self):
-        return self.__capture
-
-    @capture.setter
-    def capture(self, cap):
-        self.__capture = cap

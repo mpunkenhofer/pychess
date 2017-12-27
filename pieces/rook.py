@@ -12,4 +12,4 @@ class Rook(Piece):
         Piece.__init__(self, board, pos, color, 'Rook', 'R')
 
     def moves(self):
-        pass
+        return []

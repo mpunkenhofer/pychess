@@ -12,4 +12,4 @@ class Bishop(Piece):
         Piece.__init__(self, board, pos, color, 'Bishop', 'B')
 
     def moves(self):
-        pass
+        return []

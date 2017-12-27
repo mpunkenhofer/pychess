@@ -102,19 +102,51 @@ class Board:
             pieces = []
 
             if self.falling_diagonal(p1, p2):
-                pieces.append(self.pieces_between(p1_x, p1_y, p2_x, p2_y, -1))
+                pieces.append(self.pieces_on_falling_diagonal(p1_x, p1_y, p2_x, p2_y))
             if self.rising_diagonal(p1, p2):
-                pieces.append(self.pieces_between(p1_x, p1_y, p2_x, p2_y, 1))
+                pieces.append(self.pieces_on_rising_diagonal(p1_x, p1_y, p2_x, p2_y, 1))
 
             return pieces
         else:
             return []
 
-    def pieces_between(self, x1, y1, x2, y2, k=0):
-        for x in range(x1, x2 + 1):
-            for y in range(y1, y2 + 1):
-                pass
-        return []
+    def pieces_between(self, x1, y1, x2, y2):
+        pieces = []
+
+        if self.falling_diagonal(x1, y1, x2, y2):
+            return pieces.append(self.pieces_on_falling_diagonal(x1, y1, x2, y2))
+
+        if self.rising_diagonal(x1, y1, x2, y2):
+            return pieces.append(self.pieces_on_rising_diagonal(x1, y1, x2, y2))
+
+        for x in range(min(x1, x2), max(x1 + 1, x2 + 1)):
+            for y in range(min(y1, y2), max(y1 + 1, y2 + 1)):
+                if (x, y) in self.pieces:
+                    pieces.append(self.pieces[(x, y)])
+
+        return pieces
+
+    def pieces_on_falling_diagonal(self, x1, y1, x2, y2):
+        pieces = []
+        y = min(y1, y2)
+
+        for x in reversed(range(min(x1, x2), max(x1 + 1, x2 + 1))):
+            if (x, y) in self.pieces:
+                pieces.append(self.pieces[(x, y)])
+            y += 1
+
+        return pieces
+
+    def pieces_on_rising_diagonal(self, x1, y1, x2, y2):
+        pieces = []
+        y = min(y1, y2)
+
+        for x in range(min(x1, x2), max(x1 + 1, x2 + 1)):
+            if (x, y) in self.pieces:
+                pieces.append(self.pieces[(x, y)])
+            y += 1
+
+        return pieces
 
     @staticmethod
     def same_rank(p1, p2):
@@ -154,4 +186,16 @@ class Board:
         p2_x, p2_y = p2.position
 
         return p1_y == p1_x + p2_y - p2_x
+
+    @staticmethod
+    def rising_diagonal(x1, y1, x2, y2):
+        return y1 == -x1 + y2 + x2
+
+    @staticmethod
+    def falling_diagonal(x1, y1, x2, y2):
+        return y1 == x1 + y2 - x2
+
+    @staticmethod
+    def in_board(x, y):
+        return 0 <= x < 8 and 0 <= y < 8
 

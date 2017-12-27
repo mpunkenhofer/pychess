@@ -12,4 +12,4 @@ class King(Piece):
         Piece.__init__(self, board, pos, color, 'King', 'K')
 
     def moves(self):
-        pass
+        return []

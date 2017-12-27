@@ -12,4 +12,4 @@ class Knight(Piece):
         Piece.__init__(self, board, pos, color, 'Knight', 'N')
 
     def moves(self):
-        pass
+        return []

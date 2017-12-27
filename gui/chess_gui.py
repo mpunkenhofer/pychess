@@ -15,3 +15,11 @@ class ChessGUI(ABC):
     @abstractmethod
     def draw_board(self, board):
         pass
+
+    @abstractmethod
+    def choose_piece(self, board):
+        pass
+
+    @abstractmethod
+    def move_piece(self, piece):
+        pass
