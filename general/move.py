@@ -4,26 +4,14 @@
 # Just for fun xmas 2017 chess project
 #
 
-from enum import Enum
+from abc import ABC, abstractmethod
 
 
-class MoveTypes(Enum):
-    MOVE = 0
-    CAPTURE = 1
-    KING_SIDE_CASTLE = 2
-    QUEEN_SIDE_CASTLE = 3
-
-
-class Move:
-    def __init__(self):
-        self.__origin = None
-        self.__destination = None
-        self.__type = None
-
-    def __init__(self, o, d, t):
+class MoveTypes(ABC):
+    @abstractmethod
+    def __init__(self, o, d):
         self.__origin = o
         self.__destination = d
-        self.__type = t
 
     @property
     def origin(self):
@@ -41,10 +29,26 @@ class Move:
     def destination(self, d):
         self.__destination = d
 
-    @property
-    def type(self):
-        return self.__type
 
-    @type.setter
-    def type(self, t):
-        self.__type = t
+class Move(MoveTypes):
+    def __init__(self, o, d):
+        MoveTypes.__init__(self, o, d)
+
+
+class CaptureMove(MoveTypes):
+    def __init__(self, o, d):
+        MoveTypes.__init__(self, o, d)
+        self.__captured_piece = None
+
+    def __init__(self, o, d, captured_piece):
+        self.__init__(o, d)
+        self.__captured_piece = captured_piece
+
+    @property
+    def captured_piece(self):
+        return self.__captured_piece
+
+    @captured_piece.setter
+    def captured_piece(self, p):
+        self.__captured_piece = p
+

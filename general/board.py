@@ -148,6 +148,32 @@ class Board:
 
         return pieces
 
+    def rank_pin(self, piece):
+        king = self.light_king if piece.light() else self.dark_king
+
+        if self.same_rank(king, piece) and len(self.pieces_between(king, piece)) == 0:
+            return True
+        else:
+            return False
+
+    def file_pin(self, piece):
+        king = self.light_king if piece.light() else self.dark_king
+
+        if self.same_file(king, piece) and len(self.pieces_between(king, piece)) == 0:
+            return True
+        else:
+            return False
+
+    def diagonal_pin(self, piece):
+        king = self.light_king if piece.light() else self.dark_king
+
+        if self.rising_diagonal(king, piece) and len(self.pieces_on_rising_diagonal(king, piece)) == 0:
+            return True
+        elif self.falling_diagonal(king, piece) and len(self.pieces_on_falling_diagonal(king, piece)) == 0:
+            return True
+        else:
+            return False
+
     @staticmethod
     def same_rank(p1, p2):
         p1_x, p1_y = p1.position
