@@ -6,7 +6,7 @@
 
 import sys
 from board import Board
-from gui.console_interface import ConsoleInterface
+from gui.chess_console_gui import ChessConsoleGUI
 
 
 class Chess:
@@ -19,7 +19,7 @@ class Chess:
 
 
 def main():
-    chess_game = Chess(ConsoleInterface())
+    chess_game = Chess(ChessConsoleGUI())
     chess_game.draw()
     x = input('Enter anything to quit!')
 

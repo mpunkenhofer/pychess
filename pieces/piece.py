@@ -15,14 +15,22 @@ class Piece(ABC):
         self.__color = color
         self.__name = name
         self.__letter = letter
+        self.history = []
 
     def move(self, pos):
-        moves = self.moves()
+        move = self.get_move(self.moves(), pos)
 
-        if pos in moves:
-            piece = self.board.pop(self.position)
-            piece.position = pos
-            self.board[pos] = piece
+        if move:
+            piece = self.board.pop(move.origin)
+            piece.position = move.destination
+            self.board[move.destination] = piece
+            self.history.append(move)
+
+    def get_move(self, pm, pos):
+        for m in pm:
+            if m.destination == pos and m.origin == self.position:
+                return m
+        return None
 
     @abstractmethod
     def moves(self):
@@ -63,6 +71,9 @@ class Piece(ABC):
 
         self.__color = color
 
+    def get_piece_history(self):
+        return self.history
+
     def light(self):
         return self.color == 'light'
 
@@ -72,7 +83,30 @@ class Piece(ABC):
 
 class Move:
     def __init__(self):
-        self.__origin = (-1, -1)
-        self.__destination = (-1, -1)
+        self.__origin = None
+        self.__destination = None
         self.__capture = None
 
+    @property
+    def origin(self):
+        return self.__origin
+
+    @origin.setter
+    def origin(self, org):
+        self.__origin = org
+
+    @property
+    def destination(self):
+        return self.__destination
+
+    @destination.setter
+    def destination(self, dest):
+        self.__destination = dest
+
+    @property
+    def capture(self):
+        return self.__capture
+
+    @capture.setter
+    def capture(self, cap):
+        self.__capture = cap

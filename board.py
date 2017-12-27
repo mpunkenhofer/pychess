@@ -90,3 +90,68 @@ class Board:
     def get_dark_knights(self):
         return self.dark_knights
 
+    def pieces_between(self, p1, p2):
+        p1_x, p1_y = p1.position
+        p2_x, p2_y = p2.position
+
+        if self.same_rank(p1, p2):
+            return self.pieces_between(p1_x, p1_y, p2_x, p2_y)
+        elif self.same_file(p1, p2):
+            return self.pieces_between(p1_x, p1_y, p2_x, p2_y)
+        elif self.same_diagonal(p1, p2):
+            pieces = []
+
+            if self.falling_diagonal(p1, p2):
+                pieces.append(self.pieces_between(p1_x, p1_y, p2_x, p2_y, -1))
+            if self.rising_diagonal(p1, p2):
+                pieces.append(self.pieces_between(p1_x, p1_y, p2_x, p2_y, 1))
+
+            return pieces
+        else:
+            return []
+
+    def pieces_between(self, x1, y1, x2, y2, k=0):
+        for x in range(x1, x2 + 1):
+            for y in range(y1, y2 + 1):
+                pass
+        return []
+
+    @staticmethod
+    def same_rank(p1, p2):
+        p1_x, p1_y = p1.position
+        p2_x, p2_y = p2.position
+
+        return p1_x == p2_x
+
+    @staticmethod
+    def same_file(p1, p2):
+        p1_x, p1_y = p1.position
+        p2_x, p2_y = p2.position
+
+        return p1_y == p2_y
+
+    @staticmethod
+    def same_diagonal(p1, p2):
+        p1_x, p1_y = p1.position
+        p2_x, p2_y = p2.position
+
+        # y = kx+d ... d = yi - xi
+        falling = p1_y == p1_x + p2_y - p2_x
+        rising = p1_y == -p1_x + p2_y + p2_x
+
+        return falling or rising
+
+    @staticmethod
+    def rising_diagonal(p1, p2):
+        p1_x, p1_y = p1.position
+        p2_x, p2_y = p2.position
+
+        return p1_y == -p1_x + p2_y + p2_x
+
+    @staticmethod
+    def falling_diagonal(p1, p2):
+        p1_x, p1_y = p1.position
+        p2_x, p2_y = p2.position
+
+        return p1_y == p1_x + p2_y - p2_x
+
