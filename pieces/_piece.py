@@ -26,6 +26,10 @@ class Piece(ABC):
             self.board[move.destination] = piece
             self.history.append(move)
 
+            return move
+        else:
+            return None
+
     @staticmethod
     def get_move(pm, pos):
         for m in pm:

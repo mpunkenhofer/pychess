@@ -5,18 +5,28 @@
 #
 
 import sys
+
 from general import Board
+from player.console import ChessConsolePlayer
 from gui.console import ChessConsoleGUI
 
 
 class Chess:
-    def __init__(self, gui):
-        self.gui = gui
+    def __init__(self, gui, players):
         self.board = Board()
+        self.gui = gui
+        self.players = players
+        self.move_history = []
+
+        self.current_player = self.players[0]
 
     def move(self):
-        piece, move = self.gui.move(self.board)
-        piece.move(move)
+        piece, move = self.gui.move(self.board, self.current_player)
+
+        move = piece.move(move)
+        self.move_history.append(move)
+
+        self.current_player = self.players[0] if self.current_player != self.players[0] else self.players[1]
 
     def game_over(self):
         cmd = input('Enter q to quit!')
@@ -28,11 +38,10 @@ class Chess:
 
 
 def main():
-    chess_game = Chess(ChessConsoleGUI())
+    chess_game = Chess(ChessConsoleGUI(), (ChessConsolePlayer('white'), ChessConsolePlayer('black')))
 
     while not chess_game.game_over():
         chess_game.move()
-        chess_game.draw()
 
 
 if __name__ == "__main__":
