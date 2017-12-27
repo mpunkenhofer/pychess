@@ -220,3 +220,17 @@ class Board:
     def in_board(x, y):
         return 0 <= x < 8 and 0 <= y < 8
 
+    def pieces_by_color(self, color):
+        result = []
+
+        for pos, piece in self.pieces:
+            if piece.color == color and piece.name != 'King':
+                result.append(piece)
+        return result
+
+    def light_pieces(self):
+        return self.pieces_by_color('light')
+
+    def dark_pieces(self):
+        return self.pieces_by_color('dark')
+

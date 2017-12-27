@@ -12,4 +12,5 @@ class ChessConsolePlayer(ChessPlayer):
         ChessPlayer.__init__(color)
 
     def move(self, board):
+
         pass
