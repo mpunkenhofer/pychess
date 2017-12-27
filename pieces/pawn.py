@@ -15,44 +15,24 @@ class Pawn(Piece):
         Piece.__init__(self, board, pos, color, 'Pawn', 'P')
 
     def moves(self):
-        return self.light_moves() if self.light() else self.dark_moves()
-
-    def light_moves(self):
         moves = []
+        color = 1 if self.light() else -1
         p_x, p_y = self.position
 
         # pawn push
-        if Board.in_board(p_x, p_y + 2) and len(self.history) < 1 and len(
-                self.board.pieces_between(p_x, p_y, p_x, p_y + 2)) == 0:
-            moves.append(Move(self.position, (p_x, p_y + 2), MoveTypes.MOVE))
+        if len(self.history) < 1 and Board.in_board(p_x, p_y + 2 * color) and len(
+                self.board.pieces_between(p_x, p_y, p_x, p_y + 2 * color)) == 0:
+            moves.append(Move(self.position, (p_x, p_y + 2 * color), MoveTypes.MOVE))
 
-        if Board.in_board(p_x, p_y + 1) and len(self.board.pieces_between(p_x, p_y, p_x, p_y + 1)) == 0:
-            moves.append(Move(self.position, (p_x, p_y + 1), MoveTypes.MOVE))
+        if Board.in_board(p_x, p_y + 1 * color) and len(self.board.pieces_between(p_x, p_y, p_x, p_y + 1 * color)) == 0:
+            moves.append(Move(self.position, (p_x, p_y + 1 * color), MoveTypes.MOVE))
 
         # captures
-        if (p_x + 1, p_y + 1) in self.board.pieces and self.board.pieces[(p_x + 1, p_y + 1)].dark():
+        if (p_x + 1 * color, p_y + 1 * color) in self.board.pieces \
+                and self.board.pieces[(p_x + 1 * color, p_y + 1 * color)].dark():
             moves.append(Move(self.position, (p_x + 1, p_y + 1), MoveTypes.CAPTURE))
-        if (p_x - 1, p_y + 1) in self.board.pieces and self.board.pieces[(p_x - 1, p_y + 1)].dark():
-            moves.append(Move(self.position, (p_x - 1, p_y + 1), MoveTypes.CAPTURE))
-
-        return moves
-
-    def dark_moves(self):
-        moves = []
-        p_x, p_y = self.position
-
-        # pawn push
-        if Board.in_board(p_x, p_y - 2) and len(self.history) < 1 and len(
-                self.board.pieces_between(p_x, p_y, p_x, p_y - 2)) == 0:
-            moves.append(Move(self.position, (p_x, p_y - 2), MoveTypes.MOVE))
-
-        if Board.in_board(p_x, p_y - 1) and len(self.board.pieces_between(p_x, p_y, p_x, p_y - 1)) == 0:
-            moves.append(Move(self.position, (p_x, p_y - 1), MoveTypes.MOVE))
-
-        # captures
-        if self.dark() and (p_x - 1, p_y - 1) in self.board.pieces and self.board.pieces[(p_x - 1, p_y - 1)].light():
-            moves.append(Move(self.position, (p_x - 1, p_y - 1), MoveTypes.CAPTURE))
-        if self.dark() and (p_x + 1, p_y - 1) in self.board.pieces and self.board.pieces[(p_x + 1, p_y - 1)].light():
-            moves.append(Move(self.position, (p_x + 1, p_y - 1), MoveTypes.CAPTURE))
+        if (p_x - 1 * color, p_y + 1 * color) in self.board.pieces \
+                and self.board.pieces[(p_x - 1 * color, p_y + 1 * color)].dark():
+            moves.append(Move(self.position, (p_x - 1 * color, p_y + 1 * color), MoveTypes.CAPTURE))
 
         return moves
