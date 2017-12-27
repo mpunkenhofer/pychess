@@ -21,14 +21,15 @@ class Piece(ABC):
         move = self.get_move(self.moves(), pos)
 
         if move:
-            piece = self.board.pop(move.origin)
+            piece = self.board.pop(move.piece.position)
             piece.position = move.destination
             self.board[move.destination] = piece
             self.history.append(move)
 
-    def get_move(self, pm, pos):
+    @staticmethod
+    def get_move(pm, pos):
         for m in pm:
-            if m.destination == pos and m.origin == self.position:
+            if m.destination == pos:
                 return m
         return None
 

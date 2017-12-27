@@ -14,12 +14,8 @@ class Chess:
         self.gui = gui
         self.board = Board()
 
-    def draw(self):
-        self.gui.draw_board(self.board)
-
     def move(self):
-        piece = self.gui.choose_piece(self.board)
-        move = self.gui.move_piece(self.board, piece)
+        piece, move = self.gui.move(self.board)
         piece.move(move)
 
     def game_over(self):

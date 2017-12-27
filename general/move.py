@@ -9,17 +9,17 @@ from abc import ABC, abstractmethod
 
 class MoveTypes(ABC):
     @abstractmethod
-    def __init__(self, o, d):
-        self.__origin = o
+    def __init__(self, p, d):
+        self.__piece = p
         self.__destination = d
 
     @property
-    def origin(self):
-        return self.__origin
+    def piece(self):
+        return self.__piece
 
-    @origin.setter
-    def origin(self, o):
-        self.__origin = o
+    @piece.setter
+    def piece(self, p):
+        self.__piece = p
 
     @property
     def destination(self):
@@ -31,17 +31,17 @@ class MoveTypes(ABC):
 
 
 class Move(MoveTypes):
-    def __init__(self, o, d):
-        MoveTypes.__init__(self, o, d)
+    def __init__(self, p, d):
+        MoveTypes.__init__(self, p, d)
 
 
 class CaptureMove(MoveTypes):
-    def __init__(self, o, d):
-        MoveTypes.__init__(self, o, d)
+    def __init__(self, p, d):
+        MoveTypes.__init__(self, p, d)
         self.__captured_piece = None
 
-    def __init__(self, o, d, captured_piece):
-        self.__init__(o, d)
+    def __init__(self, p, d, captured_piece):
+        self.__init__(p, d)
         self.__captured_piece = captured_piece
 
     @property

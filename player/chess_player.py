@@ -7,14 +7,18 @@
 from abc import ABC, abstractmethod
 
 
-class ChessGUI(ABC):
+class ChessPlayer(ABC):
     @abstractmethod
-    def __init__(self):
-        pass
+    def __init__(self, color):
+        self.__color = color
 
-    @abstractmethod
-    def draw_board(self, board):
-        pass
+    @property
+    def color(self):
+        return self.__color
+
+    @color.setter
+    def color(self, c):
+        self.__color = c
 
     @abstractmethod
     def move(self, board):
