@@ -4,7 +4,7 @@
 # Just for fun xmas 2017 chess project
 #
 
-from gui.chess_gui import ChessGUI
+from gui._chess_gui import ChessGUI
 
 
 class ChessConsoleGUI(ChessGUI):

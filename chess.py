@@ -5,8 +5,8 @@
 #
 
 import sys
-from general.board import Board
-from gui.chess_console_gui import ChessConsoleGUI
+from general import Board
+from gui.console import ChessConsoleGUI
 
 
 class Chess:
