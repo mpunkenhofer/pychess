@@ -4,4 +4,4 @@
 # Just for fun xmas 2017 chess project
 #
 
-from ._chess_player import ChessPlayer
+from ._chess_console_player import ChessConsolePlayer

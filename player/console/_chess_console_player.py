@@ -4,7 +4,7 @@
 # Just for fun xmas 2017 chess project
 #
 
-from player.chess_player import ChessPlayer
+from player import ChessPlayer
 
 
 class ChessConsolePlayer(ChessPlayer):
