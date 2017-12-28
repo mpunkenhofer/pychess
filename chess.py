@@ -8,7 +8,7 @@ import sys
 
 from general import Board
 from player.console import ChessConsolePlayer
-from gui.console import ChessConsoleGUI
+from interface.console import ChessConsoleUserInterface
 
 
 class Chess:
@@ -38,7 +38,7 @@ class Chess:
 
 
 def main():
-    chess_game = Chess(ChessConsoleGUI(), (ChessConsolePlayer('white'), ChessConsolePlayer('black')))
+    chess_game = Chess(ChessConsoleUserInterface(), (ChessConsolePlayer('white'), ChessConsolePlayer('black')))
 
     while not chess_game.game_over():
         chess_game.move()

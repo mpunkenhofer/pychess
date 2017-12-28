@@ -7,7 +7,7 @@
 from abc import ABC, abstractmethod
 
 
-class ChessGUI(ABC):
+class ChessUserInterface(ABC):
     @abstractmethod
     def __init__(self):
         pass

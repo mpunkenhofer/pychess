@@ -4,13 +4,13 @@
 # Just for fun xmas 2017 chess project
 #
 
-from gui import ChessGUI
+from interface import ChessUserInterface
 import re
 
 
-class ChessConsoleGUI(ChessGUI):
+class ChessConsoleUserInterface(ChessUserInterface):
     def __init__(self):
-        ChessGUI.__init__(self)
+        ChessUserInterface.__init__(self)
 
     def draw_board(self, board):
         for y in reversed(range(0, 8)):
