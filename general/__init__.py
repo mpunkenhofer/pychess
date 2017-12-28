@@ -4,5 +4,5 @@
 # Just for fun xmas 2017 chess project
 #
 
-from ._board import Board
-from ._move import Move, CaptureMove
+from .board import Board
+from .move import Move, CaptureMove

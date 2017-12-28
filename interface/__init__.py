@@ -4,4 +4,4 @@
 # Just for fun xmas 2017 chess project
 #
 
-from ._chess_ui import ChessUserInterface
+from .chess_ui import ChessUserInterface

@@ -4,10 +4,10 @@
 # Just for fun xmas 2017 chess project
 #
 
-from ._piece import Piece
-from ._pawn import Pawn
-from ._knight import Knight
-from ._bishop import Bishop
-from ._rook import Rook
-from ._queen import Queen
-from ._king import King
+from .piece import Piece
+from .pawn import Pawn
+from .knight import Knight
+from .bishop import Bishop
+from .rook import Rook
+from .queen import Queen
+from .king import King
