@@ -13,43 +13,43 @@ class Board:
         self.pieces = {}
         
         for i in range(0, 8):
-            self.pieces[(i, 1)] = Pawn(self.pieces, (i, 1), 'light')
-            self.pieces[(i, 6)] = Pawn(self.pieces, (i, 6), 'dark')
+            self.pieces[(i, 1)] = Pawn(self, (i, 1), 'light')
+            self.pieces[(i, 6)] = Pawn(self, (i, 6), 'dark')
 
-        self.light_rooks = [Rook(self.pieces, (0, 0), 'light'), Rook(self.pieces, (7, 0), 'light')]
+        self.light_rooks = [Rook(self, (0, 0), 'light'), Rook(self, (7, 0), 'light')]
         self.pieces[(0, 0)] = self.light_rooks[0]
         self.pieces[(7, 0)] = self.light_rooks[1]
 
-        self.dark_rooks = [Rook(self.pieces, (0, 7), 'dark'), Rook(self.pieces, (7, 7), 'dark')]
+        self.dark_rooks = [Rook(self, (0, 7), 'dark'), Rook(self, (7, 7), 'dark')]
         self.pieces[(0, 7)] = self.dark_rooks[0]
         self.pieces[(7, 7)] = self.dark_rooks[1]
 
-        self.light_knights = [Knight(self.pieces, (1, 0), 'light'), Knight(self.pieces, (6, 0), 'light')]
+        self.light_knights = [Knight(self, (1, 0), 'light'), Knight(self, (6, 0), 'light')]
         self.pieces[(1, 0)] = self.light_knights[0]
         self.pieces[(6, 0)] = self.light_knights[1]
 
-        self.dark_knights = [Knight(self.pieces, (1, 7), 'dark'), Knight(self.pieces, (6, 7), 'dark')]
+        self.dark_knights = [Knight(self, (1, 7), 'dark'), Knight(self, (6, 7), 'dark')]
         self.pieces[(1, 7)] = self.dark_knights[0]
         self.pieces[(6, 7)] = self.dark_knights[1]
 
-        self.light_bishops = [Bishop(self.pieces, (2, 0), 'light'), Bishop(self.pieces, (5, 0), 'light')]
+        self.light_bishops = [Bishop(self, (2, 0), 'light'), Bishop(self, (5, 0), 'light')]
         self.pieces[(2, 0)] = self.light_bishops[0]
         self.pieces[(5, 0)] = self.light_bishops[1]
 
-        self.dark_bishops = [Bishop(self.pieces, (2, 7), 'dark'), Bishop(self.pieces, (5, 7), 'dark')]
+        self.dark_bishops = [Bishop(self, (2, 7), 'dark'), Bishop(self, (5, 7), 'dark')]
         self.pieces[(2, 7)] = self.dark_bishops[0]
         self.pieces[(5, 7)] = self.dark_bishops[1]
 
-        self.light_queens = Queen(self.pieces, (3, 0), 'light')
+        self.light_queens = Queen(self, (3, 0), 'light')
         self.pieces[(3, 0)] = self.light_queens
 
-        self.dark_queens = Queen(self.pieces, (3, 7), 'dark')
+        self.dark_queens = Queen(self, (3, 7), 'dark')
         self.pieces[(3, 7)] = self.dark_queens
 
-        self.light_king = King(self.pieces, (4, 0), 'light')
+        self.light_king = King(self, (4, 0), 'light')
         self.pieces[(4, 0)] = self.light_king
 
-        self.dark_king = King(self.pieces, (4, 7), 'dark')
+        self.dark_king = King(self, (4, 7), 'dark')
         self.pieces[(4, 7)] = self.dark_king
 
     def get_pieces(self):
@@ -108,10 +108,10 @@ class Board:
     def pieces_between(self, x1, y1, x2, y2):
         pieces = []
 
-        if self.same_falling_diagonal(x1, y1, x2, y2):
+        if self.same_falling_diagonal_pos(x1, y1, x2, y2):
             return pieces.append(self.pieces_on_falling_diagonal(x1, y1, x2, y2))
 
-        if self.same_rising_diagonal(x1, y1, x2, y2):
+        if self.same_rising_diagonal_pos(x1, y1, x2, y2):
             return pieces.append(self.pieces_on_rising_diagonal(x1, y1, x2, y2))
 
         for x in range(min(x1, x2), max(x1 + 1, x2 + 1)):
@@ -260,11 +260,11 @@ class Board:
         return p1_y == p1_x + p2_y - p2_x
 
     @staticmethod
-    def same_rising_diagonal(x1, y1, x2, y2):
+    def same_rising_diagonal_pos(x1, y1, x2, y2):
         return y1 == -x1 + y2 + x2
 
     @staticmethod
-    def same_falling_diagonal(x1, y1, x2, y2):
+    def same_falling_diagonal_pos(x1, y1, x2, y2):
         return y1 == x1 + y2 - x2
 
     @staticmethod

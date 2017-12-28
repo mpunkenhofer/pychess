@@ -55,7 +55,11 @@ class ChessConsoleUserInterface(ChessUserInterface):
                 pawns = self.filter_pieces(self.get_pieces_on_file(game, file), game.current_player, 'Pawn')
                 pawn_moves = self.moves_for_pieces(pawns)
 
-                pawn_move = self.find_move_for_coordinate(pawn_moves, file, rank)
+                pawn_move = self.find_move_for_coordinate(pawn_moves, file, rank, 'Move')
+
+                if not pawn_move:
+                    print('Invalid move.')
+                    continue
 
                 return pawn_move.piece, pawn_move.destination
 
@@ -114,7 +118,7 @@ class ChessConsoleUserInterface(ChessUserInterface):
         return result
 
     @staticmethod
-    def find_move_for_coordinate(move_list, file, rank):
+    def find_move_for_coordinate(move_list, file, rank, type):
         files = dict(zip(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'], [i for i in range(0, 8)]))
         ranks = [i for i in range(1, 9)]
 
