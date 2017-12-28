@@ -4,14 +4,14 @@
 # Just for fun xmas 2017 chess project
 #
 
-from abc import ABC, abstractmethod
+from abc import ABC
 
 
 class MoveTypes(ABC):
-    @abstractmethod
-    def __init__(self, p, d):
+    def __init__(self, p, d, t):
         self.__piece = p
         self.__destination = d
+        self.__type = t
 
     @property
     def piece(self):
@@ -29,20 +29,24 @@ class MoveTypes(ABC):
     def destination(self, d):
         self.__destination = d
 
+    @property
+    def type(self):
+        return self.__type
+
+    @type.setter
+    def type(self, t):
+        self.__type = t
+
 
 class Move(MoveTypes):
     def __init__(self, p, d):
-        MoveTypes.__init__(self, p, d)
+        MoveTypes.__init__(self, p, d, 'Move')
 
 
 class CaptureMove(MoveTypes):
-    def __init__(self, p, d):
-        MoveTypes.__init__(self, p, d)
-        self.__captured_piece = None
-
-    def __init__(self, p, d, captured_piece):
-        self.__init__(p, d)
-        self.__captured_piece = captured_piece
+    def __init__(self, p, d, cp):
+        self.__init__(p, d, 'Capture')
+        self.captured_piece = cp
 
     @property
     def captured_piece(self):

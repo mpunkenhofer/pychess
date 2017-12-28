@@ -7,18 +7,19 @@
 import sys
 
 from general import Board
-from player.console import ChessConsolePlayer
 from interface.console import ChessConsoleUserInterface
 
 
 class Chess:
-    def __init__(self, ui, players):
+    def __init__(self):
+        self.__current_player = None
+
+    def __init__(self, ui, player='light'):
         self.board = Board()
         self.ui = ui
-        self.players = players
-        self.move_history = []
+        self.current_player = player
 
-        self.current_player = self.players[0]
+        self.move_history = []
 
         self.ui.draw(self)
 
@@ -28,16 +29,27 @@ class Chess:
         move = piece.move(move)
         self.move_history.append(move)
 
-        self.current_player = self.players[0] if self.current_player != self.players[0] else self.players[1]
+        self.current_player = 'dark' if self.current_player == 'light' else 'light'
 
         self.ui.draw(self)
 
     def game_over(self):
         return False
 
+    @property
+    def current_player(self):
+        return self.__current_player
+
+    @current_player.setter
+    def current_player(self, p):
+        if p not in ['light', 'dark']:
+            raise ValueError("current player can only be 'light' or 'dark'.")
+
+        self.__current_player = p
+
 
 def main():
-    chess_game = Chess(ChessConsoleUserInterface(), (ChessConsolePlayer('white'), ChessConsolePlayer('black')))
+    chess_game = Chess(ChessConsoleUserInterface())
 
     while not chess_game.game_over():
         chess_game.move()
