@@ -12,28 +12,27 @@ from interface.console import ChessConsoleUserInterface
 
 
 class Chess:
-    def __init__(self, gui, players):
+    def __init__(self, ui, players):
         self.board = Board()
-        self.gui = gui
+        self.ui = ui
         self.players = players
         self.move_history = []
 
         self.current_player = self.players[0]
 
+        self.ui.draw(self)
+
     def move(self):
-        piece, move = self.gui.move(self.board, self.current_player)
+        piece, move = self.ui.move(self)
 
         move = piece.move(move)
         self.move_history.append(move)
 
         self.current_player = self.players[0] if self.current_player != self.players[0] else self.players[1]
 
+        self.ui.draw(self)
+
     def game_over(self):
-        cmd = input('Enter q to quit!')
-
-        if cmd == 'q':
-            return True
-
         return False
 
 

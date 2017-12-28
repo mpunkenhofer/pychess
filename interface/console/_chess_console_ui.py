@@ -12,33 +12,33 @@ class ChessConsoleUserInterface(ChessUserInterface):
     def __init__(self):
         ChessUserInterface.__init__(self)
 
-    def draw_board(self, board):
+    def draw(self, game):
         for y in reversed(range(0, 8)):
             for x in range(0, 8):
-                if (x, y) in board.pieces:
-                    if board.pieces[(x, y)].light():
-                        print(board.pieces[(x, y)].letter, end='')
+                if (x, y) in game.board.pieces:
+                    if game.board.pieces[(x, y)].light():
+                        print(game.board.pieces[(x, y)].letter, end='')
                     else:
-                        print(board.pieces[(x, y)].letter.lower(), end='')
+                        print(game.board.pieces[(x, y)].letter.lower(), end='')
                 else:
                     print('.', end='')
 
             print()
 
-    def move(self, board, current_player):
+    def move(self, game):
         while True:
-            move_input = input(current_player.color + ': ')
+            move_input = input(game.current_player.color + ': ')
 
             if len(move_input) < 2:
                 print('Invalid move format. (See chess move notation)')
                 continue
 
-            capture_by_piece = re.match('([KQRBN])x([a-h])([1-8]).?', move_input)
-            capture_by_pawn = re.match('([a-h])x([a-h])([1-8]).?', move_input)
+            capture_by_piece = re.match('([KQRBN])x([a-h])([1-8])[+#]?', move_input)
+            capture_by_pawn = re.match('([a-h])x([a-h])([1-8])[+#]?', move_input)
 
-            pawn_move = re.match('([a-h])([1-8]).?', move_input)
-            piece_move = re.match('([KQRBN])([a-h])([1-8]).?', move_input)
-            specific_piece_move = re.match('([QRBN])([a-h])([a-h])([1-8]).?', move_input)
+            pawn_move = re.match('([a-h])([1-8])[+#]?', move_input)
+            piece_move = re.match('([KQRBN])([a-h])([1-8])[+#]?', move_input)
+            specific_piece_move = re.match('([QRBN])([a-h])([a-h])([1-8])[+#]?', move_input)
 
             if capture_by_piece:
                 piece = capture_by_piece.group(1)

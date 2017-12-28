@@ -234,3 +234,44 @@ class Board:
     def dark_pieces(self):
         return self.pieces_by_color('dark')
 
+    def get_pieces_on_rank(self, rank):
+        ranks = dict(zip(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'], [i for i in range(0, 8)]))
+        pieces = []
+
+        if rank not in ranks:
+            raise ValueError('get_pieces_on_rank: invalid rank')
+
+        for pos, piece in self.pieces:
+            if pos[0] == ranks[rank]:
+                pieces.append(piece)
+
+        return pieces
+
+    def get_pieces_on_file(self, file):
+        pieces = []
+
+        if not 1 <= file <= 8:
+            raise ValueError('get_pieces_on_file: invalid file')
+
+        for pos, piece in self.pieces:
+            if pos[1] == file - 1:
+                pieces.append(piece)
+
+        return pieces
+
+    @staticmethod
+    def filter_piece(piece_list, color, name):
+        return list(filter(lambda x: x.color == color and x.name == name, piece_list))
+
+    def moves_for_pieces(self, pieces):
+        result = []
+
+        for p in pieces:
+            result.append(p.moves())
+
+
+
+
+
+
+

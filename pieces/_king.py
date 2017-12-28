@@ -4,12 +4,12 @@
 # Just for fun xmas 2017 chess project
 #
 
-from pieces import Piece
+import pieces
 
 
-class King(Piece):
+class King(pieces.Piece):
     def __init__(self, board, pos, color):
-        Piece.__init__(self, board, pos, color, 'King', 'K')
+        pieces.Piece.__init__(self, board, pos, color, 'King', 'K')
 
     def moves(self):
         return []

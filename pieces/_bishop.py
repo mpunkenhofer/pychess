@@ -4,12 +4,12 @@
 # Just for fun xmas 2017 chess project
 #
 
-from pieces import Piece
+import pieces
 
 
-class Bishop(Piece):
+class Bishop(pieces.Piece):
     def __init__(self, board, pos, color):
-        Piece.__init__(self, board, pos, color, 'Bishop', 'B')
+        pieces.Piece.__init__(self, board, pos, color, 'Bishop', 'B')
 
     def moves(self):
         return []

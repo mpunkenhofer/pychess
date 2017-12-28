@@ -9,7 +9,7 @@ from player import ChessPlayer
 
 class ChessConsolePlayer(ChessPlayer):
     def __init__(self, color):
-        ChessPlayer.__init__(color)
+        ChessPlayer.__init__(self, color)
 
     def move(self, board):
 

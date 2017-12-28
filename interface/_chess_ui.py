@@ -13,9 +13,9 @@ class ChessUserInterface(ABC):
         pass
 
     @abstractmethod
-    def draw_board(self, board):
+    def draw(self, game):
         pass
 
     @abstractmethod
-    def move(self, board):
+    def move(self, game):
         pass

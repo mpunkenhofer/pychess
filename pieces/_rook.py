@@ -4,12 +4,12 @@
 # Just for fun xmas 2017 chess project
 #
 
-from pieces import Piece
+import pieces
 
 
-class Rook(Piece):
+class Rook(pieces.Piece):
     def __init__(self, board, pos, color):
-        Piece.__init__(self, board, pos, color, 'Rook', 'R')
+        pieces.Piece.__init__(self, board, pos, color, 'Rook', 'R')
 
     def moves(self):
         return []
