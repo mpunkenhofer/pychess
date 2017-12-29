@@ -5,7 +5,7 @@
 #
 
 from abc import ABC
-
+from enum import Enum, auto
 
 class MoveTypes(ABC):
     def __init__(self, p, o, d, t):
@@ -70,3 +70,13 @@ class CaptureMove(MoveTypes):
     def captured_piece(self, p):
         self._captured_piece = p
 
+
+class MoveDirection(Enum):
+    RankUp = auto()
+    RankDown = auto()
+    FileLeft = auto()
+    FileRight = auto()
+    FallingDiagonalUp = auto()
+    FallingDiagonalDown = auto()
+    RisingDiagonalUp = auto()
+    RisingDiagonalDown = auto()

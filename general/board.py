@@ -5,7 +5,7 @@
 #
 
 from pieces import Pawn, Rook, King, Queen, Knight, Bishop
-
+from general import MoveDirection
 
 class Board:
     def __init__(self):
@@ -141,9 +141,28 @@ class Board:
         else:
             return []
 
-    def next_piece(self, p, limit = None):
+    def next_piece(self, p, direction, limit=None):
+        try:
+            p_x, p_y = p.position
+        except AttributeError:
+            p_x, p_y = p
+
         color = 1 if p.light() else -1
 
+        if limit:
+            try:
+                limit_x, limit_y = limit.position
+            except AttributeError:
+                limit_x, limit_y = limit
+        else:
+            limit_x = limit_y = None
+
+        if direction == MoveDirection.RankUp:
+            for y in range(p_x, 8):
+                if (limit_x, limit_y) == (p_x, y):
+                    break
+                if (p_x, y) in self.pieces:
+                    return self.pieces[(p_x, y)]
         return None
 
     def rank_pin(self, piece):

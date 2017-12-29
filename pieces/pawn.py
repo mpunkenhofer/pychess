@@ -29,7 +29,8 @@ class Pawn(pieces.Piece):
 
         if not self._board.file_pin(self):
             # captures
-            if (p_x + 1 * color, p_y + 1 * color) in self._board.pieces:
+            if (p_x + 1 * color, p_y + 1 * color) in self._board.pieces and \
+                    self._board.pieces[(p_x + 1 * color, p_y + 1 * color)].color != self.color:
                 if self._board.pieces[(p_x + 1 * color, p_y + 1 * color)] == self._board.enemy_king(self):
                     moves.append(general.CheckMove(self, (p_x, p_y), (p_x + 1 * color, p_y + 1 * color)))
                 else:
@@ -37,7 +38,8 @@ class Pawn(pieces.Piece):
                                                      (p_x, p_y),
                                                      (p_x + 1 * color, p_y + 1 * color),
                                                      self._board.pieces[(p_x + 1 * color, p_y + 1 * color)]))
-            if (p_x - 1 * color, p_y + 1 * color) in self._board.pieces:
+            if (p_x - 1 * color, p_y + 1 * color) in self._board.pieces and \
+                    self._board.pieces[(p_x - 1 * color, p_y + 1 * color)].color != self.color:
                 if self._board.pieces[(p_x - 1 * color, p_y + 1 * color)] == self._board.enemy_king(self):
                     moves.append(general.CheckMove(self, (p_x, p_y), (p_x - 1 * color, p_y + 1 * color)))
                 else:
@@ -49,7 +51,8 @@ class Pawn(pieces.Piece):
             if general.Board.en_passant_rank(self):
                 last_move = self._board.history()[-1]
 
-                if last_move and last_move.piece == 'Pawn' and abs(last_move.origin[1] - last_move.destination[1]) > 1:
+                if last_move and last_move.piece == 'Pawn' and last_move.piece.color != self.color and \
+                        abs(last_move.origin[1] - last_move.destination[1]) > 1:
                     left = (p_x - 1 * color, p_y)
                     right = (p_x - 1 * color, p_y)
 
