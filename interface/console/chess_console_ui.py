@@ -28,11 +28,7 @@ class ChessConsoleUserInterface(ChessUserInterface):
 
     def move(self, game):
         while True:
-            move_input = input(str(int(math.ceil((len(game.move_history) + 1) / 2))) + ': ')
-
-            if len(move_input) < 2:
-                print('Invalid move format. (see algebraic notation (chess))')
-                continue
+            move_input = input(str(int(math.ceil((len(game.board.history()) + 1) / 2))) + ': ')
 
             capture_by_piece = re.match('([KQRBN])x([a-h])([1-8])[+#]?', move_input)
             capture_by_pawn = re.match('([a-h])x([a-h])([1-8])[+#]?', move_input)
@@ -73,6 +69,10 @@ class ChessConsoleUserInterface(ChessUserInterface):
                 piece_id = specific_piece_move.group(2)
                 file = specific_piece_move.group(3)
                 rank = specific_piece_move.group(4)
+            elif move_input == 'O-O':
+                print('King side castle')
+            elif move_input == 'O-O-O':
+                print('Queen side castle')
             else:
                 print('Invalid move format. (see algebraic notation (chess))')
                 continue

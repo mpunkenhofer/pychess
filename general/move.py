@@ -8,51 +8,65 @@ from abc import ABC
 
 
 class MoveTypes(ABC):
-    def __init__(self, p, d, t):
-        self.__piece = p
-        self.__destination = d
-        self.__type = t
+    def __init__(self, p, o, d, t):
+        self._piece = p
+        self._origin = o
+        self._destination = d
+        self._type = t
 
     @property
     def piece(self):
-        return self.__piece
+        return self._piece
 
     @piece.setter
     def piece(self, p):
-        self.__piece = p
+        self._piece = p
+
+    @property
+    def origin(self):
+        return self._origin
+
+    @origin.setter
+    def origin(self, o):
+        self._origin = o
 
     @property
     def destination(self):
-        return self.__destination
+        return self._destination
 
     @destination.setter
     def destination(self, d):
-        self.__destination = d
+        self._destination = d
 
     @property
     def type(self):
-        return self.__type
+        return self._type
 
     @type.setter
     def type(self, t):
-        self.__type = t
+        self._type = t
 
 
 class Move(MoveTypes):
-    def __init__(self, p, d):
-        MoveTypes.__init__(self, p, d, 'Move')
+    def __init__(self, p, o, d):
+        MoveTypes.__init__(self, p, o, d, 'Move')
+
+
+class CheckMove(MoveTypes):
+    def __init__(self, p, o, d):
+        MoveTypes.__init__(self, p, o, d, 'Check')
 
 
 class CaptureMove(MoveTypes):
-    def __init__(self, p, d, cp):
-        MoveTypes.__init__(self, p, d, 'Capture')
-        self.__captured_piece = cp
+    def __init__(self, p, o, d, cp):
+        MoveTypes.__init__(self, p, o, d, 'Capture')
+        self._captured_piece = cp
 
     @property
     def captured_piece(self):
-        return self.__captured_piece
+        return self._captured_piece
 
     @captured_piece.setter
     def captured_piece(self, p):
-        self.__captured_piece = p
+        self._captured_piece = p
 

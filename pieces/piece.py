@@ -10,78 +10,87 @@ from abc import ABC, abstractmethod
 class Piece(ABC):
     @abstractmethod
     def __init__(self, board, pos, color, name='', letter=''):
-        self.board = board
-        self.__position = pos
-        self.__color = color
-        self.__name = name
-        self.__letter = letter
-        self.history = []
+        self._board = board
+        self._position = pos
+        self._color = color
+        self._name = name
+        self._letter = letter
+        self._history = []
+        self._cache = (-1, [])
 
     def move(self, pos):
-        move = self.get_move(self.moves(), pos)
+        move = self._get_move(self.moves(), pos)
 
         if move:
-            piece = self.board.pieces.pop(move.piece.position)
+            piece = self._board.pieces.pop(move.piece.position)
             piece.position = move.destination
-            self.board.pieces[move.destination] = piece
-            self.history.append(move)
+            self._board.pieces[move.destination] = piece
+            self._history.append(move)
 
-            return move
-        else:
-            return None
+        return move
 
-    @staticmethod
-    def get_move(pm, pos):
-        for m in pm:
-            if m.destination == pos:
-                return m
-        return None
+    def moves(self):
+        if not (self._cache[0] == len(self._board.history()) and self._cache[1]):
+            self._cache = len(self._board.history()), self.get_moves()
+
+        return self._cache[1]
 
     @abstractmethod
-    def moves(self):
+    def attacked_squares(self):
+        pass
+
+    @abstractmethod
+    def get_moves(self):
         pass
 
     @property
     def name(self):
-        return self.__name
+        return self._name
 
     @name.setter
     def name(self, name):
-        self.__name = name
+        self._name = name
 
     @property
     def letter(self):
-        return self.__letter
+        return self._letter
 
     @letter.setter
     def letter(self, letter):
-        self.__letter = letter
+        self._letter = letter
 
     @property
     def position(self):
-        return self.__position
+        return self._position
 
     @position.setter
     def position(self, pos):
-        self.__position = pos
+        self._position = pos
 
     @property
     def color(self):
-        return self.__color
+        return self._color
 
     @color.setter
     def color(self, color):
         if not (color == 'light' or color == 'dark'):
             raise ValueError('color property can only be light or dark')
 
-        self.__color = color
+        self._color = color
 
-    def get_piece_history(self):
-        return self.history
+    def history(self):
+        return self._history
 
     def light(self):
         return self.color == 'light'
 
     def dark(self):
         return self.color == 'dark'
+
+    @staticmethod
+    def _get_move(pm, pos):
+        for m in pm:
+            if m.destination == pos:
+                return m
+        return None
 

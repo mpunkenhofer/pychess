@@ -19,15 +19,12 @@ class Chess:
         self.ui = ui
         self.current_player = player
 
-        self.move_history = []
-
         self.ui.draw(self)
 
     def move(self):
         piece, move = self.ui.move(self)
 
-        move = piece.move(move)
-        self.move_history.append(move)
+        self.board.move(piece, move)
 
         self.current_player = 'dark' if self.current_player == 'light' else 'light'
 
