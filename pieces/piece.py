@@ -21,9 +21,9 @@ class Piece(ABC):
         move = self.get_move(self.moves(), pos)
 
         if move:
-            piece = self.board.pop(move.piece.position)
+            piece = self.board.pieces.pop(move.piece.position)
             piece.position = move.destination
-            self.board[move.destination] = piece
+            self.board.pieces[move.destination] = piece
             self.history.append(move)
 
             return move

@@ -85,27 +85,30 @@ class Board:
     def get_dark_knights(self):
         return self.dark_knights
 
-    def pieces_between(self, p1, p2):
+    def pieces_between_pieces(self, p1, p2):
         p1_x, p1_y = p1.position
         p2_x, p2_y = p2.position
 
+        return self.pieces_between_coords(p1_x, p1_y, p2_x, p2_y)
+
+    def pieces_between_coords(self, p1_x, p1_y, p2_x, p2_y):
         pieces = []
 
-        if self.same_rank(p1, p2):
-            for x, i in enumerate(range(min(p1_x, p2_x), max(p1_x, p2_x))):
-                if i > 0 and (x, p1_y) in self.pieces:
+        if self.same_rank(p1_x, p2_x):
+            for x in range(min(p1_x + 1, p2_x + 1), max(p1_x, p2_x)):
+                if (x, p1_y) in self.pieces:
                     pieces.append(self.pieces[(x, p1_y)])
             return pieces
-        elif self.same_file(p1, p2):
-            for y, i in enumerate(range(min(p1_y, p2_y), max(p1_y, p2_y))):
-                if i > 0 and (p1_x, y) in self.pieces:
+        elif self.same_file(p1_y, p2_y):
+            for y in range(min(p1_y + 1, p2_y + 1), max(p1_y, p2_y)):
+                if (p1_x, y) in self.pieces:
                     pieces.append(self.pieces[(p1_x, y)])
             return pieces
-        elif self.same_diagonal(p1, p2):
-            y = min(p1_y, p2_y)
-            x_range = range(min(p1_x, p2_x), max(p1_x + 1, p2_x + 1))
+        elif self.same_diagonal_coords(p1_x, p1_y, p2_x, p2_y):
+            y = min(p1_y + 1, p2_y + 1)
+            x_range = range(min(p1_x + 1, p2_x + 1), max(p1_x, p2_x))
 
-            if self.same_falling_diagonal(p1, p2):
+            if self.same_falling_diagonal_coords(p1_x, p1_y, p2_x, p2_y):
                 x_range = reversed(x_range)
 
             for x in x_range:
@@ -120,16 +123,16 @@ class Board:
     def rank_pin(self, piece):
         king = self.light_king if piece.light() else self.dark_king
 
-        if self.same_rank(king, piece) and len(self.pieces_between(king, piece)) == 0:
+        if self.same_rank(king, piece) and len(self.pieces_between_pieces(king, piece)) == 0:
             rooks = self.dark_rooks if piece.light() else self.light_rooks
             queens = self.dark_queens if piece.light() else self.light_queens
 
             for r in rooks:
-                if self.same_rank(r, piece) and len(self.pieces_between(r, piece)) == 0:
+                if self.same_rank(r, piece) and len(self.pieces_between_pieces(r, piece)) == 0:
                     return True
 
             for q in queens:
-                if self.same_rank(q, piece) and len(self.pieces_between(q, piece)) == 0:
+                if self.same_rank(q, piece) and len(self.pieces_between_pieces(q, piece)) == 0:
                     return True
         else:
             return False
@@ -137,16 +140,16 @@ class Board:
     def file_pin(self, piece):
         king = self.light_king if piece.light() else self.dark_king
 
-        if self.same_file(king, piece) and len(self.pieces_between(king, piece)) == 0:
+        if self.same_file(king, piece) and len(self.pieces_between_pieces(king, piece)) == 0:
             rooks = self.dark_rooks if piece.light() else self.light_rooks
             queens = self.dark_queens if piece.light() else self.light_queens
 
             for r in rooks:
-                if self.same_file(r, piece) and len(self.pieces_between(r, piece)) == 0:
+                if self.same_file(r, piece) and len(self.pieces_between_pieces(r, piece)) == 0:
                     return True
 
             for q in queens:
-                if self.same_file(q, piece) and len(self.pieces_between(q, piece)) == 0:
+                if self.same_file(q, piece) and len(self.pieces_between_pieces(q, piece)) == 0:
                     return True
 
         return False
@@ -154,28 +157,28 @@ class Board:
     def diagonal_pin(self, piece):
         king = self.light_king if piece.light() else self.dark_king
 
-        if self.same_rising_diagonal(king, piece) and len(self.pieces_between(king, piece)) == 0:
+        if self.same_rising_diagonal(king, piece) and len(self.pieces_between_pieces(king, piece)) == 0:
             bishops = self.dark_bishops if piece.light() else self.light_bishops
             queens = self.dark_queens if piece.light() else self.light_queens
 
             for b in bishops:
-                if self.same_rising_diagonal(b, piece) and len(self.pieces_between(b, piece)) == 0:
+                if self.same_rising_diagonal(b, piece) and len(self.pieces_between_pieces(b, piece)) == 0:
                     return True
 
             for q in queens:
-                if self.same_rising_diagonal(q, piece) and len(self.pieces_between(q, piece)) == 0:
+                if self.same_rising_diagonal(q, piece) and len(self.pieces_between_pieces(q, piece)) == 0:
                     return True
 
-        elif self.same_falling_diagonal(king, piece) and len(self.pieces_between(king, piece)) == 0:
+        elif self.same_falling_diagonal(king, piece) and len(self.pieces_between_pieces(king, piece)) == 0:
             bishops = self.dark_bishops if piece.light() else self.light_bishops
             queens = self.dark_queens if piece.light() else self.light_queens
 
             for b in bishops:
-                if self.same_falling_diagonal(b, piece) and len(self.pieces_between(b, piece)) == 0:
+                if self.same_falling_diagonal(b, piece) and len(self.pieces_between_pieces(b, piece)) == 0:
                     return True
 
             for q in queens:
-                if self.same_falling_diagonal(q, piece) and len(self.pieces_between(q, piece)) == 0:
+                if self.same_falling_diagonal(q, piece) and len(self.pieces_between_pieces(q, piece)) == 0:
                     return True
 
         return False
@@ -196,17 +199,23 @@ class Board:
 
     @staticmethod
     def same_rank(p1, p2):
-        p1_x, p1_y = p1.position
-        p2_x, p2_y = p2.position
-
-        return p1_x == p2_x
+        try:
+            p1_x, p1_y = p1.position
+            p2_x, p2_y = p2.position
+        except AttributeError:
+            return p1 == p2
+        else:
+            return p1_x == p2_x
 
     @staticmethod
     def same_file(p1, p2):
-        p1_x, p1_y = p1.position
-        p2_x, p2_y = p2.position
-
-        return p1_y == p2_y
+        try:
+            p1_x, p1_y = p1.position
+            p2_x, p2_y = p2.position
+        except AttributeError:
+            return p1 == p2
+        else:
+            return p1_y == p2_y
 
     @staticmethod
     def same_diagonal(p1, p2):
@@ -220,6 +229,13 @@ class Board:
         return falling or rising
 
     @staticmethod
+    def same_diagonal_coords(p1_x, p1_y, p2_x, p2_y):
+        falling = p1_y == p1_x + p2_y - p2_x
+        rising = p1_y == -p1_x + p2_y + p2_x
+
+        return falling or rising
+
+    @staticmethod
     def same_rising_diagonal(p1, p2):
         p1_x, p1_y = p1.position
         p2_x, p2_y = p2.position
@@ -227,10 +243,18 @@ class Board:
         return p1_y == -p1_x + p2_y + p2_x
 
     @staticmethod
+    def same_rising_diagonal_coords(p1_x, p1_y, p2_x, p2_y):
+        return p1_y == -p1_x + p2_y + p2_x
+
+    @staticmethod
     def same_falling_diagonal(p1, p2):
         p1_x, p1_y = p1.position
         p2_x, p2_y = p2.position
 
+        return p1_y == p1_x + p2_y - p2_x
+
+    @staticmethod
+    def same_falling_diagonal_coords(p1_x, p1_y, p2_x, p2_y):
         return p1_y == p1_x + p2_y - p2_x
 
     @staticmethod

@@ -20,11 +20,11 @@ class Pawn(pieces.Piece):
         if not self.board.diagonal_pin(self) or not self.board.rank_pin(self):
             # pawn push
             if len(self.history) < 1 and general.Board.in_board(p_x, p_y + 2 * color) and len(
-                    self.board.pieces_between(p_x, p_y, p_x, p_y + 2 * color)) == 0:
+                    self.board.pieces_between_coords(p_x, p_y, p_x, p_y + 3 * color)) == 0:
                 moves.append(general.Move(self, (p_x, p_y + 2 * color)))
 
             if general.Board.in_board(p_x, p_y + 1 * color) and len(
-                    self.board.pieces_between(p_x, p_y, p_x, p_y + 1 * color)) == 0:
+                    self.board.pieces_between_coords(p_x, p_y, p_x, p_y + 2 * color)) == 0:
                 moves.append(general.Move(self, (p_x, p_y + 1 * color)))
 
         if not self.board.file_pin(self):

@@ -8,6 +8,7 @@ from interface import ChessUserInterface
 import re
 import math
 
+
 class ChessConsoleUserInterface(ChessUserInterface):
     def __init__(self):
         ChessUserInterface.__init__(self)
@@ -27,7 +28,7 @@ class ChessConsoleUserInterface(ChessUserInterface):
 
     def move(self, game):
         while True:
-            move_input = input(str(int(math.ceil(len(game.move_history) + 1 / 2))) + ': ')
+            move_input = input(str(int(math.ceil((len(game.move_history) + 1) / 2))) + ': ')
 
             if len(move_input) < 2:
                 print('Invalid move format. (see algebraic notation (chess))')
@@ -61,7 +62,7 @@ class ChessConsoleUserInterface(ChessUserInterface):
                     print('Invalid move.')
                     continue
 
-                return pawn_move.piece, pawn_move.destination
+                return pawn_move[0].piece, pawn_move[0].destination
 
             elif piece_move:
                 piece = piece_move.group(1)
@@ -119,10 +120,12 @@ class ChessConsoleUserInterface(ChessUserInterface):
 
     @staticmethod
     def find_move_for_coordinate(move_list, file, rank, type):
+        rank = int(rank)
+
         files = dict(zip(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'], [i for i in range(0, 8)]))
         ranks = [i for i in range(1, 9)]
 
-        if rank in ranks and file in files:
+        if rank in ranks and file in files.keys():
             for m in move_list:
                 # TODO implement
                 return m
