@@ -89,59 +89,33 @@ class Board:
         p1_x, p1_y = p1.position
         p2_x, p2_y = p2.position
 
+        pieces = []
+
         if self.same_rank(p1, p2):
-            return self.pieces_between(p1_x, p1_y, p2_x, p2_y)
+            for x, i in enumerate(range(min(p1_x, p2_x), max(p1_x, p2_x))):
+                if i > 0 and (x, p1_y) in self.pieces:
+                    pieces.append(self.pieces[(x, p1_y)])
+            return pieces
         elif self.same_file(p1, p2):
-            return self.pieces_between(p1_x, p1_y, p2_x, p2_y)
+            for y, i in enumerate(range(min(p1_y, p2_y), max(p1_y, p2_y))):
+                if i > 0 and (p1_x, y) in self.pieces:
+                    pieces.append(self.pieces[(p1_x, y)])
+            return pieces
         elif self.same_diagonal(p1, p2):
-            pieces = []
+            y = min(p1_y, p2_y)
+            x_range = range(min(p1_x, p2_x), max(p1_x + 1, p2_x + 1))
 
             if self.same_falling_diagonal(p1, p2):
-                pieces.append(self.pieces_on_falling_diagonal(p1_x, p1_y, p2_x, p2_y))
-            if self.same_rising_diagonal(p1, p2):
-                pieces.append(self.pieces_on_rising_diagonal(p1_x, p1_y, p2_x, p2_y, 1))
+                x_range = reversed(x_range)
+
+            for x in x_range:
+                if (x, y) in self.pieces:
+                    pieces.append(self.pieces[(x, y)])
+                y += 1
 
             return pieces
         else:
             return []
-
-    def pieces_between(self, x1, y1, x2, y2):
-        pieces = []
-
-        if self.same_falling_diagonal_pos(x1, y1, x2, y2):
-            return pieces.append(self.pieces_on_falling_diagonal(x1, y1, x2, y2))
-
-        if self.same_rising_diagonal_pos(x1, y1, x2, y2):
-            return pieces.append(self.pieces_on_rising_diagonal(x1, y1, x2, y2))
-
-        for x in range(min(x1, x2), max(x1 + 1, x2 + 1)):
-            for y in range(min(y1, y2), max(y1 + 1, y2 + 1)):
-                if (x, y) in self.pieces:
-                    pieces.append(self.pieces[(x, y)])
-
-        return pieces
-
-    def pieces_on_falling_diagonal(self, x1, y1, x2, y2):
-        pieces = []
-        y = min(y1, y2)
-
-        for x in reversed(range(min(x1, x2), max(x1 + 1, x2 + 1))):
-            if (x, y) in self.pieces:
-                pieces.append(self.pieces[(x, y)])
-            y += 1
-
-        return pieces
-
-    def pieces_on_rising_diagonal(self, x1, y1, x2, y2):
-        pieces = []
-        y = min(y1, y2)
-
-        for x in range(min(x1, x2), max(x1 + 1, x2 + 1)):
-            if (x, y) in self.pieces:
-                pieces.append(self.pieces[(x, y)])
-            y += 1
-
-        return pieces
 
     def rank_pin(self, piece):
         king = self.light_king if piece.light() else self.dark_king
@@ -258,14 +232,6 @@ class Board:
         p2_x, p2_y = p2.position
 
         return p1_y == p1_x + p2_y - p2_x
-
-    @staticmethod
-    def same_rising_diagonal_pos(x1, y1, x2, y2):
-        return y1 == -x1 + y2 + x2
-
-    @staticmethod
-    def same_falling_diagonal_pos(x1, y1, x2, y2):
-        return y1 == x1 + y2 - x2
 
     @staticmethod
     def in_board(x, y):
