@@ -62,7 +62,7 @@ class ChessConsoleUserInterface(ChessUserInterface):
                     print('Invalid move.')
                     continue
 
-                return pawn_move[0].piece, pawn_move[0].destination
+                return pawn_move.piece, pawn_move.destination
 
             elif piece_move:
                 piece = piece_move.group(1)
@@ -114,21 +114,19 @@ class ChessConsoleUserInterface(ChessUserInterface):
         result = []
 
         for p in pieces:
-            result.append(p.moves())
+            result += p.moves()
 
         return result
 
     @staticmethod
-    def find_move_for_coordinate(move_list, file, rank, type):
+    def find_move_for_coordinate(move_list, file, rank, move_type):
         rank = int(rank)
-
         files = dict(zip(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'], [i for i in range(0, 8)]))
-        ranks = [i for i in range(1, 9)]
 
-        if rank in ranks and file in files.keys():
+        if 1 <= rank <= 8 and file in files.keys():
             for m in move_list:
-                # TODO implement
-                return m
+                if m.type == move_type and m.destination[0] == files[file] and m.destination[1] == (rank - 1):
+                    return m
 
         return None
 

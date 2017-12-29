@@ -45,8 +45,8 @@ class Move(MoveTypes):
 
 class CaptureMove(MoveTypes):
     def __init__(self, p, d, cp):
-        self.__init__(p, d, 'Capture')
-        self.captured_piece = cp
+        MoveTypes.__init__(self, p, d, 'Capture')
+        self.__captured_piece = cp
 
     @property
     def captured_piece(self):

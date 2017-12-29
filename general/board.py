@@ -40,11 +40,11 @@ class Board:
         self.pieces[(2, 7)] = self.dark_bishops[0]
         self.pieces[(5, 7)] = self.dark_bishops[1]
 
-        self.light_queens = Queen(self, (3, 0), 'light')
-        self.pieces[(3, 0)] = self.light_queens
+        self.light_queens = [Queen(self, (3, 0), 'light')]
+        self.pieces[(3, 0)] = self.light_queens[0]
 
-        self.dark_queens = Queen(self, (3, 7), 'dark')
-        self.pieces[(3, 7)] = self.dark_queens
+        self.dark_queens = [Queen(self, (3, 7), 'dark')]
+        self.pieces[(3, 7)] = self.dark_queens[0]
 
         self.light_king = King(self, (4, 0), 'light')
         self.pieces[(4, 0)] = self.light_king
@@ -94,12 +94,12 @@ class Board:
     def pieces_between_coords(self, p1_x, p1_y, p2_x, p2_y):
         pieces = []
 
-        if self.same_rank(p1_x, p2_x):
+        if self.same_rank(p1_y, p2_y):
             for x in range(min(p1_x + 1, p2_x + 1), max(p1_x, p2_x)):
                 if (x, p1_y) in self.pieces:
                     pieces.append(self.pieces[(x, p1_y)])
             return pieces
-        elif self.same_file(p1_y, p2_y):
+        elif self.same_file(p1_x, p2_x):
             for y in range(min(p1_y + 1, p2_y + 1), max(p1_y, p2_y)):
                 if (p1_x, y) in self.pieces:
                     pieces.append(self.pieces[(p1_x, y)])
