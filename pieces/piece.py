@@ -25,7 +25,7 @@ class Piece(ABC):
         return self._cache[1]
 
     @abstractmethod
-    def protected_squares(self):
+    def influenced_squares(self):
         pass
 
     @abstractmethod

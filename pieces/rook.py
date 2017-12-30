@@ -14,5 +14,5 @@ class Rook(pieces.Piece):
     def get_moves(self):
         return []
 
-    def protected_squares(self):
+    def influenced_squares(self):
         return self.get_moves()

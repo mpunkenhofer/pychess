@@ -15,7 +15,7 @@ class King(pieces.Piece):
     def get_moves(self):
         return []
 
-    def protected_squares(self):
+    def influenced_squares(self):
         return self.get_moves()
 
     def in_check(self):
