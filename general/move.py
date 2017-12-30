@@ -57,6 +57,20 @@ class CheckMove(MoveTypes):
         MoveTypes.__init__(self, p, o, d, 'Check')
 
 
+class PromoteMove(MoveTypes):
+    def __init__(self, p, o, d):
+        MoveTypes.__init__(self, p, o, d, 'Promotion')
+        self._promoted_piece = None
+
+    @property
+    def promoted_piece(self):
+        return self._promoted_piece
+
+    @promoted_piece.setter
+    def promoted_piece(self, p):
+        self._promoted_piece = p
+
+
 class CaptureMove(MoveTypes):
     def __init__(self, p, o, d, cp):
         MoveTypes.__init__(self, p, o, d, 'Capture')

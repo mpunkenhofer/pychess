@@ -7,6 +7,7 @@
 from pieces import Pawn, Rook, King, Queen, Knight, Bishop
 from general import MoveDirection
 
+
 class Board:
     def __init__(self):
         self._history = []
@@ -110,6 +111,48 @@ class Board:
 
         self._history.append(move)
 
+        return move
+
+    def promote(self, pawn, new_piece):
+        if new_piece not in ['Queen', 'Rook', 'Knight', 'Bishop']:
+            raise RuntimeError('board.promote(pawn, new_piece): new_piece has an incorrect piece type!')
+
+        if pawn.name == 'Pawn' and self.last_rank(pawn):
+            color = pawn.color
+            pos = pawn.position
+
+            self.pieces.pop(pawn.position)
+
+            if new_piece == 'Queen':
+                new_piece = Queen(self, pos, color)
+                if color == 'light':
+                    self.light_queens.append(new_piece)
+                else:
+                    self.dark_queens.append(new_piece)
+            elif new_piece == 'Rook':
+                new_piece = Rook(self, pos, color)
+                if color == 'light':
+                    self.light_rooks.append(new_piece)
+                else:
+                    self.dark_rooks.append(new_piece)
+            elif new_piece == 'Knight':
+                new_piece = Knight(self, pos, color)
+                if color == 'light':
+                    self.light_knights.append(new_piece)
+                else:
+                    self.dark_knights.append(new_piece)
+            elif new_piece == 'Bishop':
+                new_piece = Bishop(self, pos, color)
+                if color == 'light':
+                    self.light_bishops.append(new_piece)
+                else:
+                    self.dark_bishops.append(new_piece)
+
+            self.pieces[pos] = new_piece
+
+            if self._history and self._history[-1].type == 'Promotion':
+                self._history[-1].promoted_piece = new_piece
+
     def pieces_between(self, p1, p2):
         p1_x, p1_y, p2_x, p2_y = self.get_coordinates(p1, p2)
 
@@ -147,6 +190,7 @@ class Board:
         except AttributeError:
             p_x, p_y = p
 
+        # TODO: is it right to do the color thing here?
         color = 1 if p.light() else -1
 
         if limit:
@@ -287,6 +331,14 @@ class Board:
 
     def enemy_king(self, p):
         return self.dark_king if p.light() else self.light_king
+
+    @staticmethod
+    def last_rank(pawn):
+        return pawn.position[1] == 7 if pawn.light() else pawn.position[1] == 0
+
+    @staticmethod
+    def second_last_rank(pawn):
+        return pawn.position[1] == 6 if pawn.light() else pawn.position[1] == 1
 
     @staticmethod
     def en_passant_rank(pawn):

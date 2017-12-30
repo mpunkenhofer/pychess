@@ -36,7 +36,7 @@ class Piece(ABC):
         return self._cache[1]
 
     @abstractmethod
-    def attacked_squares(self):
+    def protected_squares(self):
         pass
 
     @abstractmethod

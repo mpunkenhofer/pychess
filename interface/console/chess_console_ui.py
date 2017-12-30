@@ -90,6 +90,16 @@ class ChessConsoleUserInterface(ChessUserInterface):
                 print('Invalid move format. (see algebraic notation (chess))')
                 continue
 
+    def promote(self, game):
+        new_piece = None
+
+        while new_piece not in ['Q', 'R', 'B', 'N']:
+            new_piece = input('Pawn promotion - choose a new piece: ')
+
+        piece_dict = {'Q': 'Queen', 'R': 'Rook', 'B': 'Bishop', 'N': 'Knight'}
+
+        return piece_dict[new_piece]
+
     @staticmethod
     def get_pieces_on_file(game, file):
         files = dict(zip(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'], [i for i in range(0, 8)]))

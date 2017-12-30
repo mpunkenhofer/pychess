@@ -24,7 +24,11 @@ class Chess:
     def move(self):
         piece, move = self.ui.move(self)
 
-        self.board.move(piece, move)
+        move = self.board.move(piece, move)
+
+        if move.type == 'Promotion':
+            new_piece = self.ui.promote(piece)
+            self.board.promote(piece, new_piece)
 
         self.current_player = 'dark' if self.current_player == 'light' else 'light'
 

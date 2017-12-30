@@ -14,5 +14,5 @@ class Bishop(pieces.Piece):
     def get_moves(self):
         return []
 
-    def attacked_squares(self):
+    def protected_squares(self):
         return self.get_moves()

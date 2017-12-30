@@ -25,7 +25,11 @@ class Pawn(pieces.Piece):
 
             if general.Board.in_board(p_x, p_y + 1 * color) and len(
                     self._board.pieces_between(self, (p_x, p_y + 2 * color))) == 0:
-                moves.append(general.Move(self, (p_x, p_y), (p_x, p_y + 1 * color)))
+                # Promotion Move
+                if general.Board.second_last_rank(self):
+                    moves.append(general.PromoteMove(self, (p_x, p_y), (p_x, p_y + 1 * color)))
+                else:
+                    moves.append(general.Move(self, (p_x, p_y), (p_x, p_y + 1 * color)))
 
         if not self._board.file_pin(self):
             # captures
@@ -68,6 +72,6 @@ class Pawn(pieces.Piece):
                                                          self._board.pieces[right]))
         return moves
 
-    def attacked_squares(self):
+    def protected_squares(self):
         return self.get_moves()
 
