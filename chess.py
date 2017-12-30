@@ -22,14 +22,7 @@ class Chess:
         self.ui.draw(self)
 
     def move(self):
-        piece, move = self.ui.move(self)
-
-        move = self.board.move(piece, move)
-
-        if move.type == 'Promotion':
-            new_piece = self.ui.promote(piece)
-            self.board.promote(piece, new_piece)
-
+        self.ui.move(self)
         self.current_player = 'dark' if self.current_player == 'light' else 'light'
 
         self.ui.draw(self)

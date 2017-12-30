@@ -18,17 +18,6 @@ class Piece(ABC):
         self._history = []
         self._cache = (-1, [])
 
-    def move(self, pos):
-        move = self._get_move(self.moves(), pos)
-
-        if move:
-            piece = self._board.pieces.pop(move.piece.position)
-            piece.position = move.destination
-            self._board.pieces[move.destination] = piece
-            self._history.append(move)
-
-        return move
-
     def moves(self):
         if not (self._cache[0] == len(self._board.history()) and self._cache[1]):
             self._cache = len(self._board.history()), self.get_moves()

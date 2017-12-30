@@ -58,7 +58,7 @@ class Pawn(pieces.Piece):
                 if last_move and last_move.piece == 'Pawn' and last_move.piece.color != self.color and \
                         abs(last_move.origin[1] - last_move.destination[1]) > 1:
                     left = (p_x - 1 * color, p_y)
-                    right = (p_x - 1 * color, p_y)
+                    right = (p_x + 1 * color, p_y)
 
                     if last_move.piece.position == left:
                         moves.append(general.CaptureMove(self,

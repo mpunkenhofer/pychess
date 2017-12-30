@@ -7,6 +7,7 @@
 from abc import ABC
 from enum import Enum, auto
 
+
 class MoveTypes(ABC):
     def __init__(self, p, o, d, t):
         self._piece = p
@@ -60,6 +61,7 @@ class CheckMove(MoveTypes):
 class PromoteMove(MoveTypes):
     def __init__(self, p, o, d):
         MoveTypes.__init__(self, p, o, d, 'Promotion')
+        self._promoted_piece_name = None
         self._promoted_piece = None
 
     @property
@@ -69,6 +71,14 @@ class PromoteMove(MoveTypes):
     @promoted_piece.setter
     def promoted_piece(self, p):
         self._promoted_piece = p
+
+    @property
+    def promoted_piece_name(self):
+        return self._promoted_piece_name
+
+    @promoted_piece_name.setter
+    def promoted_piece_name(self, p):
+        self._promoted_piece_name = p
 
 
 class CaptureMove(MoveTypes):

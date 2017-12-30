@@ -19,7 +19,3 @@ class ChessUserInterface(ABC):
     @abstractmethod
     def move(self, game):
         pass
-
-    @abstractmethod
-    def promote(self, game):
-        pass

@@ -47,6 +47,7 @@ class ChessConsoleUserInterface(ChessUserInterface):
             capture_by_pawn = re.match('([a-h])x([a-h])([1-8])[+#]?', move_input)
 
             pawn_move = re.match('([a-h])([1-8])[+#]?', move_input)
+            pawn_promotion = re.match('([a-h])([18])=([QRBN])[+#]?', move_input)
             piece_move = re.match('([KQRBN])([a-h])([1-8])[+#]?', move_input)
             specific_piece_move = re.match('([QRBN])([a-h])([a-h])([1-8])[+#]?', move_input)
 
@@ -67,11 +68,16 @@ class ChessConsoleUserInterface(ChessUserInterface):
 
                 pawn_move = self.find_move_for_coordinate(pawn_moves, file, rank, 'Move')
 
-                if not pawn_move:
-                    print('Invalid move.')
+                if not self.make_move(game, pawn_move):
                     continue
+                else:
+                    return
+            elif pawn_promotion:
+                file = pawn_promotion.group(1)
+                rank = pawn_promotion.group(2)
+                piece = pawn_promotion.group(3)
 
-                return pawn_move.piece, pawn_move.destination
+                piece_dict = {'Q': 'Queen', 'R': 'Rook', 'B': 'Bishop', 'N': 'Knight'}
 
             elif piece_move:
                 piece = piece_move.group(1)
@@ -90,15 +96,14 @@ class ChessConsoleUserInterface(ChessUserInterface):
                 print('Invalid move format. (see algebraic notation (chess))')
                 continue
 
-    def promote(self, game):
-        new_piece = None
-
-        while new_piece not in ['Q', 'R', 'B', 'N']:
-            new_piece = input('Pawn promotion - choose a new piece: ')
-
-        piece_dict = {'Q': 'Queen', 'R': 'Rook', 'B': 'Bishop', 'N': 'Knight'}
-
-        return piece_dict[new_piece]
+    @staticmethod
+    def make_move(game, move):
+        if not move:
+            print('Invalid move.')
+            return False
+        else:
+            game.board.move(move)
+            return True
 
     @staticmethod
     def get_pieces_on_file(game, file):

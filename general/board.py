@@ -4,8 +4,8 @@
 # Just for fun xmas 2017 chess project
 #
 
+import general
 from pieces import Pawn, Rook, King, Queen, Knight, Bishop
-from general import MoveDirection
 
 
 class Board:
@@ -103,25 +103,35 @@ class Board:
     def history(self):
         return self._history
 
-    def move(self, piece, move):
-        move = piece.move(move)
-
+    def move(self, move):
         if not move:
             raise RuntimeError('board.move(piece, move): could not make the move!')
+
+        if move.type == 'Promotion':
+            self.promote(move)
+        else:
+            piece = self.pieces.pop(move.piece.position)
+            piece.history().append(move)
+
+            piece.position = move.destination
+            self.pieces[move.destination] = piece
 
         self._history.append(move)
 
         return move
 
-    def promote(self, pawn, new_piece):
+    def promote(self, move):
+        if move.type != 'Promotion':
+            raise RuntimeError('board.promote(move): not a promotion move!')
+
+        new_piece = move.promoted_piece_name
+
         if new_piece not in ['Queen', 'Rook', 'Knight', 'Bishop']:
-            raise RuntimeError('board.promote(pawn, new_piece): new_piece has an incorrect piece type!')
+            raise RuntimeError('board.promote(move): unknown piece: ' + new_piece)
 
-        if pawn.name == 'Pawn' and self.last_rank(pawn):
-            color = pawn.color
-            pos = pawn.position
-
-            self.pieces.pop(pawn.position)
+        if move.piece.name == 'Pawn' and self.second_last_rank(move.piece):
+            color = move.piece.color
+            pos = move.destination
 
             if new_piece == 'Queen':
                 new_piece = Queen(self, pos, color)
@@ -148,6 +158,7 @@ class Board:
                 else:
                     self.dark_bishops.append(new_piece)
 
+            self.pieces.pop(pos)
             self.pieces[pos] = new_piece
 
             if self._history and self._history[-1].type == 'Promotion':
@@ -201,31 +212,31 @@ class Board:
         else:
             limit_x = limit_y = None
 
-        if direction == MoveDirection.RankUp:
+        if direction == general.MoveDirection.RankUp:
             for y in range(p_x + 1 * color, 8):
                 if (limit_x, limit_y) == (p_x, y):
                     break
                 if (p_x, y) in self.pieces:
                     return self.pieces[(p_x, y)]
-        elif direction == MoveDirection.RankDown:
+        elif direction == general.MoveDirection.RankDown:
             for y in reversed(range(0, p_x - 1 * color)):
                 if (limit_x, limit_y) == (p_x, y):
                     break
                 if (p_x, y) in self.pieces:
                     return self.pieces[(p_x, y)]
-        elif direction == MoveDirection.FileRight:
+        elif direction == general.MoveDirection.FileRight:
             for x in range(p_y + 1 * color, 8):
                 if (limit_x, limit_y) == (x, p_y):
                     break
                 if (x, p_y) in self.pieces:
                     return self.pieces[(x, p_y)]
-        elif direction == MoveDirection.FileLeft:
+        elif direction == general.MoveDirection.FileLeft:
             for x in reversed(range(0, p_y - 1 * color)):
                 if (limit_x, limit_y) == (x, p_y):
                     break
                 if (x, p_y) in self.pieces:
                     return self.pieces[(x, p_y)]
-        elif direction == MoveDirection.RisingDiagonalUp:
+        elif direction == general.MoveDirection.RisingDiagonalUp:
             y = p_y + 1 * color
             for x in range(p_x + 1 * color, 8):
                 if (limit_x, limit_y) == (x, y):
@@ -233,7 +244,7 @@ class Board:
                 if (x, y) in self.pieces:
                     return self.pieces[(x, y)]
                 y += 1 * color
-        elif direction == MoveDirection.RisingDiagonalDown:
+        elif direction == general.MoveDirection.RisingDiagonalDown:
             y = p_y - 1 * color
             for x in reversed(range(0, p_x - 1 * color)):
                 if (limit_x, limit_y) == (x, y):
@@ -241,7 +252,7 @@ class Board:
                 if (x, y) in self.pieces:
                     return self.pieces[(x, y)]
                 y -= 1 * color
-        elif direction == MoveDirection.FallingDiagonalUp:
+        elif direction == general.MoveDirection.FallingDiagonalUp:
                 y = p_y + 1 * color
                 for x in reversed(range(0, p_x - 1 * color)):
                     if (limit_x, limit_y) == (x, y):
@@ -249,7 +260,7 @@ class Board:
                     if (x, y) in self.pieces:
                         return self.pieces[(x, y)]
                     y += 1 * color
-        elif direction == MoveDirection.FallingDiagonalDown:
+        elif direction == general.MoveDirection.FallingDiagonalDown:
                 y = p_y - 1 * color
                 for x in range(p_x + 1 * color, 8):
                     if (limit_x, limit_y) == (x, y):
