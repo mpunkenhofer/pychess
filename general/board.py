@@ -158,11 +158,62 @@ class Board:
             limit_x = limit_y = None
 
         if direction == MoveDirection.RankUp:
-            for y in range(p_x, 8):
+            for y in range(p_x + 1 * color, 8):
                 if (limit_x, limit_y) == (p_x, y):
                     break
                 if (p_x, y) in self.pieces:
                     return self.pieces[(p_x, y)]
+        elif direction == MoveDirection.RankDown:
+            for y in reversed(range(0, p_x - 1 * color)):
+                if (limit_x, limit_y) == (p_x, y):
+                    break
+                if (p_x, y) in self.pieces:
+                    return self.pieces[(p_x, y)]
+        elif direction == MoveDirection.FileRight:
+            for x in range(p_y + 1 * color, 8):
+                if (limit_x, limit_y) == (x, p_y):
+                    break
+                if (x, p_y) in self.pieces:
+                    return self.pieces[(x, p_y)]
+        elif direction == MoveDirection.FileLeft:
+            for x in reversed(range(0, p_y - 1 * color)):
+                if (limit_x, limit_y) == (x, p_y):
+                    break
+                if (x, p_y) in self.pieces:
+                    return self.pieces[(x, p_y)]
+        elif direction == MoveDirection.RisingDiagonalUp:
+            y = p_y + 1 * color
+            for x in range(p_x + 1 * color, 8):
+                if (limit_x, limit_y) == (x, y):
+                    break
+                if (x, y) in self.pieces:
+                    return self.pieces[(x, y)]
+                y += 1 * color
+        elif direction == MoveDirection.RisingDiagonalDown:
+            y = p_y - 1 * color
+            for x in reversed(range(0, p_x - 1 * color)):
+                if (limit_x, limit_y) == (x, y):
+                    break
+                if (x, y) in self.pieces:
+                    return self.pieces[(x, y)]
+                y -= 1 * color
+        elif direction == MoveDirection.FallingDiagonalUp:
+                y = p_y + 1 * color
+                for x in reversed(range(0, p_x - 1 * color)):
+                    if (limit_x, limit_y) == (x, y):
+                        break
+                    if (x, y) in self.pieces:
+                        return self.pieces[(x, y)]
+                    y += 1 * color
+        elif direction == MoveDirection.FallingDiagonalDown:
+                y = p_y - 1 * color
+                for x in range(p_x + 1 * color, 8):
+                    if (limit_x, limit_y) == (x, y):
+                        break
+                    if (x, y) in self.pieces:
+                        return self.pieces[(x, y)]
+                    y -= 1 * color
+
         return None
 
     def rank_pin(self, piece):
