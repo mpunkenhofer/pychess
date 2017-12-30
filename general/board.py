@@ -11,47 +11,18 @@ from pieces import Pawn, Rook, King, Queen, Knight, Bishop
 class Board:
     def __init__(self):
         self._history = []
-        self.pieces = {}
-        
+        self.pieces = {(4, 0): King(self, (4, 0), 'light'), (4, 7): King(self, (4, 7), 'dark'),
+                       (3, 0): Queen(self, (3, 0), 'light'), (3, 7): Queen(self, (3, 7), 'dark'),
+                       (0, 0): Rook(self, (0, 0), 'light'), (7, 0): Rook(self, (7, 0), 'light'),
+                       (0, 7): Rook(self, (0, 7), 'dark'), (7, 7): Rook(self, (7, 7), 'dark'),
+                       (2, 0): Bishop(self, (2, 0), 'light'), (5, 0): Bishop(self, (5, 0), 'light'),
+                       (2, 7): Bishop(self, (2, 7), 'dark'), (5, 7): Bishop(self, (5, 7), 'dark'),
+                       (1, 0): Knight(self, (1, 0), 'light'), (6, 0): Knight(self, (6, 0), 'light'),
+                       (1, 7): Knight(self, (1, 7), 'dark'), (6, 7): Knight(self, (6, 7), 'dark')}
+
         for i in range(0, 8):
             self.pieces[(i, 1)] = Pawn(self, (i, 1), 'light')
             self.pieces[(i, 6)] = Pawn(self, (i, 6), 'dark')
-
-        self.light_rooks = [Rook(self, (0, 0), 'light'), Rook(self, (7, 0), 'light')]
-        self.pieces[(0, 0)] = self.light_rooks[0]
-        self.pieces[(7, 0)] = self.light_rooks[1]
-
-        self.dark_rooks = [Rook(self, (0, 7), 'dark'), Rook(self, (7, 7), 'dark')]
-        self.pieces[(0, 7)] = self.dark_rooks[0]
-        self.pieces[(7, 7)] = self.dark_rooks[1]
-
-        self.light_knights = [Knight(self, (1, 0), 'light'), Knight(self, (6, 0), 'light')]
-        self.pieces[(1, 0)] = self.light_knights[0]
-        self.pieces[(6, 0)] = self.light_knights[1]
-
-        self.dark_knights = [Knight(self, (1, 7), 'dark'), Knight(self, (6, 7), 'dark')]
-        self.pieces[(1, 7)] = self.dark_knights[0]
-        self.pieces[(6, 7)] = self.dark_knights[1]
-
-        self.light_bishops = [Bishop(self, (2, 0), 'light'), Bishop(self, (5, 0), 'light')]
-        self.pieces[(2, 0)] = self.light_bishops[0]
-        self.pieces[(5, 0)] = self.light_bishops[1]
-
-        self.dark_bishops = [Bishop(self, (2, 7), 'dark'), Bishop(self, (5, 7), 'dark')]
-        self.pieces[(2, 7)] = self.dark_bishops[0]
-        self.pieces[(5, 7)] = self.dark_bishops[1]
-
-        self.light_queens = [Queen(self, (3, 0), 'light')]
-        self.pieces[(3, 0)] = self.light_queens[0]
-
-        self.dark_queens = [Queen(self, (3, 7), 'dark')]
-        self.pieces[(3, 7)] = self.dark_queens[0]
-
-        self.light_king = King(self, (4, 0), 'light')
-        self.pieces[(4, 0)] = self.light_king
-
-        self.dark_king = King(self, (4, 7), 'dark')
-        self.pieces[(4, 7)] = self.dark_king
 
     def get_pieces(self):
         return self.pieces
@@ -60,45 +31,58 @@ class Board:
         result = []
 
         for pos, piece in self.pieces.items():
-            if piece.color == color and piece.name != 'King':
+            if piece.color == color and piece.type != 'King':
                 result.append(piece)
         return result
 
+    def filter_pieces(self, piece_type=None, piece_color=None):
+        filtered = []
+
+        for _, p in self.pieces.items():
+            if piece_type and piece_type != p.type:
+                continue
+            if piece_color and piece_color != p.color:
+                continue
+
+            filtered.append(p)
+
+        return filtered
+
     def light_pieces(self):
-        return self.pieces_by_color('light')
+        return [p for p in self.filter_pieces(piece_color='light') if p.type != 'King']
 
     def dark_pieces(self):
-        return self.pieces_by_color('dark')
+        return [p for p in self.filter_pieces(piece_color='dark') if p.type != 'King']
 
     def get_light_king(self):
-        return self.light_king
+        return self.filter_pieces('King', 'light')[0]
 
     def get_dark_king(self):
-        return self.dark_king
+        return self.filter_pieces('King', 'dark')[0]
 
     def get_light_queens(self):
-        return self.light_queens
+        return self.filter_pieces('Queen', 'light')
 
     def get_dark_queens(self):
-        return self.dark_queens
+        return self.filter_pieces('Queen', 'dark')
 
     def get_light_rooks(self):
-        return self.light_rooks
+        return self.filter_pieces('Rook', 'light')
 
     def get_dark_rooks(self):
-        return self.dark_rooks
+        return self.filter_pieces('Rook', 'dark')
 
     def get_light_bishops(self):
-        return self.light_bishops
+        return self.filter_pieces('Bishop', 'light')
 
     def get_dark_bishops(self):
-        return self.dark_bishops
+        return self.filter_pieces('Bishop', 'dark')
 
     def get_light_knights(self):
-        return self.light_knights
+        return self.filter_pieces('Knight', 'light')
 
     def get_dark_knights(self):
-        return self.dark_knights
+        return self.filter_pieces('Knight', 'dark')
 
     def history(self):
         return self._history
@@ -129,40 +113,23 @@ class Board:
         if new_piece not in ['Queen', 'Rook', 'Knight', 'Bishop']:
             raise RuntimeError('board.promote(move): unknown piece: ' + new_piece)
 
-        if move.piece.name == 'Pawn' and self.second_last_rank(move.piece):
+        if move.piece.type == 'Pawn' and self.second_last_rank(move.piece):
             color = move.piece.color
             pos = move.destination
 
             if new_piece == 'Queen':
                 new_piece = Queen(self, pos, color)
-                if color == 'light':
-                    self.light_queens.append(new_piece)
-                else:
-                    self.dark_queens.append(new_piece)
             elif new_piece == 'Rook':
                 new_piece = Rook(self, pos, color)
-                if color == 'light':
-                    self.light_rooks.append(new_piece)
-                else:
-                    self.dark_rooks.append(new_piece)
-            elif new_piece == 'Knight':
-                new_piece = Knight(self, pos, color)
-                if color == 'light':
-                    self.light_knights.append(new_piece)
-                else:
-                    self.dark_knights.append(new_piece)
             elif new_piece == 'Bishop':
                 new_piece = Bishop(self, pos, color)
-                if color == 'light':
-                    self.light_bishops.append(new_piece)
-                else:
-                    self.dark_bishops.append(new_piece)
+            elif new_piece == 'Knight':
+                new_piece = Knight(self, pos, color)
 
-            self.pieces.pop(pos)
+            self.pieces.pop(move.piece.position)  # remove pawn
             self.pieces[pos] = new_piece
 
-            if self._history and self._history[-1].type == 'Promotion':
-                self._history[-1].promoted_piece = new_piece
+            move.promoted_piece = new_piece
 
     def pieces_between(self, p1, p2):
         p1_x, p1_y, p2_x, p2_y = self.get_coordinates(p1, p2)
@@ -272,11 +239,11 @@ class Board:
         return None
 
     def rank_pin(self, piece):
-        king = self.light_king if piece.light() else self.dark_king
+        king = self.get_light_king() if piece.light() else self.get_dark_king()
 
         if self.same_rank(king, piece) and len(self.pieces_between(king, piece)) == 0:
-            rooks = self.dark_rooks if piece.light() else self.light_rooks
-            queens = self.dark_queens if piece.light() else self.light_queens
+            rooks = self.get_dark_rooks() if piece.light() else self.get_light_rooks()
+            queens = self.get_dark_queens() if piece.light() else self.get_light_queens()
 
             for r in rooks:
                 if self.same_rank(r, piece) and len(self.pieces_between(r, piece)) == 0:
@@ -289,11 +256,11 @@ class Board:
             return False
 
     def file_pin(self, piece):
-        king = self.light_king if piece.light() else self.dark_king
+        king = self.get_light_king() if piece.light() else self.get_dark_king()
 
         if self.same_file(king, piece) and len(self.pieces_between(king, piece)) == 0:
-            rooks = self.dark_rooks if piece.light() else self.light_rooks
-            queens = self.dark_queens if piece.light() else self.light_queens
+            rooks = self.get_dark_rooks() if piece.light() else self.get_light_rooks()
+            queens = self.get_dark_queens() if piece.light() else self.get_light_queens()
 
             for r in rooks:
                 if self.same_file(r, piece) and len(self.pieces_between(r, piece)) == 0:
@@ -306,11 +273,11 @@ class Board:
         return False
 
     def diagonal_pin(self, piece):
-        king = self.light_king if piece.light() else self.dark_king
+        king = self.get_light_king() if piece.light() else self.get_dark_king()
 
         if self.same_rising_diagonal(king, piece) and len(self.pieces_between(king, piece)) == 0:
-            bishops = self.dark_bishops if piece.light() else self.light_bishops
-            queens = self.dark_queens if piece.light() else self.light_queens
+            bishops = self.get_dark_bishops() if piece.light() else self.get_light_bishops()
+            queens = self.get_dark_queens() if piece.light() else self.get_light_queens()
 
             for b in bishops:
                 if self.same_rising_diagonal(b, piece) and len(self.pieces_between(b, piece)) == 0:
@@ -321,8 +288,8 @@ class Board:
                     return True
 
         elif self.same_falling_diagonal(king, piece) and len(self.pieces_between(king, piece)) == 0:
-            bishops = self.dark_bishops if piece.light() else self.light_bishops
-            queens = self.dark_queens if piece.light() else self.light_queens
+            bishops = self.get_dark_bishops() if piece.light() else self.get_light_bishops()
+            queens = self.get_dark_queens() if piece.light() else self.get_light_queens()
 
             for b in bishops:
                 if self.same_falling_diagonal(b, piece) and len(self.pieces_between(b, piece)) == 0:
@@ -338,10 +305,10 @@ class Board:
         pass
 
     def my_king(self, p):
-        return self.light_king if p.light() else self.dark_king
+        return self.get_light_king() if p.light() else self.get_dark_king()
 
     def enemy_king(self, p):
-        return self.dark_king if p.light() else self.light_king
+        return self.get_dark_king() if p.light() else self.get_light_king()
 
     @staticmethod
     def last_rank(pawn):

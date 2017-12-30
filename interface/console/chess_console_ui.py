@@ -135,7 +135,7 @@ class ChessConsoleUserInterface(ChessUserInterface):
 
     @staticmethod
     def filter_pieces(piece_list, color, name):
-        return list(filter(lambda x: x.color == color and x.name == name, piece_list))
+        return list(filter(lambda x: x.color == color and x.type == name, piece_list))
 
     @staticmethod
     def moves_for_pieces(pieces):

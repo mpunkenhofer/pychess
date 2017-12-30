@@ -9,11 +9,11 @@ from abc import ABC, abstractmethod
 
 class Piece(ABC):
     @abstractmethod
-    def __init__(self, board, pos, color, name='', letter=''):
+    def __init__(self, board, pos, color, t='', letter=''):
         self._board = board
         self._position = pos
         self._color = color
-        self._name = name
+        self._type = t
         self._letter = letter
         self._history = []
         self._cache = (-1, [])
@@ -33,12 +33,12 @@ class Piece(ABC):
         pass
 
     @property
-    def name(self):
-        return self._name
+    def type(self):
+        return self._type
 
-    @name.setter
-    def name(self, name):
-        self._name = name
+    @type.setter
+    def type(self, name):
+        self._type = name
 
     @property
     def letter(self):
