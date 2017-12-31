@@ -46,6 +46,16 @@ class ChessConsoleUserInterface(ChessUserInterface):
                 pawn = capture_by_pawn.group(1)
                 file = capture_by_pawn.group(2)
                 rank = capture_by_pawn.group(3)
+
+                pawns = self.filter_pieces(self.get_pieces_on_file(game, pawn), game.current_player, 'Pawn')
+                pawn_moves = self.moves_for_pieces(pawns)
+
+                pawn_move = self.find_move_for_coordinate(pawn_moves, file, rank, 'Capture')
+
+                if not self.make_move(game, pawn_move):
+                    continue
+                else:
+                    return
             elif pawn_move:
                 file = pawn_move.group(1)
                 rank = pawn_move.group(2)

@@ -100,11 +100,20 @@ class Board:
         if not move:
             raise RuntimeError('board.move(piece, move): could not make the move!')
 
-        if move.type == 'Promotion':
+        move.piece.history().append(move)
+
+        if move.type == 'Capture':
+            # remove captured piece
+            self.pieces.pop(move.captured_piece.position)
+
+            piece = self.pieces.pop(move.piece.position)
+
+            piece.position = move.destination
+            self.pieces[move.destination] = piece
+        elif move.type == 'Promotion':
             self.promote(move)
         else:
             piece = self.pieces.pop(move.piece.position)
-            piece.history().append(move)
 
             piece.position = move.destination
             self.pieces[move.destination] = piece
