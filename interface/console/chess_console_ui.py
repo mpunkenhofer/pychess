@@ -34,6 +34,7 @@ class ChessConsoleUserInterface(ChessUserInterface):
 
             move_input = re.sub('[+#]', '', move_input)
 
+            possible_moves = re.match('p ([a-h])([1-8])', move_input)
             capture_by_piece = re.match('([KQRBN])x([a-h])([1-8])', move_input)
             capture_by_pawn_promotion = re.match('([a-h])x([a-h])([1-8])=([QRBN])', move_input)
             capture_by_pawn = re.match('([a-h])x([a-h])([1-8])', move_input)
@@ -43,7 +44,17 @@ class ChessConsoleUserInterface(ChessUserInterface):
             piece_move = re.match('([KQRBN])([a-h])([1-8])', move_input)
             specific_piece_move = re.match('([QRBN])([a-h])([a-h])([1-8])', move_input)
 
-            if capture_by_piece:
+            if possible_moves:
+                file = possible_moves.group(1)
+                rank = possible_moves.group(2)
+
+                piece = self.get_piece_on_square(game, file, rank)
+
+                if piece:
+                    print(piece.moves())
+                else:
+                    print('No piece on ' + file + rank)
+            elif capture_by_piece:
                 piece = capture_by_piece.group(1)
                 file = capture_by_piece.group(2)
                 rank = capture_by_piece.group(3)
@@ -174,6 +185,17 @@ class ChessConsoleUserInterface(ChessUserInterface):
                 pieces.append(piece)
 
         return pieces
+
+    @staticmethod
+    def get_piece_on_square(game, file, rank):
+        rank = int(rank)
+        files = dict(zip(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'], [i for i in range(0, 8)]))
+
+        if 1 <= rank <= 8 and file in files.keys():
+            if (files[file], rank - 1) in game.board.pieces:
+                return game.board.pieces[(files[file], rank - 1)]
+
+        return None
 
     @staticmethod
     def filter_pieces(piece_list, color, name):
