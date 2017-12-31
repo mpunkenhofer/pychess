@@ -96,6 +96,17 @@ class ChessConsoleUserInterface(ChessUserInterface):
                 rank = pawn_promotion.group(2)
                 piece = pawn_promotion.group(3)
 
+                pawns = self.filter_pieces(self.get_pieces_on_file(game, pawn), game.current_player, 'Pawn')
+                pawn_moves = self.moves_for_pieces(pawns)
+
+                pawn_move = self.find_move_for_coordinate(pawn_moves, file, rank, 'Promotion')
+
+                self.set_promote_into(pawn_move, piece)
+
+                if not self.make_move(game, pawn_move):
+                    continue
+                else:
+                    return
             elif piece_move:
                 piece = piece_move.group(1)
                 file = piece_move.group(2)
