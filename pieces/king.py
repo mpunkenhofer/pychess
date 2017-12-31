@@ -15,11 +15,17 @@ class King(pieces.Piece):
     def get_moves(self):
         return []
 
-    def influenced_squares(self):
+    def get_influenced_squares(self):
         return self.get_moves()
 
     def in_check(self):
-        return len(self._checked_by_cache[1]) != 0
+        return len(self.checked_by()) > 0
+
+    def checkmated(self):
+        return False
+
+    def stalemated(self):
+        return False
 
     def checked_by(self):
         if not (self._checked_by_cache[0] == len(self._board.history()) and self._checked_by_cache[1]):
@@ -27,10 +33,10 @@ class King(pieces.Piece):
             checked_by = []
 
             for p in potential_checked_by_pieces:
-                moves = p.moves()
+                moves = p.get_moves()
 
                 for m in moves:
-                    if m.type() == 'Check':
+                    if m.type == 'Check':
                         checked_by.append(p)
                         break
 

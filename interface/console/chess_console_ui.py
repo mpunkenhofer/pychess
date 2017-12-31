@@ -10,19 +10,6 @@ import math
 
 
 class ChessConsoleUserInterface(ChessUserInterface):
-    _unicode_light_pieces = {'K': u'\u2654',
-                             'Q': u'\u2655',
-                             'R': u'\u2656',
-                             'B': u'\u2657',
-                             'N': u'\u2658',
-                             'P': u'\u2659'}
-    _unicode_dark_pieces = {'K': u'\u265A',
-                            'Q': u'\u265B',
-                            'R': u'\u265C',
-                            'B': u'\u265D',
-                            'N': u'\u265E',
-                            'P': u'\u265F'}
-
     def __init__(self):
         ChessUserInterface.__init__(self)
 
@@ -95,6 +82,14 @@ class ChessConsoleUserInterface(ChessUserInterface):
             else:
                 print('Invalid move format. (see algebraic notation (chess))')
                 continue
+
+    def game_over(self, winner):
+        if winner == 'light':
+            print('1-0')
+        elif winner == 'dark':
+            print('0-1')
+        else:
+            print('1/2-1/2')
 
     @staticmethod
     def make_move(game, move):

@@ -14,5 +14,5 @@ class Bishop(pieces.Piece):
     def get_moves(self):
         return []
 
-    def influenced_squares(self):
+    def get_influenced_squares(self):
         return self.get_moves()

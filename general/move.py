@@ -95,6 +95,52 @@ class CaptureMove(MoveTypes):
         self._captured_piece = p
 
 
+class KingSideCastleMove(MoveTypes):
+    def __init__(self, p, o, d, k, r):
+        MoveTypes.__init__(self, p, o, d, 'King Side Castle')
+        self._king = k
+        self._rook = r
+
+    @property
+    def king(self):
+        return self._king
+
+    @king.setter
+    def king(self, k):
+        self._king = k
+
+    @property
+    def rook(self):
+        return self._king
+
+    @rook.setter
+    def rook(self, r):
+        self._rook = r
+
+
+class QueenSideCastleMove(MoveTypes):
+    def __init__(self, p, o, d, k, r):
+        MoveTypes.__init__(self, p, o, d, 'Queen Side Castle')
+        self._king = k
+        self._rook = r
+
+    @property
+    def king(self):
+        return self._king
+
+    @king.setter
+    def king(self, k):
+        self._king = k
+
+    @property
+    def rook(self):
+        return self._king
+
+    @rook.setter
+    def rook(self, r):
+        self._rook = r
+
+
 class MoveDirection(Enum):
     RankUp = auto()
     RankDown = auto()
