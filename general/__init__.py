@@ -5,4 +5,5 @@
 #
 
 from .board import Board
-from .move import Move, CaptureMove, CheckMove, PromoteMove, KingSideCastleMove, QueenSideCastleMove, MoveDirection
+from .move import Move, CaptureMove, CheckMove, PromoteMove, CapturePromoteMove
+from .move import KingSideCastleMove, QueenSideCastleMove, MoveDirection

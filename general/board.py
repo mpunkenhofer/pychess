@@ -110,7 +110,7 @@ class Board:
 
             piece.position = move.destination
             self.pieces[move.destination] = piece
-        elif move.type == 'Promotion':
+        elif move.type in ['Promotion', 'Capture Promotion']:
             self.promote(move)
         else:
             piece = self.pieces.pop(move.piece.position)
@@ -123,7 +123,7 @@ class Board:
         return move
 
     def promote(self, move):
-        if move.type != 'Promotion':
+        if move.type not in ['Promotion', 'Capture Promotion']:
             raise RuntimeError('board.promote(move): not a promotion move!')
 
         new_piece = move.promoted_piece_name
@@ -143,6 +143,10 @@ class Board:
                 new_piece = Bishop(self, pos, color)
             elif new_piece == 'Knight':
                 new_piece = Knight(self, pos, color)
+
+            if move.type == 'Capture Promotion':
+                # remove captured piece
+                self.pieces.pop(move.captured_piece.position)
 
             self.pieces.pop(move.piece.position)  # remove pawn
             self.pieces[pos] = new_piece

@@ -65,19 +65,33 @@ class Pawn(pieces.Piece):
                 if self._board.pieces[(p_x + 1 * c, p_y + 1 * c)] == self._board.enemy_king(self):
                     moves.append(general.CheckMove(self, (p_x, p_y), (p_x + 1 * c, p_y + 1 * c)))
                 else:
-                    moves.append(general.CaptureMove(self,
-                                                     (p_x, p_y),
-                                                     (p_x + 1 * c, p_y + 1 * c),
-                                                     self._board.pieces[(p_x + 1 * c, p_y + 1 * c)]))
+                    # Capture and Promotion
+                    if general.Board.second_last_rank(self):
+                        moves.append(general.CapturePromoteMove(self,
+                                                                (p_x, p_y),
+                                                                (p_x + 1 * c, p_y + 1 * c),
+                                                                self._board.pieces[(p_x + 1 * c, p_y + 1 * c)]))
+                    else:
+                        moves.append(general.CaptureMove(self,
+                                                         (p_x, p_y),
+                                                         (p_x + 1 * c, p_y + 1 * c),
+                                                         self._board.pieces[(p_x + 1 * c, p_y + 1 * c)]))
             if (p_x - 1 * c, p_y + 1 * c) in self._board.pieces and \
                     self._board.pieces[(p_x - 1 * c, p_y + 1 * c)].color != self.color:
                 if self._board.pieces[(p_x - 1 * c, p_y + 1 * c)] == self._board.enemy_king(self):
                     moves.append(general.CheckMove(self, (p_x, p_y), (p_x - 1 * c, p_y + 1 * c)))
                 else:
-                    moves.append(general.CaptureMove(self,
-                                                     (p_x, p_y),
-                                                     (p_x - 1 * c, p_y + 1 * c),
-                                                     self._board.pieces[(p_x - 1 * c, p_y + 1 * c)]))
+                    # Capture and Promotion
+                    if general.Board.second_last_rank(self):
+                        moves.append(general.CapturePromoteMove(self,
+                                                                (p_x, p_y),
+                                                                (p_x - 1 * c, p_y + 1 * c),
+                                                                self._board.pieces[(p_x - 1 * c, p_y + 1 * c)]))
+                    else:
+                        moves.append(general.CaptureMove(self,
+                                                         (p_x, p_y),
+                                                         (p_x - 1 * c, p_y + 1 * c),
+                                                         self._board.pieces[(p_x - 1 * c, p_y + 1 * c)]))
 
         return moves
 

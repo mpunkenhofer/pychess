@@ -81,6 +81,38 @@ class PromoteMove(MoveTypes):
         self._promoted_piece_name = p
 
 
+class CapturePromoteMove(MoveTypes):
+    def __init__(self, p, o, d, cp):
+        MoveTypes.__init__(self, p, o, d, 'Capture Promotion')
+        self._captured_piece = cp
+        self._promoted_piece_name = None
+        self._promoted_piece = None
+
+    @property
+    def captured_piece(self):
+        return self._captured_piece
+
+    @captured_piece.setter
+    def captured_piece(self, p):
+        self._captured_piece = p
+
+    @property
+    def promoted_piece(self):
+        return self._promoted_piece
+
+    @promoted_piece.setter
+    def promoted_piece(self, p):
+        self._promoted_piece = p
+
+    @property
+    def promoted_piece_name(self):
+        return self._promoted_piece_name
+
+    @promoted_piece_name.setter
+    def promoted_piece_name(self, p):
+        self._promoted_piece_name = p
+
+
 class CaptureMove(MoveTypes):
     def __init__(self, p, o, d, cp):
         MoveTypes.__init__(self, p, o, d, 'Capture')

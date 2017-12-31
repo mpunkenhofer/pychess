@@ -10,6 +10,8 @@ import math
 
 
 class ChessConsoleUserInterface(ChessUserInterface):
+    _piece_dict = {'Q': 'Queen', 'R': 'Rook', 'B': 'Bishop', 'N': 'Knight'}
+
     def __init__(self):
         ChessUserInterface.__init__(self)
 
@@ -30,18 +32,38 @@ class ChessConsoleUserInterface(ChessUserInterface):
         while True:
             move_input = input(str(int(math.ceil((len(game.board.history()) + 1) / 2))) + ': ')
 
-            capture_by_piece = re.match('([KQRBN])x([a-h])([1-8])[+#]?', move_input)
-            capture_by_pawn = re.match('([a-h])x([a-h])([1-8])[+#]?', move_input)
+            move_input = re.sub('[+#]', '', move_input)
 
-            pawn_move = re.match('([a-h])([1-8])[+#]?', move_input)
-            pawn_promotion = re.match('([a-h])([18])=([QRBN])[+#]?', move_input)
-            piece_move = re.match('([KQRBN])([a-h])([1-8])[+#]?', move_input)
-            specific_piece_move = re.match('([QRBN])([a-h])([a-h])([1-8])[+#]?', move_input)
+            capture_by_piece = re.match('([KQRBN])x([a-h])([1-8])', move_input)
+            capture_by_pawn_promotion = re.match('([a-h])x([a-h])([1-8])=([QRBN])', move_input)
+            capture_by_pawn = re.match('([a-h])x([a-h])([1-8])', move_input)
+
+            pawn_move = re.match('([a-h])([1-8])', move_input)
+            pawn_promotion = re.match('([a-h])([18])=([QRBN])', move_input)
+            piece_move = re.match('([KQRBN])([a-h])([1-8])', move_input)
+            specific_piece_move = re.match('([QRBN])([a-h])([a-h])([1-8])', move_input)
 
             if capture_by_piece:
                 piece = capture_by_piece.group(1)
                 file = capture_by_piece.group(2)
                 rank = capture_by_piece.group(3)
+            elif capture_by_pawn_promotion:
+                pawn = capture_by_pawn_promotion.group(1)
+                file = capture_by_pawn_promotion.group(2)
+                rank = capture_by_pawn_promotion.group(3)
+                piece = capture_by_pawn_promotion.group(4)
+
+                pawns = self.filter_pieces(self.get_pieces_on_file(game, pawn), game.current_player, 'Pawn')
+                pawn_moves = self.moves_for_pieces(pawns)
+
+                pawn_move = self.find_move_for_coordinate(pawn_moves, file, rank, 'Capture Promotion')
+
+                self.set_promote_into(pawn_move, piece)
+
+                if not self.make_move(game, pawn_move):
+                    continue
+                else:
+                    return
             elif capture_by_pawn:
                 pawn = capture_by_pawn.group(1)
                 file = capture_by_pawn.group(2)
@@ -74,8 +96,6 @@ class ChessConsoleUserInterface(ChessUserInterface):
                 rank = pawn_promotion.group(2)
                 piece = pawn_promotion.group(3)
 
-                piece_dict = {'Q': 'Queen', 'R': 'Rook', 'B': 'Bishop', 'N': 'Knight'}
-
             elif piece_move:
                 piece = piece_move.group(1)
                 file = piece_move.group(2)
@@ -100,6 +120,12 @@ class ChessConsoleUserInterface(ChessUserInterface):
             print('0-1')
         else:
             print('1/2-1/2')
+
+    def set_promote_into(self, move, letter):
+        if move.type not in ['Promotion', 'Capture Promotion']:
+            raise ValueError('set_promote_into: can only be set for promotion type moves')
+
+        move.promoted_piece_name = self._piece_dict[letter]
 
     @staticmethod
     def make_move(game, move):
