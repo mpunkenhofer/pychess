@@ -301,14 +301,65 @@ class Board:
 
         return False
 
-    def square_attacked(self, x, y):
-        pass
+    def protected_square(self, square, protected_by):
+        for s, p in self.pieces.items():
+            if p.color == protected_by:
+                for i in p.influenced_squares():
+                    if i == square:
+                        return True
+        return False
 
     def my_king(self, p):
         return self.get_light_king() if p.light() else self.get_dark_king()
 
     def enemy_king(self, p):
         return self.get_dark_king() if p.light() else self.get_light_king()
+
+    @staticmethod
+    def king_checked_moves(moves, king):
+        if king.type != 'King':
+            raise ValueError('Board.king_checked_moves(moves, king): king not of type King')
+
+        if not king.in_check():
+            return moves
+
+        checker = king.checked_by()
+
+        if len(checker) > 1:
+            return []
+
+        checker = checker[0]
+
+        valid_moves = Board.block_checker(moves, checker)
+        valid_moves += Board.capture_checker(moves, checker)
+
+        return valid_moves
+
+    @staticmethod
+    def block_checker(moves, checker):
+        blocking_moves = set()
+
+        for m in moves:
+            if checker.type == 'Rook' or 'Queen':
+                if general.Board.same_rank(m.destination, checker):
+                    blocking_moves.add(m)
+                elif general.Board.same_file(m.destination, checker):
+                    blocking_moves.add(m)
+            if checker.type == 'Bishop' or 'Queen':
+                if general.Board.same_diagonal(m.destination, checker):
+                    blocking_moves.add(m)
+
+        return list(blocking_moves)
+
+    @staticmethod
+    def capture_checker(moves, checker):
+        captures = []
+
+        for m in moves:
+            if m.type == 'Capture' and m.piece == checker:
+                captures.append(m)
+
+        return captures
 
     @staticmethod
     def last_rank(pawn):

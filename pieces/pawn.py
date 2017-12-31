@@ -13,10 +13,11 @@ class Pawn(pieces.Piece):
         pieces.Piece.__init__(self, board, pos, color, 'Pawn', 'P')
 
     def get_moves(self):
-        moves = []
-        self.pawn_moves(moves)
-        self.pawn_attacks(moves)
-        self.en_passant(moves)
+        moves = self.pawn_moves()
+        moves += self.pawn_attacks()
+        moves += self.en_passant()
+
+        moves = general.Board.king_checked_moves(moves, self._board.my_king(self))
 
         return moves
 
@@ -34,7 +35,8 @@ class Pawn(pieces.Piece):
 
         return influenced
 
-    def pawn_moves(self, moves):
+    def pawn_moves(self):
+        moves = []
         color = 1 if self.light() else -1
         p_x, p_y = self.position
 
@@ -54,7 +56,8 @@ class Pawn(pieces.Piece):
 
         return moves
 
-    def pawn_attacks(self, moves):
+    def pawn_attacks(self):
+        moves = []
         color = 1 if self.light() else -1
         p_x, p_y = self.position
 
@@ -80,7 +83,8 @@ class Pawn(pieces.Piece):
 
         return moves
 
-    def en_passant(self, moves):
+    def en_passant(self):
+        moves = []
         color = 1 if self.light() else -1
         p_x, p_y = self.position
 
