@@ -212,14 +212,11 @@ class Board:
         else:
             return []
 
-    def next_piece(self, p, direction, limit=None):
+    def get_move_squares(self, p, direction, limit=None):
         try:
             p_x, p_y = p.position
         except AttributeError:
             p_x, p_y = p
-
-        # TODO: is it right to do the color thing here?
-        color = 1 if p.light() else -1
 
         if limit:
             try:
@@ -229,66 +226,84 @@ class Board:
         else:
             limit_x = limit_y = None
 
+        squares = []
+        color = 1 if p.light() else -1
+
         if direction == general.MoveDirection.RankUp:
-            for y in range(p_x + 1 * color, 8):
-                if (limit_x, limit_y) == (p_x, y):
+            rank_up_range = range(p_y + 1, 8) if p.light() else reversed(range(0, p_y))
+            for y in rank_up_range:
+                squares.append((p_x, y))
+                if (p_x, y) in self.pieces or (limit_x, limit_y) == (p_x, y):
                     break
-                if (p_x, y) in self.pieces:
-                    return self.pieces[(p_x, y)]
         elif direction == general.MoveDirection.RankDown:
-            for y in reversed(range(0, p_x - 1 * color)):
-                if (limit_x, limit_y) == (p_x, y):
+            rank_down_range = reversed(range(0, p_y)) if p.light() else range(p_y + 1, 8)
+            for y in rank_down_range:
+                squares.append((p_x, y))
+                if (p_x, y) in self.pieces or (limit_x, limit_y) == (p_x, y):
                     break
-                if (p_x, y) in self.pieces:
-                    return self.pieces[(p_x, y)]
         elif direction == general.MoveDirection.FileRight:
-            for x in range(p_y + 1 * color, 8):
-                if (limit_x, limit_y) == (x, p_y):
+            file_right_range = range(p_x + 1, 8) if p.light() else reversed(range(max(p_x - 1, 0), 0))
+            for x in file_right_range:
+                squares.append((x, p_y))
+                if (x, p_y) in self.pieces or (limit_x, limit_y) == (x, p_y):
                     break
-                if (x, p_y) in self.pieces:
-                    return self.pieces[(x, p_y)]
         elif direction == general.MoveDirection.FileLeft:
-            for x in reversed(range(0, p_y - 1 * color)):
-                if (limit_x, limit_y) == (x, p_y):
+            file_left_range = reversed(range(0, p_x)) if p.light() else range(p_x + 1, 8)
+            for x in file_left_range:
+                squares.append((x, p_y))
+                if (x, p_y) in self.pieces or (limit_x, limit_y) == (x, p_y):
                     break
-                if (x, p_y) in self.pieces:
-                    return self.pieces[(x, p_y)]
         elif direction == general.MoveDirection.RisingDiagonalUp:
             y = p_y + 1 * color
-            for x in range(p_x + 1 * color, 8):
-                if (limit_x, limit_y) == (x, y):
+            rising_diagonal_up_range = range(p_x + 1, 8) if p.light() else reversed(range(0, p_x))
+            for x in rising_diagonal_up_range:
+                if not 0 <= y <= 7:
                     break
-                if (x, y) in self.pieces:
-                    return self.pieces[(x, y)]
+
+                squares.append((x, y))
+                if (x, y) in self.pieces or (limit_x, limit_y) == (x, y):
+                    break
                 y += 1 * color
         elif direction == general.MoveDirection.RisingDiagonalDown:
             y = p_y - 1 * color
-            for x in reversed(range(0, p_x - 1 * color)):
-                if (limit_x, limit_y) == (x, y):
+            rising_diagonal_down_range = reversed(range(0, p_x)) if p.light() else range(p_x + 1, 8)
+            for x in rising_diagonal_down_range:
+                if not 0 <= y <= 7:
                     break
-                if (x, y) in self.pieces:
-                    return self.pieces[(x, y)]
+
+                squares.append((x, y))
+                if (x, y) in self.pieces or (limit_x, limit_y) == (x, y):
+                    break
                 y -= 1 * color
         elif direction == general.MoveDirection.FallingDiagonalUp:
                 y = p_y + 1 * color
-                for x in reversed(range(0, p_x - 1 * color)):
-                    if (limit_x, limit_y) == (x, y):
+                falling_diagonal_up_range = reversed(range(0, p_x)) if p.light() else range(p_x + 1, 8)
+                for x in falling_diagonal_up_range:
+                    if not 0 <= y <= 7:
                         break
-                    if (x, y) in self.pieces:
-                        return self.pieces[(x, y)]
+
+                    squares.append((x, y))
+                    if (x, y) in self.pieces or (limit_x, limit_y) == (x, y):
+                        break
                     y += 1 * color
         elif direction == general.MoveDirection.FallingDiagonalDown:
                 y = p_y - 1 * color
-                for x in range(p_x + 1 * color, 8):
-                    if (limit_x, limit_y) == (x, y):
+                rising_diagonal_down_range = range(p_x + 1, 8) if p.light() else reversed(range(0, p_x))
+                for x in rising_diagonal_down_range:
+                    if not 0 <= y <= 7:
                         break
-                    if (x, y) in self.pieces:
-                        return self.pieces[(x, y)]
+
+                    squares.append((x, y))
+                    if (x, y) in self.pieces or (limit_x, limit_y) == (x, y):
+                        break
                     y -= 1 * color
 
-        return None
+        return squares
 
     def rank_pin(self, piece):
+        return self.rank_pin_piece(piece) is not None
+
+    def rank_pin_piece(self, piece):
         king = self.get_light_king() if piece.light() else self.get_dark_king()
 
         if self.same_rank(king, piece) and len(self.pieces_between(king, piece)) == 0:
@@ -297,15 +312,18 @@ class Board:
 
             for r in rooks:
                 if self.same_rank(r, piece) and len(self.pieces_between(r, piece)) == 0:
-                    return True
+                    return r
 
             for q in queens:
                 if self.same_rank(q, piece) and len(self.pieces_between(q, piece)) == 0:
-                    return True
+                    return q
         else:
-            return False
+            return None
 
     def file_pin(self, piece):
+        return self.file_pin_piece(piece) is not None
+
+    def file_pin_piece(self, piece):
         king = self.get_light_king() if piece.light() else self.get_dark_king()
 
         if self.same_file(king, piece) and len(self.pieces_between(king, piece)) == 0:
@@ -314,15 +332,18 @@ class Board:
 
             for r in rooks:
                 if self.same_file(r, piece) and len(self.pieces_between(r, piece)) == 0:
-                    return True
+                    return r
 
             for q in queens:
                 if self.same_file(q, piece) and len(self.pieces_between(q, piece)) == 0:
-                    return True
+                    return q
 
-        return False
+        return None
 
     def diagonal_pin(self, piece):
+        return self.diagonal_pin_piece(piece) is not None
+
+    def diagonal_pin_piece(self, piece):
         king = self.get_light_king() if piece.light() else self.get_dark_king()
 
         if self.same_rising_diagonal(king, piece) and len(self.pieces_between(king, piece)) == 0:
@@ -331,11 +352,11 @@ class Board:
 
             for b in bishops:
                 if self.same_rising_diagonal(b, piece) and len(self.pieces_between(b, piece)) == 0:
-                    return True
+                    return b
 
             for q in queens:
                 if self.same_rising_diagonal(q, piece) and len(self.pieces_between(q, piece)) == 0:
-                    return True
+                    return q
 
         elif self.same_falling_diagonal(king, piece) and len(self.pieces_between(king, piece)) == 0:
             bishops = self.get_dark_bishops() if piece.light() else self.get_light_bishops()
@@ -343,13 +364,13 @@ class Board:
 
             for b in bishops:
                 if self.same_falling_diagonal(b, piece) and len(self.pieces_between(b, piece)) == 0:
-                    return True
+                    return b
 
             for q in queens:
                 if self.same_falling_diagonal(q, piece) and len(self.pieces_between(q, piece)) == 0:
-                    return True
+                    return q
 
-        return False
+        return None
 
     def protected_square(self, square, protected_by_color):
         for s, p in self.pieces.items():

@@ -15,7 +15,7 @@ class King(pieces.Piece):
 
     def get_moves(self):
         moves = []
-        squares = self.get_influenced_squares()
+        squares = self.influenced_squares()
         p_x, p_y = self.position
 
         for s in squares:
@@ -120,9 +120,9 @@ class King(pieces.Piece):
         return self._checked_by_cache[1]
 
     def king_side_castle(self):
-        rook = general.Board.king_side_rook(self.color)
+        rook = self._board.king_side_rook(self.color)
         
-        if self.history() > 0 or rook.history() > 0:
+        if len(self.history()) > 0 or len(rook.history()) > 0:
             return None
 
         if not self._board.first_rank(self) or not self._board.first_rank(rook):
@@ -147,9 +147,9 @@ class King(pieces.Piece):
         return castle_move
 
     def queen_side_castle(self):
-        rook = general.Board.queen_side_rook(self.color)
+        rook = self._board.queen_side_rook(self.color)
 
-        if self.history() > 0 or rook.history() > 0:
+        if len(self.history()) > 0 or len(rook.history()) > 0:
             return None
 
         if not self._board.first_rank(self) or not self._board.first_rank(rook):
