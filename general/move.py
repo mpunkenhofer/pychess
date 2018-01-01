@@ -168,10 +168,11 @@ class CaptureMove(MoveTypes):
 
 
 class KingSideCastleMove(MoveTypes):
-    def __init__(self, p, o, d, k, r):
+    def __init__(self, p, o, d, rd, k, r):
         MoveTypes.__init__(self, p, o, d, 'King Side Castle')
         self._king = k
         self._rook = r
+        self._rook_destination = rd
 
     def __repr__(self):
         return 'O-O'
@@ -192,12 +193,21 @@ class KingSideCastleMove(MoveTypes):
     def rook(self, r):
         self._rook = r
 
+    @property
+    def rook_destination(self):
+        return self._rook_destination
+
+    @rook_destination.setter
+    def rook_destination(self, d):
+        self._rook_destination = d
+
 
 class QueenSideCastleMove(MoveTypes):
-    def __init__(self, p, o, d, k, r):
+    def __init__(self, p, o, d, rd, k, r):
         MoveTypes.__init__(self, p, o, d, 'Queen Side Castle')
         self._king = k
         self._rook = r
+        self._rook_destination = rd
 
     def __repr__(self):
         return 'O-O-O'
@@ -217,6 +227,14 @@ class QueenSideCastleMove(MoveTypes):
     @rook.setter
     def rook(self, r):
         self._rook = r
+
+    @property
+    def rook_destination(self):
+        return self._rook_destination
+
+    @rook_destination.setter
+    def rook_destination(self, d):
+        self._rook_destination = d
 
 
 class MoveDirection(Enum):

@@ -28,9 +28,15 @@ class King(pieces.Piece):
             else:
                 moves.append(general.Move(self, (p_x, p_y), s))
 
-        self.king_side_castle()
-        self.queen_side_castle()
-
+        castle_king_side = self.king_side_castle()
+        castle_queen_side = self.queen_side_castle()
+        
+        if castle_king_side:
+            moves.append(castle_king_side)
+            
+        if castle_queen_side:
+            moves.append(castle_queen_side)
+            
         return moves
 
     def get_influenced_squares(self):
@@ -113,8 +119,56 @@ class King(pieces.Piece):
 
         return self._checked_by_cache[1]
 
-    def queen_side_castle(self):
-        pass
-
     def king_side_castle(self):
-        pass
+        rook = general.Board.king_side_rook(self.color)
+        
+        if self.history() > 0 or rook.history() > 0:
+            return None
+
+        if not self._board.first_rank(self) or not self._board.first_rank(rook):
+            return None
+
+        if self._board.pieces_between(self, rook) != 0:
+            return None
+
+        if self.in_check():
+            return None
+
+        p_x, p_y = self.position
+        
+        king_pos, rook_pos = general.Board.king_side_castle_positions(self.color)
+        
+        for x in range(min(p_x + 1, king_pos[0] + 1), max(p_x, king_pos[0])):
+            if self._board.protected_square((x, p_y), self._board.enemy_color(self)):
+                return None
+            
+        castle_move = general.KingSideCastleMove(self, (p_x, p_y), king_pos, rook_pos, self, rook)
+        
+        return castle_move
+
+    def queen_side_castle(self):
+        rook = general.Board.queen_side_rook(self.color)
+
+        if self.history() > 0 or rook.history() > 0:
+            return None
+
+        if not self._board.first_rank(self) or not self._board.first_rank(rook):
+            return None
+
+        if self._board.pieces_between(self, rook) != 0:
+            return None
+
+        if self.in_check():
+            return None
+
+        p_x, p_y = self.position
+
+        king_pos, rook_pos = general.Board.queen_side_castle_positions(self.color)
+
+        for x in range(min(p_x + 1, king_pos[0] + 1), max(p_x, king_pos[0])):
+            if self._board.protected_square((x, p_y), self._board.enemy_color(self)):
+                return None
+
+        castle_move = general.QueenSideCastleMove(self, (p_x, p_y), king_pos, rook_pos, self, rook)
+
+        return castle_move

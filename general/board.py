@@ -93,6 +93,22 @@ class Board:
     def enemy_king(self, p):
         return self.get_dark_king() if p.light() else self.get_light_king()
 
+    def king_side_rook(self, color):
+        if color == 'light':
+            if (7, 0) in self.pieces and self.pieces[(7, 0)].type == 'Rook' and self.pieces[(7, 0)].color == color:
+                return self.pieces[(7, 0)]
+        else:
+            if (7, 7) in self.pieces and self.pieces[(7, 7)].type == 'Rook' and self.pieces[(7, 7)].color == color:
+                return self.pieces[(7, 7)]
+
+    def queen_side_rook(self, color):
+        if color == 'light':
+            if (0, 0) in self.pieces and self.pieces[(0, 0)].type == 'Rook' and self.pieces[(0, 0)].color == color:
+                return self.pieces[(0, 0)]
+        else:
+            if (0, 7) in self.pieces and self.pieces[(0, 7)].type == 'Rook' and self.pieces[(0, 7)].color == color:
+                return self.pieces[(7, 0)]
+
     def history(self):
         return self._history
 
@@ -112,6 +128,18 @@ class Board:
             self.pieces[move.destination] = piece
         elif move.type in ['Promotion', 'Capture Promotion']:
             self.promote(move)
+        elif move.type in ['King Side Castle', 'Queen Side Castle']:
+            rook = self.pieces.pop(move.rook.position)
+            # add move also to rook history
+            rook.history().append(move)
+
+            king = self.pieces.pop(move.king.position)
+
+            rook.position = move.rook_destination
+            king.position = move.destination
+
+            self.pieces[rook.position] = rook
+            self.pieces[king.position] = king
         else:
             piece = self.pieces.pop(move.piece.position)
 
@@ -336,20 +364,34 @@ class Board:
         return 'dark' if p.light() else 'light'
 
     @staticmethod
-    def first_rank(pawn):
-        return pawn.position[1] == 0 if pawn.light() else pawn.position[1] == 7
+    def first_rank(p):
+        return p.position[1] == 0 if p.light() else p.position[1] == 7
 
     @staticmethod
-    def last_rank(pawn):
-        return pawn.position[1] == 7 if pawn.light() else pawn.position[1] == 0
+    def last_rank(p):
+        return p.position[1] == 7 if p.light() else p.position[1] == 0
 
     @staticmethod
-    def second_last_rank(pawn):
-        return pawn.position[1] == 6 if pawn.light() else pawn.position[1] == 1
+    def second_last_rank(p):
+        return p.position[1] == 6 if p.light() else p.position[1] == 1
 
     @staticmethod
-    def en_passant_rank(pawn):
-        return pawn.position[1] == 4 if pawn.light() else pawn.position[1] == 3
+    def en_passant_rank(p):
+        return p.position[1] == 4 if p.light() else p.position[1] == 3
+
+    @staticmethod
+    def king_side_castle_positions(color):
+        if color == 'light':
+            return (6, 0), (5, 0)
+        else:
+            return (6, 7), (5, 7)
+
+    @staticmethod
+    def queen_side_castle_positions(color):
+        if color == 'light':
+            return (2, 0), (3, 0)
+        else:
+            return (2, 7), (3, 7)
 
     @staticmethod
     def get_coordinates(p1, p2):
