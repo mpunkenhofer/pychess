@@ -24,6 +24,9 @@ class Piece(ABC):
         if not (self._move_cache[0] == len(self._board.history()) and self._move_cache[1]):
             self._move_cache = len(self._board.history()), self.get_moves()
 
+        if self.type == 'King':
+            return self._move_cache[1]
+
         king = self._board.my_king(self)
 
         if not king.in_check():

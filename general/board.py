@@ -332,6 +332,14 @@ class Board:
         return False
 
     @staticmethod
+    def enemy_color(p):
+        return 'dark' if p.light() else 'light'
+
+    @staticmethod
+    def first_rank(pawn):
+        return pawn.position[1] == 0 if pawn.light() else pawn.position[1] == 7
+
+    @staticmethod
     def last_rank(pawn):
         return pawn.position[1] == 7 if pawn.light() else pawn.position[1] == 0
 

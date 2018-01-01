@@ -31,7 +31,8 @@ class Chess:
         current_players_king = self.board.get_king(self.current_player)
 
         if current_players_king.checkmated() or current_players_king.stalemated():
-            self.ui.game_over('dark' if self.current_player == 'light' else 'light')
+            self.ui.game_over('draw' if current_players_king.stalemated() else
+                              ('dark' if self.current_player == 'light' else 'light'))
             return True
         else:
             return False

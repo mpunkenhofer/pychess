@@ -10,7 +10,7 @@ import math
 
 
 class ChessConsoleUserInterface(ChessUserInterface):
-    _piece_dict = {'Q': 'Queen', 'R': 'Rook', 'B': 'Bishop', 'N': 'Knight'}
+    _piece_dict = {'Q': 'Queen', 'R': 'Rook', 'B': 'Bishop', 'N': 'Knight', 'K': 'King'}
 
     def __init__(self):
         ChessUserInterface.__init__(self)
@@ -42,7 +42,7 @@ class ChessConsoleUserInterface(ChessUserInterface):
             pawn_move = re.match('([a-h])([1-8])', move_input)
             pawn_promotion = re.match('([a-h])([18])=([QRBN])', move_input)
             piece_move = re.match('([KQRBN])([a-h])([1-8])', move_input)
-            specific_piece_move = re.match('([QRBN])([a-h])([a-h])([1-8])', move_input)
+            specific_piece_move = re.match('([QRBN])([a-h]|[1-8])([a-h])([1-8])', move_input)
 
             if possible_moves:
                 file = possible_moves.group(1)
@@ -107,7 +107,7 @@ class ChessConsoleUserInterface(ChessUserInterface):
                 rank = pawn_promotion.group(2)
                 piece = pawn_promotion.group(3)
 
-                pawns = self.filter_pieces(self.get_pieces_on_file(game, pawn), game.current_player, 'Pawn')
+                pawns = self.filter_pieces(self.get_pieces_on_file(game, file), game.current_player, 'Pawn')
                 pawn_moves = self.moves_for_pieces(pawns)
 
                 pawn_move = self.find_move_for_coordinate(pawn_moves, file, rank, 'Promotion')
@@ -122,6 +122,16 @@ class ChessConsoleUserInterface(ChessUserInterface):
                 piece = piece_move.group(1)
                 file = piece_move.group(2)
                 rank = piece_move.group(3)
+
+                pieces = game.board.filter_pieces(self._piece_dict[piece], game.current_player)
+                piece_moves = self.moves_for_pieces(pieces)
+
+                piece_move = self.find_move_for_coordinate(piece_moves, file, rank, 'Move')
+
+                if not self.make_move(game, piece_move):
+                    continue
+                else:
+                    return
             elif specific_piece_move:
                 piece = specific_piece_move.group(1)
                 piece_id = specific_piece_move.group(2)
@@ -211,7 +221,7 @@ class ChessConsoleUserInterface(ChessUserInterface):
         return result
 
     @staticmethod
-    def find_move_for_coordinate(move_list, file, rank, move_type):
+    def find_move_for_coordinate(move_list, file, rank, move_type, id=None):
         rank = int(rank)
         files = dict(zip(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'], [i for i in range(0, 8)]))
 
