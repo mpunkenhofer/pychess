@@ -38,6 +38,7 @@ class ChessConsoleUserInterface(ChessUserInterface):
             capture_by_piece = re.match('([KQRBN])x([a-h])([1-8])', move_input)
             capture_by_pawn_promotion = re.match('([a-h])x([a-h])([1-8])=([QRBN])', move_input)
             capture_by_pawn = re.match('([a-h])x([a-h])([1-8])', move_input)
+            specific_capture_by_piece = re.match('([KQRBN])([a-h]|[1-8])x([a-h])([1-8])', move_input)
 
             pawn_move = re.match('([a-h])([1-8])', move_input)
             pawn_promotion = re.match('([a-h])([18])=([QRBN])', move_input)
@@ -58,6 +59,16 @@ class ChessConsoleUserInterface(ChessUserInterface):
                 piece = capture_by_piece.group(1)
                 file = capture_by_piece.group(2)
                 rank = capture_by_piece.group(3)
+
+                pieces = game.board.filter_pieces(self._piece_dict[piece], game.current_player)
+                piece_moves = self.moves_for_pieces(pieces)
+
+                piece_move = self.find_move_for_coordinate(piece_moves, file, rank, 'Capture')
+
+                if not self.make_move(game, piece_move):
+                    continue
+                else:
+                    return
             elif capture_by_pawn_promotion:
                 pawn = capture_by_pawn_promotion.group(1)
                 file = capture_by_pawn_promotion.group(2)
@@ -132,11 +143,36 @@ class ChessConsoleUserInterface(ChessUserInterface):
                     continue
                 else:
                     return
+            elif specific_capture_by_piece:
+                piece = specific_piece_move.group(1)
+                piece_id = specific_piece_move.group(2)
+                file = specific_piece_move.group(3)
+                rank = specific_piece_move.group(4)
+
+                pieces = game.board.filter_pieces(self._piece_dict[piece], game.current_player)
+                piece_moves = self.moves_for_pieces(pieces)
+
+                piece_move = self.find_move_for_coordinate(piece_moves, file, rank, 'Capture', piece_id)
+
+                if not self.make_move(game, piece_move):
+                    continue
+                else:
+                    return
             elif specific_piece_move:
                 piece = specific_piece_move.group(1)
                 piece_id = specific_piece_move.group(2)
                 file = specific_piece_move.group(3)
                 rank = specific_piece_move.group(4)
+
+                pieces = game.board.filter_pieces(self._piece_dict[piece], game.current_player)
+                piece_moves = self.moves_for_pieces(pieces)
+
+                piece_move = self.find_move_for_coordinate(piece_moves, file, rank, 'Move', piece_id)
+
+                if not self.make_move(game, piece_move):
+                    continue
+                else:
+                    return
             elif move_input == 'O-O':
                 print('King side castle')
             elif move_input == 'O-O-O':
@@ -221,12 +257,22 @@ class ChessConsoleUserInterface(ChessUserInterface):
         return result
 
     @staticmethod
-    def find_move_for_coordinate(move_list, file, rank, move_type, id=None):
+    def find_move_for_coordinate(move_list, file, rank, move_type, piece_id=None):
         rank = int(rank)
         files = dict(zip(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'], [i for i in range(0, 8)]))
 
         if 1 <= rank <= 8 and file in files.keys():
             for m in move_list:
+                if id:
+                    try:
+                        piece_id = int(piece_id)
+                        if m.type == move_type and m.origin[1] == piece_id and \
+                                m.destination[0] == files[file] and m.destination[1] == (rank - 1):
+                            return m
+                    except ValueError:
+                        if piece_id in files.keys() and m.type == move_type and m.origin[0] == id and \
+                                m.destination[1] == piece_id and m.destination[1] == (rank - 1):
+                            return m
                 if m.type == move_type and m.destination[0] == files[file] and m.destination[1] == (rank - 1):
                     return m
 
