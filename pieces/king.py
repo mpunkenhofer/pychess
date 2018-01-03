@@ -128,7 +128,7 @@ class King(pieces.Piece):
         if not self._board.first_rank(self) or not self._board.first_rank(rook):
             return None
 
-        if self._board.pieces_between(self, rook) != 0:
+        if self._board.pieces_between(self, rook):
             return None
 
         if self.in_check():
@@ -155,7 +155,7 @@ class King(pieces.Piece):
         if not self._board.first_rank(self) or not self._board.first_rank(rook):
             return None
 
-        if self._board.pieces_between(self, rook) != 0:
+        if self._board.pieces_between(self, rook):
             return None
 
         if self.in_check():

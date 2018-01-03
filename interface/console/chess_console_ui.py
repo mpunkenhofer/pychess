@@ -173,10 +173,13 @@ class ChessConsoleUserInterface(ChessUserInterface):
                     continue
                 else:
                     return
-            elif move_input == 'O-O':
-                print('King side castle')
-            elif move_input == 'O-O-O':
-                print('Queen side castle')
+            elif move_input in ['O-O', 'O-O-O']:
+                move = self.get_castle_move(game, move_input, game.current_player)
+
+                if not self.make_move(game, move):
+                    continue
+                else:
+                    return
             else:
                 print('Invalid move format. (see algebraic notation (chess))')
                 continue
@@ -263,7 +266,7 @@ class ChessConsoleUserInterface(ChessUserInterface):
 
         if 1 <= rank <= 8 and file in files.keys():
             for m in move_list:
-                if id:
+                if piece_id:
                     try:
                         piece_id = int(piece_id)
                         if m.type == move_type and m.origin[1] == piece_id and \
@@ -275,5 +278,19 @@ class ChessConsoleUserInterface(ChessUserInterface):
                             return m
                 if m.type == move_type and m.destination[0] == files[file] and m.destination[1] == (rank - 1):
                     return m
+
+        return None
+
+    @staticmethod
+    def get_castle_move(game, castle_type, color):
+        king = game.board.get_king(color)
+
+        king_moves = king.moves()
+
+        for m in king_moves:
+            if castle_type == 'O-O' and m.type == 'King Side Castle':
+                return m
+            elif castle_type == 'O-O-O' and m.type == 'Queen Side Castle':
+                return m
 
         return None

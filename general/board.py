@@ -107,7 +107,7 @@ class Board:
                 return self.pieces[(0, 0)]
         else:
             if (0, 7) in self.pieces and self.pieces[(0, 7)].type == 'Rook' and self.pieces[(0, 7)].color == color:
-                return self.pieces[(7, 0)]
+                return self.pieces[(0, 7)]
 
     def history(self):
         return self._history
