@@ -40,7 +40,7 @@ class ChessConsoleUserInterface(ChessUserInterface):
             self.do_command(move_input)
             return self.move(player)
 
-        move = self.find_move(self.board, self.board.get_pieces(player), move_input)
+        move = self.find_move(self.board.get_pieces(player), move_input)
 
         if not move:
             print('Invalid move.')
@@ -82,26 +82,28 @@ class ChessConsoleUserInterface(ChessUserInterface):
         return move_input[0] == 'p'
 
     def do_command(self, cmd):
-        if cmd[0] == 'p':
-            print('Display moves')
+        cmd, value = cmd.split(' ')
+        if cmd == 'p':
+            self.display_moves(value)
 
-    @staticmethod
-    def display_moves(board, piece):
-        print('[' + ', '.join(list(map(lambda x: x.to_algebraic(board), piece.moves()))) + ']')
+    def display_moves(self, piece):
+        move_dict = self.build_move_dict(self.board.get_all_pieces())
 
-    @staticmethod
-    def find_move(board, pieces, move_input):
-        move_dict = ChessConsoleUserInterface.build_move_dict(board, pieces)
+        moves = [k for k, m in move_dict.items() if m and m.piece.position_to_algebraic() == piece]
+
+        print('[' + ', '.join(moves) + ']')
+
+    def find_move(self, pieces, move_input):
+        move_dict = self.build_move_dict(pieces)
 
         return move_dict[move_input] if move_input in move_dict else None
 
-    @staticmethod
-    def build_move_dict(board, pieces):
+    def build_move_dict(self, pieces):
         move_dict = {}
 
         for p in pieces:
             for move in p.moves():
-                k = move.to_algebraic(board)
+                k = move.to_algebraic(self.board)
                 if not k:
                     continue
 
@@ -110,20 +112,20 @@ class ChessConsoleUserInterface(ChessUserInterface):
                 else:
                     other_move = move_dict[k]
 
-                    if pychess.pieces.Piece.same_file(move.destination, other_move.destination):
-                        move_id = move.position_to_algebraic(board, move.origin)[1]
-                        other_move_id = other_move.position_to_algebraic(board, other_move.origin)[1]
+                    if pychess.pieces.Piece.same_file(move.piece, other_move.piece):
+                        move_id = move.position_to_algebraic(self.board, move.origin)[1]
+                        other_move_id = other_move.position_to_algebraic(self.board, other_move.origin)[1]
                     else:
-                        move_id = move.position_to_algebraic(board, move.origin)[0]
-                        other_move_id = other_move.position_to_algebraic(board, other_move.origin)[0]
+                        move_id = move.position_to_algebraic(self.board, move.origin)[0]
+                        other_move_id = other_move.position_to_algebraic(self.board, other_move.origin)[0]
 
                     capture = 'x' if move.is_capture() else ''
 
                     move_dict[move.piece.shorthand() + move_id + capture
-                              + move.position_to_algebraic(board, move.destination)] = move
+                              + move.position_to_algebraic(self.board, move.destination)] = move
                     move_dict[other_move.piece.shorthand() + other_move_id + capture
-                              + other_move.position_to_algebraic(board, other_move.destination)] = other_move
+                              + other_move.position_to_algebraic(self.board, other_move.destination)] = other_move
 
-                    move_dict[k] = 'Resolved move collision for: ' + k
+                    move_dict[k] = None
 
         return move_dict
