@@ -12,16 +12,16 @@ class Rook(pieces.Piece):
         pieces.Piece.__init__(self, board, pos, color, pieces.PieceType.ROOK)
 
     def get_moves(self):
-        if self.diagonal_pin():
+        if self.diagonally_pinned():
             return []
 
         m = []
         p_x, p_y = self.position
 
-        if self.file_pin():
-            squares = self.file_squares()
-        elif self.rank_pin():
-            squares = self.rank_squares()
+        if self.file_pinned():
+            squares = self.get_file_squares()
+        elif self.rank_pinned():
+            squares = self.get_rank_squares()
         else:
             squares = self.influenced_squares()
 
@@ -38,4 +38,4 @@ class Rook(pieces.Piece):
         return m
 
     def get_influenced_squares(self, ignored):
-        return self.file_squares(ignored) + self.rank_squares(ignored)
+        return self.get_file_squares(ignored) + self.get_rank_squares(ignored)

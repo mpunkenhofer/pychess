@@ -29,7 +29,7 @@ class Pawn(pieces.Piece):
         return influenced
 
     def pawn_moves(self):
-        if self.diagonal_pin() or self.rank_pin():
+        if self.diagonally_pinned() or self.rank_pinned():
             return []
 
         m = []
@@ -50,7 +50,7 @@ class Pawn(pieces.Piece):
         return m
 
     def pawn_attacks(self):
-        if self.file_pin() or self.rank_pin():
+        if self.file_pinned() or self.rank_pinned():
             return []
 
         m = []
@@ -70,7 +70,7 @@ class Pawn(pieces.Piece):
         return m
 
     def en_passant(self):
-        if self.file_pin() or self.rank_pin():
+        if self.file_pinned() or self.rank_pinned():
             return []
 
         m = []

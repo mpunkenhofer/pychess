@@ -12,7 +12,7 @@ class Bishop(pieces.Piece):
         pieces.Piece.__init__(self, board, pos, color, pieces.PieceType.BISHOP)
 
     def get_moves(self):
-        if self.file_pin() or self.rank_pin():
+        if self.file_pinned() or self.rank_pinned():
             return []
 
         m = []
@@ -21,9 +21,9 @@ class Bishop(pieces.Piece):
         pining_piece = self.diagonal_pin_piece()
 
         if pining_piece and self.same_rising_diagonal(self, pining_piece):
-            squares = self.rising_diagonal_squares()
+            squares = self.get_rising_diagonal_squares()
         elif pining_piece and self.same_falling_diagonal(self, pining_piece):
-            squares = self.falling_diagonal_squares()
+            squares = self.get_falling_diagonal_squares()
         else:
             squares = self.influenced_squares()
 
@@ -40,4 +40,4 @@ class Bishop(pieces.Piece):
         return m
 
     def get_influenced_squares(self, ignored):
-        return self.diagonal_squares(ignored)
+        return self.get_diagonal_squares(ignored)

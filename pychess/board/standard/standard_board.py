@@ -71,10 +71,8 @@ class StandardBoard(board.Board):
         king.history.append(move)
         rook.history.append(move)
 
-        if move.is_king_side_castle():
-            king_pos, rook_pos = self.get_king_side_castle_positions(king.color)
-        else:
-            king_pos, rook_pos = self.get_queen_side_castle_positions(king.color)
+        king_pos, rook_pos = self.get_king_side_castle_positions(king.color) if move.is_king_side_castle() \
+            else self.get_queen_side_castle_positions(king.color)
 
         king.position = king_pos
         rook.position = rook_pos
@@ -90,37 +88,20 @@ class StandardBoard(board.Board):
         piece.position = move.destination
         self.pieces[move.destination] = piece
 
+    def get_bottom_left(self):
+        return 0, 0
+
+    def get_top_right(self):
+        return 7, 7
+
     def get_piece(self, pos):
         return self.pieces[pos]
-
-    def in_board(self, pos):
-        x, y = pos
-        return 0 <= x < 8 and 0 <= y < 8
-
-    def get_first_rank(self, color):
-        return 0 if color == PieceColor.WHITE else 7
-
-    def get_last_rank(self, color):
-        return 7 if color == PieceColor.WHITE else 0
-
-    def get_first_file(self, color):
-        return 0 if color == PieceColor.WHITE else 7
-
-    def get_last_file(self, color):
-        return 7 if color == PieceColor.WHITE else 0
 
     def get_en_passant_rank(self, color):
         return 4 if color == PieceColor.WHITE else 3
 
     def get_king_side_castle_positions(self, color):
-        return (6, 0), (5, 0) if color == PieceColor.WHITE else (6, 7), (5, 7)
+        return ((6, 0), (5, 0)) if color == PieceColor.WHITE else ((6, 7), (5, 7))
 
     def get_queen_side_castle_positions(self, color):
-        return (2, 0), (3, 0) if color == PieceColor.WHITE else (2, 7), (3, 7)
-
-    def position_to_algebraic(self, pos):
-        file, rank = pos
-        rank = str(rank + 1)
-        files = dict(zip([i for i in range(0, 8)], ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']))
-
-        return files[file] + rank
+        return ((2, 0), (3, 0)) if color == PieceColor.WHITE else ((2, 7), (3, 7))

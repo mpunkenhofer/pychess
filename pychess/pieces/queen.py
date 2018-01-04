@@ -16,16 +16,14 @@ class Queen(pieces.Piece):
         p_x, p_y = self.position
         pining_piece = self.diagonal_pin_piece()
 
-        # TODO file, rank pins
-
-        if self.file_pin():
-            squares = self.file_squares()
-        elif self.rank_pin():
-            squares = self.rank_squares()
+        if self.file_pinned():
+            squares = self.get_file_squares()
+        elif self.rank_pinned():
+            squares = self.get_rank_squares()
         elif pining_piece and self.same_rising_diagonal(self, pining_piece):
-            squares = self.rising_diagonal_squares()
+            squares = self.get_rising_diagonal_squares()
         elif pining_piece and self.same_falling_diagonal(self, pining_piece):
-            squares = self.falling_diagonal_squares()
+            squares = self.get_falling_diagonal_squares()
         else:
             squares = self.influenced_squares()
 
@@ -42,4 +40,4 @@ class Queen(pieces.Piece):
         return m
 
     def get_influenced_squares(self, ignored):
-        return self.diagonal_squares(ignored) + self.rank_squares(ignored) + self.file_squares(ignored)
+        return self.get_diagonal_squares(ignored) + self.get_rank_squares(ignored) + self.get_file_squares(ignored)

@@ -19,27 +19,15 @@ class Board(ABC):
         pass
 
     @abstractmethod
-    def in_board(self, pos):
+    def get_bottom_left(self):
         pass
 
     @abstractmethod
-    def get_first_rank(self, color):
-        pass
-
-    @abstractmethod
-    def get_last_rank(self, color):
+    def get_top_right(self):
         pass
 
     @abstractmethod
     def get_en_passant_rank(self, color):
-        pass
-
-    @abstractmethod
-    def get_first_file(self, color):
-        pass
-
-    @abstractmethod
-    def get_last_file(self, color):
         pass
 
     @abstractmethod
@@ -48,10 +36,6 @@ class Board(ABC):
 
     @abstractmethod
     def get_queen_side_castle_positions(self, color):
-        pass
-
-    @abstractmethod
-    def position_to_algebraic(self, pos):
         pass
 
     @abstractmethod
@@ -97,6 +81,24 @@ class Board(ABC):
 
     def get_enemy_king(self, color):
         return self.get_king(pieces.PieceColor.WHITE if color == pieces.PieceColor.BLACK else pieces.PieceColor.BLACK)
+
+    def in_board(self, pos):
+        x, y = pos
+        bot_x, bot_y = self.get_bottom_left()
+        top_x, top_y = self.get_top_right()
+        return bot_x <= x <= top_x and bot_y <= y <= top_y
+
+    def get_first_rank(self, color):
+        return self.get_bottom_left()[1] if color == pieces.PieceColor.WHITE else self.get_top_right()[1]
+
+    def get_last_rank(self, color):
+        return self.get_top_right()[1] if color == pieces.PieceColor.WHITE else self.get_bottom_left()[1]
+
+    def get_first_file(self, color):
+        return self.get_bottom_left()[0] if color == pieces.PieceColor.WHITE else self.get_top_right()[0]
+
+    def get_last_file(self, color):
+        return self.get_top_right()[0] if color == pieces.PieceColor.WHITE else self.get_bottom_left()[0]
 
     def is_first_rank(self, color, pos):
         _, y = pos

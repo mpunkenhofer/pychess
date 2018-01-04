@@ -105,23 +105,8 @@ class Piece(ABC):
         return self._influence_cache[1]
 
     def block_checker(self, checker):
-        blocking_moves = set()
-
-        for m in self._move_cache[1]:
-            if m.is_move():
-                if checker.is_rook() or checker.is_queen():
-                    if self.same_rank(m.destination, checker) and \
-                            self.same_rank(m.destination, self.board.my_king(self)):
-                        blocking_moves.add(m)
-                    elif self.same_file(m.destination, checker) and \
-                            self.same_file(m.destination, self.board.my_king(self)):
-                        blocking_moves.add(m)
-                if checker.is_bishop() or checker.is_queen():
-                    if self.same_diagonal(m.destination, checker) and \
-                            self.same_diagonal(m.destination, self.board.my_king(self)):
-                        blocking_moves.add(m)
-
-        return list(blocking_moves)
+        return [m for m in self._move_cache[1]
+                if m.is_move() and Piece.is_between(m.destination, checker, self.board.get_king(self.color))]
 
     def capture_checker(self, checker):
         captures = []
@@ -168,15 +153,15 @@ class Piece(ABC):
         else:
             return []
 
-    def rank_pin(self):
+    def rank_pinned(self):
         return self.rank_pin_piece() is not None
 
     def rank_pin_piece(self):
         king = self.board.get_king(self.color)
 
         if self.same_rank(king, self) and not self.pieces_between(king):
-            rooks = self.board.get_rooks(self.color)
-            queens = self.board.get_queens(self.color)
+            rooks = self.board.get_rooks(self.other_color())
+            queens = self.board.get_queens(self.other_color())
 
             for r in rooks:
                 if self.same_rank(r, self) and not self.pieces_between(r):
@@ -188,15 +173,15 @@ class Piece(ABC):
         else:
             return None
 
-    def file_pin(self):
+    def file_pinned(self):
         return self.file_pin_piece() is not None
 
     def file_pin_piece(self):
         king = self.board.get_king(self.color)
 
         if self.same_file(king, self) and not self.pieces_between(king):
-            rooks = self.board.get_rooks(self.color)
-            queens = self.board.get_queens(self.color)
+            rooks = self.board.get_rooks(self.other_color())
+            queens = self.board.get_queens(self.other_color())
 
             for r in rooks:
                 if self.same_file(r, self) and not self.pieces_between(r):
@@ -208,15 +193,15 @@ class Piece(ABC):
 
         return None
 
-    def diagonal_pin(self):
+    def diagonally_pinned(self):
         return self.diagonal_pin_piece() is not None
 
     def diagonal_pin_piece(self):
         king = self.board.get_king(self.color)
 
         if self.same_rising_diagonal(king, self) and self.pieces_between(king):
-            bishops = self.board.get_bishops(self.color)
-            queens = self.board.get_queens(self.color)
+            bishops = self.board.get_bishops(self.other_color())
+            queens = self.board.get_queens(self.other_color())
 
             for b in bishops:
                 if self.same_rising_diagonal(b, self) and not self.pieces_between(b):
@@ -240,10 +225,10 @@ class Piece(ABC):
 
         return None
 
-    def diagonal_squares(self, ignored=None):
-        return self.rising_diagonal_squares(ignored) + self.falling_diagonal_squares(ignored)
+    def get_diagonal_squares(self, ignored=None):
+        return self.get_rising_diagonal_squares(ignored) + self.get_falling_diagonal_squares(ignored)
 
-    def rising_diagonal_squares(self, ignored=None):
+    def get_rising_diagonal_squares(self, ignored=None):
         if ignored is None:
             ignored = []
 
@@ -277,7 +262,7 @@ class Piece(ABC):
 
         return squares
 
-    def falling_diagonal_squares(self, ignored=None):
+    def get_falling_diagonal_squares(self, ignored=None):
         if ignored is None:
             ignored = []
 
@@ -311,21 +296,21 @@ class Piece(ABC):
 
         return squares
 
-    def file_squares(self, ignored=None):
+    def get_rank_squares(self, ignored=None):
         if ignored is None:
             ignored = []
 
         squares = []
         p_x, p_y = self.position
 
-        # file right
+        # right
         for x in range(p_x + 1, self.board.get_last_file(self.color) + 1) if self.is_white() \
                 else reversed(range(self.board.get_last_file(self.color), p_x)):
             squares.append((x, p_y))
             if (x, p_y) in self.board.pieces and self.board.pieces[(x, p_y)] not in ignored:
                 break
 
-        # file left
+        # left
         for x in reversed(range(self.board.get_first_file(self.color), p_x)) if self.is_white() \
                 else range(p_x + 1, self.board.get_first_file(self.color) + 1):
             squares.append((x, p_y))
@@ -334,21 +319,21 @@ class Piece(ABC):
 
         return squares
 
-    def rank_squares(self, ignored=None):
+    def get_file_squares(self, ignored=None):
         if ignored is None:
             ignored = []
 
         squares = []
         p_x, p_y = self.position
 
-        # rank up
+        # up
         for y in range(p_y + 1, self.board.get_last_rank(self.color) + 1) if self.is_white() \
                 else reversed(range(self.board.get_last_rank(self.color), p_y)):
             squares.append((p_x, y))
             if (p_x, y) in self.board.pieces and self.board.pieces[(p_x, y)] not in ignored:
                 break
 
-        # rank down
+        # down
         for y in reversed(range(self.board.get_first_rank(self.color), p_y)) if self.is_white() \
                 else range(p_y + 1, self.board.get_first_rank(self.color) + 1):
             squares.append((p_x, y))
@@ -356,6 +341,36 @@ class Piece(ABC):
                 break
 
         return squares
+
+    @staticmethod
+    def is_between(square, p1, p2):
+        p1_x, p1_y = p1.position
+        p2_x, p2_y = p2.position
+
+        if Piece.same_rank(p1, p2) and Piece.same_rank(square, p2):
+            for x in range(min(p1_x + 1, p2_x + 1), max(p1_x, p2_x)):
+                if (x, p1_y) == square:
+                    return True
+        elif Piece.same_file(p1, p2) and Piece.same_file(square, p2):
+            for y in range(min(p1_y + 1, p2_y + 1), max(p1_y, p2_y)):
+                if (p1_x, y) == square:
+                    return True
+        elif Piece.same_diagonal(p1, p2) and Piece.same_diagonal(square, p2):
+            if Piece.same_falling_diagonal(p1, p2):
+                x_range = reversed(range(min(p1_x + 1, p2_x + 1), max(p1_x, p2_x)))
+                y = max(p1_y - 1, p2_y - 1)
+                increment = -1
+            else:
+                x_range = range(min(p1_x + 1, p2_x + 1), max(p1_x, p2_x))
+                y = min(p1_y + 1, p2_y + 1)
+                increment = 1
+
+            for x in x_range:
+                if (x, y) == square:
+                    return True
+                y += increment
+
+        return False
 
     @staticmethod
     def same_rank(p1, p2):

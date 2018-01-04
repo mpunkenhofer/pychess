@@ -12,7 +12,7 @@ class Knight(pieces.Piece):
         pieces.Piece.__init__(self, board, pos, color, pieces.PieceType.KNIGHT)
 
     def get_moves(self):
-        if self.diagonal_pin() or self.file_pin() or self.rank_pin():
+        if self.diagonally_pinned() or self.file_pinned() or self.rank_pinned():
             return []
 
         m = []

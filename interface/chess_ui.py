@@ -9,15 +9,15 @@ from abc import ABC, abstractmethod
 
 class ChessUserInterface(ABC):
     @abstractmethod
-    def __init__(self):
+    def __init__(self, board):
+        self.board = board
+
+    @abstractmethod
+    def draw(self):
         pass
 
     @abstractmethod
-    def draw(self, board):
-        pass
-
-    @abstractmethod
-    def move(self, board, player):
+    def move(self, player):
         pass
 
     @abstractmethod

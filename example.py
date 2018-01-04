@@ -18,11 +18,11 @@ class Game:
         self.ui = ui
         self.current_player = player
 
-        self.ui.draw(self.variant.board)
+        self.ui.draw()
 
     def move(self):
-        self.ui.move(self.variant.board, self.current_player)
-        self.ui.draw(self.variant.board)
+        self.ui.move(self.current_player)
+        self.ui.draw()
 
         self.current_player = PieceColor.WHITE if self.current_player == PieceColor.BLACK else PieceColor.BLACK
 
@@ -38,7 +38,8 @@ class Game:
 
 
 def main():
-    chess_game = Game(Standard(), ChessConsoleUserInterface())
+    variant = Standard()
+    chess_game = Game(variant, ChessConsoleUserInterface(variant.board))
 
     while not chess_game.game_over():
         chess_game.move()
