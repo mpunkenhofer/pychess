@@ -4,33 +4,41 @@
 # Just for fun xmas 2017 chess project
 #
 
-from interface import ChessUserInterface
 import re
 import math
 
+from interface import ChessUserInterface
+
+from pychess.pieces import PieceColor, PieceType
+from pychess.moves import MoveTypes
+
 
 class ChessConsoleUserInterface(ChessUserInterface):
-    _piece_dict = {'Q': 'Queen', 'R': 'Rook', 'B': 'Bishop', 'N': 'Knight', 'K': 'King'}
-
     def __init__(self):
         ChessUserInterface.__init__(self)
 
-    def draw(self, game):
+        self.piece_dict = {'Q': PieceType.QUEEN,
+                           'R': PieceType.ROOK,
+                           'B': PieceType.BISHOP,
+                           'N': PieceType.KNIGHT,
+                           'K': PieceType.KING}
+
+    def draw(self, board):
         for y in reversed(range(0, 8)):
             for x in range(0, 8):
-                if (x, y) in game.board.pieces:
-                    if game.board.pieces[(x, y)].light():
-                        print(game.board.pieces[(x, y)].letter, end='')
+                if (x, y) in board.pieces:
+                    if board.pieces[(x, y)].is_white():
+                        print(board.pieces[(x, y)].shorthand(), end='')
                     else:
-                        print(game.board.pieces[(x, y)].letter.lower(), end='')
+                        print(board.pieces[(x, y)].shorthand().lower(), end='')
                 else:
                     print('.', end='')
 
             print()
 
-    def move(self, game):
+    def move(self, board, player):
         while True:
-            move_input = input(str(int(math.ceil((len(game.board.history()) + 1) / 2))) + ': ')
+            move_input = input(str(int(math.ceil((len(board.history) + 1) / 2))) + ': ')
 
             move_input = re.sub('[+#]', '', move_input)
 
@@ -49,10 +57,10 @@ class ChessConsoleUserInterface(ChessUserInterface):
                 file = possible_moves.group(1)
                 rank = possible_moves.group(2)
 
-                piece = self.get_piece_on_square(game, file, rank)
+                piece = self.get_piece_on_square(board, file, rank)
 
                 if piece:
-                    print(piece.moves())
+                    self.display_moves(board, piece)
                 else:
                     print('No piece on ' + file + rank)
             elif capture_by_piece:
@@ -60,12 +68,12 @@ class ChessConsoleUserInterface(ChessUserInterface):
                 file = capture_by_piece.group(2)
                 rank = capture_by_piece.group(3)
 
-                pieces = game.board.filter_pieces(self._piece_dict[piece], game.current_player)
+                pieces = board.filter_pieces(self.piece_dict[piece], player)
                 piece_moves = self.moves_for_pieces(pieces)
 
-                piece_move = self.find_move_for_coordinate(piece_moves, file, rank, 'Capture')
+                piece_move = self.find_move_for_coordinate(piece_moves, file, rank, MoveTypes.CAPTURE)
 
-                if not self.make_move(game, piece_move):
+                if not self.make_move(board, piece_move):
                     continue
                 else:
                     return
@@ -75,14 +83,12 @@ class ChessConsoleUserInterface(ChessUserInterface):
                 rank = capture_by_pawn_promotion.group(3)
                 piece = capture_by_pawn_promotion.group(4)
 
-                pawns = self.filter_pieces(self.get_pieces_on_file(game, pawn), game.current_player, 'Pawn')
+                pawns = self.filter_pieces(self.get_pieces_on_file(board, pawn), player, PieceType.PAWN)
                 pawn_moves = self.moves_for_pieces(pawns)
 
-                pawn_move = self.find_move_for_coordinate(pawn_moves, file, rank, 'Capture Promotion')
+                pawn_move = self.find_move_for_coordinate(pawn_moves, file, rank, MoveTypes.CAPTURE_PROMOTION)
 
-                self.set_promote_into(pawn_move, piece)
-
-                if not self.make_move(game, pawn_move):
+                if not self.make_move(board, pawn_move):
                     continue
                 else:
                     return
@@ -91,12 +97,12 @@ class ChessConsoleUserInterface(ChessUserInterface):
                 file = capture_by_pawn.group(2)
                 rank = capture_by_pawn.group(3)
 
-                pawns = self.filter_pieces(self.get_pieces_on_file(game, pawn), game.current_player, 'Pawn')
+                pawns = self.filter_pieces(self.get_pieces_on_file(board, pawn), player, PieceType.PAWN)
                 pawn_moves = self.moves_for_pieces(pawns)
 
-                pawn_move = self.find_move_for_coordinate(pawn_moves, file, rank, 'Capture')
+                pawn_move = self.find_move_for_coordinate(pawn_moves, file, rank, MoveTypes.CAPTURE)
 
-                if not self.make_move(game, pawn_move):
+                if not self.make_move(board, pawn_move):
                     continue
                 else:
                     return
@@ -104,12 +110,12 @@ class ChessConsoleUserInterface(ChessUserInterface):
                 file = pawn_move.group(1)
                 rank = pawn_move.group(2)
 
-                pawns = self.filter_pieces(self.get_pieces_on_file(game, file), game.current_player, 'Pawn')
+                pawns = self.filter_pieces(self.get_pieces_on_file(board, file), player, PieceType.PAWN)
                 pawn_moves = self.moves_for_pieces(pawns)
 
-                pawn_move = self.find_move_for_coordinate(pawn_moves, file, rank, 'Move')
+                pawn_move = self.find_move_for_coordinate(pawn_moves, file, rank, MoveTypes.MOVE)
 
-                if not self.make_move(game, pawn_move):
+                if not self.make_move(board, pawn_move):
                     continue
                 else:
                     return
@@ -118,14 +124,14 @@ class ChessConsoleUserInterface(ChessUserInterface):
                 rank = pawn_promotion.group(2)
                 piece = pawn_promotion.group(3)
 
-                pawns = self.filter_pieces(self.get_pieces_on_file(game, file), game.current_player, 'Pawn')
+                pawns = self.filter_pieces(self.get_pieces_on_file(board, file), player, PieceType.PAWN)
                 pawn_moves = self.moves_for_pieces(pawns)
 
-                pawn_move = self.find_move_for_coordinate(pawn_moves, file, rank, 'Promotion')
+                pawn_move = self.find_move_for_coordinate(pawn_moves, file, rank, MoveTypes.PROMOTION)
 
                 self.set_promote_into(pawn_move, piece)
 
-                if not self.make_move(game, pawn_move):
+                if not self.make_move(board, pawn_move):
                     continue
                 else:
                     return
@@ -134,12 +140,12 @@ class ChessConsoleUserInterface(ChessUserInterface):
                 file = piece_move.group(2)
                 rank = piece_move.group(3)
 
-                pieces = game.board.filter_pieces(self._piece_dict[piece], game.current_player)
+                pieces = board.filter_pieces(self.piece_dict[piece], player)
                 piece_moves = self.moves_for_pieces(pieces)
 
-                piece_move = self.find_move_for_coordinate(piece_moves, file, rank, 'Move')
+                piece_move = self.find_move_for_coordinate(piece_moves, file, rank, MoveTypes.MOVE)
 
-                if not self.make_move(game, piece_move):
+                if not self.make_move(board, piece_move):
                     continue
                 else:
                     return
@@ -149,12 +155,12 @@ class ChessConsoleUserInterface(ChessUserInterface):
                 file = specific_piece_move.group(3)
                 rank = specific_piece_move.group(4)
 
-                pieces = game.board.filter_pieces(self._piece_dict[piece], game.current_player)
+                pieces = board.filter_pieces(self.piece_dict[piece], player)
                 piece_moves = self.moves_for_pieces(pieces)
 
-                piece_move = self.find_move_for_coordinate(piece_moves, file, rank, 'Capture', piece_id)
+                piece_move = self.find_move_for_coordinate(piece_moves, file, rank, MoveTypes.CAPTURE, piece_id)
 
-                if not self.make_move(game, piece_move):
+                if not self.make_move(board, piece_move):
                     continue
                 else:
                     return
@@ -164,91 +170,85 @@ class ChessConsoleUserInterface(ChessUserInterface):
                 file = specific_piece_move.group(3)
                 rank = specific_piece_move.group(4)
 
-                pieces = game.board.filter_pieces(self._piece_dict[piece], game.current_player)
+                pieces = board.filter_pieces(self.piece_dict[piece], player)
                 piece_moves = self.moves_for_pieces(pieces)
 
-                piece_move = self.find_move_for_coordinate(piece_moves, file, rank, 'Move', piece_id)
+                piece_move = self.find_move_for_coordinate(piece_moves, file, rank, MoveTypes.MOVE, piece_id)
 
-                if not self.make_move(game, piece_move):
+                if not self.make_move(board, piece_move):
                     continue
                 else:
                     return
             elif move_input in ['O-O', 'O-O-O']:
-                move = self.get_castle_move(game, move_input, game.current_player)
+                move = self.get_castle_move(board, move_input, player)
 
-                if not self.make_move(game, move):
+                if not self.make_move(board, move):
                     continue
                 else:
                     return
             else:
-                print('Invalid move format. (see algebraic notation (chess))')
+                print('Invalid moves format. (see algebraic notation (chess))')
                 continue
 
-    def game_over(self, winner):
-        if winner == 'light':
+    def game_over(self, loser):
+        if loser == PieceColor.BLACK:
             print('1-0')
-        elif winner == 'dark':
+        elif loser == PieceColor.WHITE:
             print('0-1')
         else:
             print('1/2-1/2')
 
-    def set_promote_into(self, move, letter):
-        if move.type not in ['Promotion', 'Capture Promotion']:
-            raise ValueError('set_promote_into: can only be set for promotion type moves')
-
-        move.promoted_piece_name = self._piece_dict[letter]
-
     @staticmethod
-    def make_move(game, move):
+    def make_move(board, move):
         if not move:
             print('Invalid move.')
             return False
         else:
-            game.board.move(move)
+            board.move(move)
             return True
 
     @staticmethod
-    def get_pieces_on_file(game, file):
+    def get_pieces_on_file(board, file):
         files = dict(zip(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'], [i for i in range(0, 8)]))
         pieces = []
 
         if file not in files:
             raise ValueError('get_pieces_on_rank: invalid rank')
 
-        for pos, piece in game.board.pieces.items():
+        for pos, piece in board.pieces.items():
             if pos[0] == files[file]:
                 pieces.append(piece)
 
         return pieces
 
     @staticmethod
-    def get_pieces_on_rank(game, rank):
+    def get_pieces_on_rank(board, rank):
         rank = int(rank)
         pieces = []
 
         if not 1 <= rank <= 8:
             raise ValueError('get_pieces_on_file: invalid rank')
 
-        for pos, piece in game.board.pieces.items():
+        for pos, piece in board.pieces.items():
             if pos[1] == rank - 1:
                 pieces.append(piece)
 
         return pieces
 
     @staticmethod
-    def get_piece_on_square(game, file, rank):
+    def get_piece_on_square(board, file, rank):
         rank = int(rank)
         files = dict(zip(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'], [i for i in range(0, 8)]))
 
         if 1 <= rank <= 8 and file in files.keys():
-            if (files[file], rank - 1) in game.board.pieces:
-                return game.board.pieces[(files[file], rank - 1)]
+            if (files[file], rank - 1) in board.pieces:
+                return board.pieces[(files[file], rank - 1)]
 
         return None
 
     @staticmethod
-    def filter_pieces(piece_list, color, name):
-        return list(filter(lambda x: x.color == color and x.type == name, piece_list))
+    def filter_pieces(piece_list, color, type):
+        return list(filter(lambda x: x.color == color and x.type == type, piece_list))
 
     @staticmethod
     def moves_for_pieces(pieces):
@@ -282,15 +282,49 @@ class ChessConsoleUserInterface(ChessUserInterface):
         return None
 
     @staticmethod
-    def get_castle_move(game, castle_type, color):
-        king = game.board.get_king(color)
+    def get_castle_move(board, castle_type, color):
+        king = board.get_king(color)
 
         king_moves = king.moves()
 
         for m in king_moves:
-            if castle_type == 'O-O' and m.type == 'King Side Castle':
+            if castle_type == 'O-O' and m.is_king_side_castle():
                 return m
-            elif castle_type == 'O-O-O' and m.type == 'Queen Side Castle':
+            elif castle_type == 'O-O-O' and m.is_queen_side_castle():
                 return m
 
         return None
+
+    @staticmethod
+    def display_moves(board, piece):
+        moves = piece.moves()
+
+        moves_str = []
+
+        for m in moves:
+            if m.is_move():
+                if piece.is_pawn():
+                    moves_str.append(board.position_to_algebraic(m.destination))
+                else:
+                    moves_str.append(m.piece.shorthand() + board.position_to_algebraic(m.destination))
+            elif m.is_capture():
+                if piece.is_pawn():
+                    moves_str.append(board.position_to_algebraic(m.origin)[0] + 'x' +
+                                     board.position_to_algebraic(m.destination))
+                else:
+                    moves_str.append(m.piece.shorthand() + 'x' + board.position_to_algebraic(m.destination))
+            elif m.is_promotion():
+                moves_str.append(board.position_to_algebraic(m.destination) + '=' + m.promted_piece.shorthand())
+            elif m.is_capture_promotion():
+                moves_str.append(board.position_to_algebraic(m.origin)[0] + 'x' +
+                                 board.position_to_algebraic(m.destination) + '=' + m.promted_piece.shorthand())
+            elif m.is_king_side_castle():
+                moves_str.append('O-O')
+            elif m.is_queen_side_castle():
+                moves_str.append('O-O-O')
+            elif m.is_attack():
+                moves_str.append('A ' + board.position_to_algebraic(m.destination))
+            else:
+                moves_str.append('???')
+
+        print('[' + ', '.join(moves_str) + ']')

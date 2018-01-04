@@ -4,7 +4,7 @@
 # Just for fun xmas 2017 chess project
 #
 
-from .piece import Piece
+from .piece import Piece, PieceType, PieceColor
 from .pawn import Pawn
 from .knight import Knight
 from .bishop import Bishop

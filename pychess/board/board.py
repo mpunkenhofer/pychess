@@ -1,0 +1,121 @@
+# Mathias Punkenhofer
+# code.mpunkenhofer@gmail.com
+#
+# Just for fun xmas 2017 chess project
+#
+
+from pychess import pieces
+from abc import ABC, abstractmethod
+
+
+class Board(ABC):
+    @abstractmethod
+    def __init__(self):
+        self.history = []
+        self.pieces = None
+
+    @abstractmethod
+    def move(self, move):
+        pass
+
+    @abstractmethod
+    def in_board(self, pos):
+        pass
+
+    @abstractmethod
+    def get_first_rank(self, color):
+        pass
+
+    @abstractmethod
+    def get_last_rank(self, color):
+        pass
+
+    @abstractmethod
+    def get_en_passant_rank(self, color):
+        pass
+
+    @abstractmethod
+    def get_first_file(self, color):
+        pass
+
+    @abstractmethod
+    def get_last_file(self, color):
+        pass
+
+    @abstractmethod
+    def get_king_side_castle_positions(self, color):
+        pass
+
+    @abstractmethod
+    def get_queen_side_castle_positions(self, color):
+        pass
+
+    @abstractmethod
+    def position_to_algebraic(self, pos):
+        pass
+
+    @abstractmethod
+    def get_piece(self, pos):
+        pass
+
+    def filter_pieces(self, type=None, color=None):
+        filtered = []
+
+        for _, p in self.pieces.items():
+            if type and type != p.type:
+                continue
+            if color and color != p.color:
+                continue
+
+            filtered.append(p)
+
+        return filtered
+
+    def get_pieces(self, color=None):
+        if color:
+            return [p for p in self.filter_pieces(color=color) if not p.is_king()]
+        else:
+            return [p for p in self.pieces if not p.is_king()]
+
+    def get_king(self, color):
+        return self.filter_pieces(pieces.PieceType.KING, color)[0]
+
+    def get_queens(self, color):
+        return self.filter_pieces(pieces.PieceType.QUEEN, color)
+
+    def get_rooks(self, color):
+        return self.filter_pieces(pieces.PieceType.ROOK, color)
+
+    def get_bishops(self, color):
+        return self.filter_pieces(pieces.PieceType.BISHOP, color)
+
+    def get_knights(self, color):
+        return self.filter_pieces(pieces.PieceType.KNIGHT, color)
+
+    def get_pawns(self, color):
+        return self.filter_pieces(pieces.PieceType.PAWN, color)
+
+    def get_enemy_king(self, color):
+        return self.get_king(pieces.PieceColor.WHITE if color == pieces.PieceColor.BLACK else pieces.PieceColor.BLACK)
+
+    def is_first_rank(self, color, pos):
+        _, y = pos
+        return y == self.get_first_rank(color)
+
+    def is_last_rank(self, color, pos):
+        _, y = pos
+        return y == self.get_last_rank(color)
+
+    def is_en_passant_rank(self, color, pos):
+        _, y = pos
+        return y == self.get_en_passant_rank(color)
+
+    def is_first_file(self, color, pos):
+        x, _ = pos
+        return x == self.get_first_file(color)
+
+    def is_last_file(self, color, pos):
+        x, _ = pos
+        return x == self.get_last_file(color)
+
+

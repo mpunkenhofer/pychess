@@ -4,4 +4,5 @@
 # Just for fun xmas 2017 chess project
 #
 
-from .console_ui import ChessConsoleUserInterface
+from .variant import Variant
+from pychess.variant.standard import Standard

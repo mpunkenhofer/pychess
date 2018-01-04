@@ -7,19 +7,15 @@
 from abc import ABC, abstractmethod
 
 
-class ChessUserInterface(ABC):
+class Variant(ABC):
     @abstractmethod
     def __init__(self):
+        self.board = None
+
+    @abstractmethod
+    def is_draw(self):
         pass
 
     @abstractmethod
-    def draw(self, board):
-        pass
-
-    @abstractmethod
-    def move(self, board, player):
-        pass
-
-    @abstractmethod
-    def game_over(self, loser):
+    def is_checkmated(self, color):
         pass
