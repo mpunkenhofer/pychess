@@ -4,8 +4,12 @@
 # Just for fun xmas 2017 chess project
 #
 
+import pychess.pieces
+
 from enum import Enum
 from abc import ABC, abstractmethod
+
+from pychess.util import position
 
 
 class MoveTypes(Enum):
@@ -50,50 +54,52 @@ class MoveType(ABC):
     def is_attack(self):
         return self.type == MoveTypes.ATTACK
 
-    def to_algebraic(self, board):
+    def to_algebraic(self):
+        pass
 
-        if self.is_move():
-            if self.piece.is_pawn():
-                return self.position_to_algebraic(board, self.destination)
-            else:
-                return self.piece.shorthand() + self.position_to_algebraic(board, self.destination)
-        elif self.is_capture():
-            if self.piece.is_pawn():
-                return self.position_to_algebraic(board, self.origin)[0] + 'x' + \
-                       self.position_to_algebraic(board, self.destination)
-            else:
-                return self.piece.shorthand() + 'x' + self.position_to_algebraic(board, self.destination)
-        elif self.is_promotion():
-            return self.position_to_algebraic(board, self.destination) + '=' + self.promoted_piece.shorthand()
-        elif self.is_capture_promotion():
-            return self.position_to_algebraic(board, self.origin)[0] + 'x' + \
-                             self.position_to_algebraic(board, self.destination) + '=' + self.promoted_piece.shorthand()
-        elif self.is_king_side_castle():
-            return 'O-O'
-        elif self.is_queen_side_castle():
-            return 'O-O-O'
-        elif self.is_attack():
-            return 'A ' + self.position_to_algebraic(board, self.destination)
-        else:
+    def get_piece_id(self):
+        if self.piece.is_pawn() or self.piece.is_king():
             return ''
 
-    @staticmethod
-    def position_to_algebraic(board, pos):
-        if not pos or not board:
-            return ''
+        same_pieces = [p for p in self.piece.board.filter_pieces(self.piece.type, self.piece.color)
+                       if not p == self.piece]
 
-        file_diff = board.get_top_right()[0] - board.get_bottom_left()[0]
-        rank_diff = board.get_top_right()[1] - board.get_bottom_left()[0]
+        if len(same_pieces) > 0:
+            pieces_with_same_destination = []
 
-        files = {board.get_bottom_left()[0] + (i - ord('a')): chr(i) for i in range(ord('a'), ord('a') + file_diff + 1)}
-        ranks = {board.get_bottom_left()[1] + (i - 1): str(i) for i in range(1, 1 + rank_diff + 1)}
+            for p in same_pieces:
+                for m in p.moves():
+                    if m.destination == self.destination:
+                        pieces_with_same_destination.append(p)
+                        break
 
-        return files[pos[0]] + ranks[pos[1]]
+            if not pieces_with_same_destination:
+                return ''
+
+            same_file = False
+
+            for p in pieces_with_same_destination:
+                if pychess.pieces.Piece.same_file(p, self.piece):
+                    same_file = True
+                    break
+
+            algebraic_pos = position.to_algebraic(self.origin, self.piece.board)
+
+            return algebraic_pos[1] if same_file else algebraic_pos[0]
+
+        return ''
 
 
 class Move(MoveType):
     def __init__(self, p, o, d):
         MoveType.__init__(self, p, o, d, MoveTypes.MOVE)
+
+    def to_algebraic(self):
+        if self.piece.is_pawn():
+            return position.to_algebraic(self.destination, self.piece.board)
+        else:
+            piece_id = self.get_piece_id()
+            return self.piece.shorthand() + piece_id + position.to_algebraic(self.destination, self.piece.board)
 
 
 class Capture(MoveType):
@@ -101,11 +107,25 @@ class Capture(MoveType):
         MoveType.__init__(self, p, o, d, MoveTypes.CAPTURE)
         self.captured_piece = captured_piece
 
+    def to_algebraic(self):
+        if self.piece.is_pawn():
+            return position.to_algebraic(self.piece.board, self.origin)[0] + 'x' + \
+                   position.to_algebraic(self.destination, self.piece.board)
+        else:
+            piece_id = self.get_piece_id()
+
+            return self.piece.shorthand() + piece_id + 'x' + \
+                   position.to_algebraic(self.destination, self.piece.board)
+
 
 class Promotion(MoveType):
     def __init__(self, p, o, d, promoted_piece):
         MoveType.__init__(self, p, o, d, MoveTypes.PROMOTION)
         self.promoted_piece = promoted_piece
+
+    def to_algebraic(self):
+        return position.to_algebraic(self.destination, self.piece.board) + '=' + \
+               self.promoted_piece.shorthand()
 
 
 class CapturePromotion(MoveType):
@@ -114,12 +134,20 @@ class CapturePromotion(MoveType):
         self.captured_piece = captured_piece
         self.promoted_piece = promoted_piece
 
+    def to_algebraic(self):
+        return position.to_algebraic(self.origin, self.piece.board)[0] + 'x' + \
+               position.to_algebraic(self.destination, self.piece.board) + '=' + \
+               self.promoted_piece.shorthand()
+
 
 class KingSideCastle(MoveType):
     def __init__(self, p, o, k, r):
         MoveType.__init__(self, p, o, None, MoveTypes.KING_SIDE_CASTLE)
         self.king = k
         self.rook = r
+
+    def to_algebraic(self):
+        return 'O-O'
 
 
 class QueenSideCastle(MoveType):
@@ -128,8 +156,14 @@ class QueenSideCastle(MoveType):
         self.king = k
         self.rook = r
 
+    def to_algebraic(self):
+        return 'O-O-O'
+
 
 class Attack(MoveType):
     def __init__(self, p, o, d):
         MoveType.__init__(self, p, o, d, MoveTypes.ATTACK)
+
+    def to_algebraic(self):
+        return 'A ' + position.to_algebraic(self.destination, self.piece.board)
 

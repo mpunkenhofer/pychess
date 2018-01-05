@@ -8,6 +8,8 @@ import re
 import math
 import pychess.pieces
 
+from pychess.util import position
+
 from examples.interface import ChessUserInterface
 
 
@@ -88,15 +90,16 @@ class ChessConsoleUserInterface(ChessUserInterface):
 
     def display_moves(self, piece):
         piece = self.find_piece(piece)
-        move_dict = self.build_move_dict(self.board.get_all_pieces(piece.color))
 
-        moves = [k for k, m in move_dict.items() if m and m.piece == piece]
-
-        print('[' + ', '.join(moves) + ']')
+        if not piece:
+            print('No piece on: ' + piece)
+        else:
+            moves = [m.to_algebraic() for m in piece.moves()]
+            print('[' + ', '.join(moves) + ']')
 
     def find_piece(self, piece):
         for p in self.board.get_all_pieces():
-            if p.position_to_algebraic() == piece:
+            if position.to_algebraic(p.position, self.board) == piece:
                 return p
 
         return None
@@ -111,29 +114,11 @@ class ChessConsoleUserInterface(ChessUserInterface):
 
         for p in pieces:
             for move in p.moves():
-                k = move.to_algebraic(self.board)
+                k = move.to_algebraic()
                 if not k:
                     continue
 
                 if k not in move_dict:
                     move_dict[k] = move
-                else:
-                    other_move = move_dict[k]
-
-                    if pychess.pieces.Piece.same_file(move.piece, other_move.piece):
-                        move_id = move.position_to_algebraic(self.board, move.origin)[1]
-                        other_move_id = other_move.position_to_algebraic(self.board, other_move.origin)[1]
-                    else:
-                        move_id = move.position_to_algebraic(self.board, move.origin)[0]
-                        other_move_id = other_move.position_to_algebraic(self.board, other_move.origin)[0]
-
-                    capture = 'x' if move.is_capture() else ''
-
-                    move_dict[move.piece.shorthand() + move_id + capture
-                              + move.position_to_algebraic(self.board, move.destination)] = move
-                    move_dict[other_move.piece.shorthand() + other_move_id + capture
-                              + other_move.position_to_algebraic(self.board, other_move.destination)] = other_move
-
-                    move_dict[k] = None
 
         return move_dict
