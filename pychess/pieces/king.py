@@ -27,14 +27,14 @@ class King(pieces.Piece):
             else:
                 m.append(moves.Move(self, (p_x, p_y), s))
 
-        castle_king_side = self.king_side_castle()
-        castle_queen_side = self.queen_side_castle()
+        castle_short = self.short_castle()
+        castle_long = self.long_castle()
         
-        if castle_king_side:
-            m.append(castle_king_side)
+        if castle_short:
+            m.append(castle_short)
             
-        if castle_queen_side:
-            m.append(castle_queen_side)
+        if castle_long:
+            m.append(castle_long)
             
         return m
 
@@ -75,7 +75,7 @@ class King(pieces.Piece):
 
     def is_checkmated(self):
         if self.in_check():
-            if self.get_moves():
+            if self.moves():
                 return False
 
             for p in self.board.get_pieces(self.color):
@@ -88,7 +88,7 @@ class King(pieces.Piece):
 
     def is_stalemated(self):
         if not self.in_check():
-            if self.get_moves():
+            if self.moves():
                 return False
 
             for p in self.board.get_pieces(self.color):
@@ -120,7 +120,7 @@ class King(pieces.Piece):
                     return True
         return False
 
-    def king_side_castle(self):
+    def short_castle(self):
         rook_pos = (self.board.get_last_file(self.color) if self.is_white()
                     else self.board.get_first_file(self.color), self.board.get_first_rank(self.color))
 
@@ -144,17 +144,17 @@ class King(pieces.Piece):
 
         p_x, p_y = self.position
         
-        king_pos, rook_pos = self.board.get_king_side_castle_positions(self.color)
+        king_pos, rook_pos = self.board.get_short_castle_positions(self.color)
         
         for x in range(min(p_x + 1, king_pos[0] + 1), max(p_x, king_pos[0])):
             if self.protected_square((x, p_y)):
                 return None
             
-        castle_move = moves.KingSideCastle(self, (p_x, p_y), self, rook)
+        castle_move = moves.ShortCastle(self, (p_x, p_y), self, rook)
         
         return castle_move
 
-    def queen_side_castle(self):
+    def long_castle(self):
         rook_pos = (self.board.get_first_file(self.color) if self.is_white()
                     else self.board.get_last_file(self.color), self.board.get_first_rank(self.color))
 
@@ -178,13 +178,13 @@ class King(pieces.Piece):
 
         p_x, p_y = self.position
 
-        king_pos, rook_pos = self.board.get_queen_side_castle_positions(self.color)
+        king_pos, rook_pos = self.board.get_long_castle_positions(self.color)
 
         for x in range(min(p_x + 1, king_pos[0] + 1), max(p_x, king_pos[0])):
             if self.protected_square((x, p_y)):
                 return None
 
-        castle_move = moves.QueenSideCastle(self, (p_x, p_y), self, rook)
+        castle_move = moves.LongCastle(self, (p_x, p_y), self, rook)
 
         return castle_move
 

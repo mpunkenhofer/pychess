@@ -4,4 +4,4 @@
 # Just for fun xmas 2017 chess project
 #
 
-from .moves import MoveTypes, Move, Capture, Promotion, CapturePromotion, KingSideCastle, QueenSideCastle, Attack
+from .moves import MoveTypes, Move, Capture, Promotion, CapturePromotion, ShortCastle, LongCastle, Attack

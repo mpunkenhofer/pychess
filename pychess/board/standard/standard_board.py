@@ -34,7 +34,7 @@ class StandardBoard(board.Board):
             self.capture(move)
         elif move.type in [moves.MoveTypes.PROMOTION, moves.MoveTypes.CAPTURE_PROMOTION]:
             self.promote(move)
-        elif move.type in [moves.MoveTypes.KING_SIDE_CASTLE, moves.MoveTypes.QUEEN_SIDE_CASTLE]:
+        elif move.type in [moves.MoveTypes.SHORT_CASTLE, moves.MoveTypes.LONG_CASTLE]:
             self.castle(move)
         else:
             self.simple_move(move)
@@ -71,8 +71,8 @@ class StandardBoard(board.Board):
         king.history.append(move)
         rook.history.append(move)
 
-        king_pos, rook_pos = self.get_king_side_castle_positions(king.color) if move.is_king_side_castle() \
-            else self.get_queen_side_castle_positions(king.color)
+        king_pos, rook_pos = self.get_short_castle_positions(king.color) if move.is_king_side_castle() \
+            else self.get_long_castle_positions(king.color)
 
         king.position = king_pos
         rook.position = rook_pos
@@ -100,8 +100,8 @@ class StandardBoard(board.Board):
     def get_en_passant_rank(self, color):
         return 4 if color == PieceColor.WHITE else 3
 
-    def get_king_side_castle_positions(self, color):
+    def get_short_castle_positions(self, color):
         return ((6, 0), (5, 0)) if color == PieceColor.WHITE else ((6, 7), (5, 7))
 
-    def get_queen_side_castle_positions(self, color):
+    def get_long_castle_positions(self, color):
         return ((2, 0), (3, 0)) if color == PieceColor.WHITE else ((2, 7), (3, 7))

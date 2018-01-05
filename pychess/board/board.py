@@ -14,6 +14,8 @@ class Board(ABC):
         self.history = []
         self.pieces = None
 
+        self.white_long_castle = self.white_short_castle = self.black_short_castle = self.black_long_castle = True
+
     @abstractmethod
     def move(self, move):
         pass
@@ -31,11 +33,11 @@ class Board(ABC):
         pass
 
     @abstractmethod
-    def get_king_side_castle_positions(self, color):
+    def get_short_castle_positions(self, color):
         pass
 
     @abstractmethod
-    def get_queen_side_castle_positions(self, color):
+    def get_long_castle_positions(self, color):
         pass
 
     @abstractmethod

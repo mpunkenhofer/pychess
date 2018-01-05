@@ -5,6 +5,7 @@
 #
 
 import pychess.pieces
+import copy
 
 from enum import Enum
 from abc import ABC, abstractmethod
@@ -17,8 +18,8 @@ class MoveTypes(Enum):
     CAPTURE = 'Capture'
     PROMOTION = 'Promotion'
     CAPTURE_PROMOTION = 'Capture Promotion'
-    KING_SIDE_CASTLE = 'King Side Castle'
-    QUEEN_SIDE_CASTLE = 'Queen Side Castle'
+    SHORT_CASTLE = 'King Side Castle'
+    LONG_CASTLE = 'Queen Side Castle'
     ATTACK = 'Attack'
 
 
@@ -29,7 +30,6 @@ class MoveType(ABC):
         self.origin = o
         self.destination = d
         self.type = t
-        self.check = False
 
         self.promoted_piece = self.captured_piece = self.king = self.rook = None
 
@@ -46,10 +46,10 @@ class MoveType(ABC):
         return self.type == MoveTypes.CAPTURE_PROMOTION
 
     def is_king_side_castle(self):
-        return self.type == MoveTypes.KING_SIDE_CASTLE
+        return self.type == MoveTypes.SHORT_CASTLE
 
     def is_queen_side_castle(self):
-        return self.type == MoveTypes.QUEEN_SIDE_CASTLE
+        return self.type == MoveTypes.LONG_CASTLE
 
     def is_attack(self):
         return self.type == MoveTypes.ATTACK
@@ -105,6 +105,7 @@ class Move(MoveType):
 class Capture(MoveType):
     def __init__(self, p, o, d, captured_piece):
         MoveType.__init__(self, p, o, d, MoveTypes.CAPTURE)
+
         self.captured_piece = captured_piece
 
     def to_algebraic(self):
@@ -140,9 +141,9 @@ class CapturePromotion(MoveType):
                self.promoted_piece.shorthand()
 
 
-class KingSideCastle(MoveType):
+class ShortCastle(MoveType):
     def __init__(self, p, o, k, r):
-        MoveType.__init__(self, p, o, None, MoveTypes.KING_SIDE_CASTLE)
+        MoveType.__init__(self, p, o, None, MoveTypes.SHORT_CASTLE)
         self.king = k
         self.rook = r
 
@@ -150,9 +151,9 @@ class KingSideCastle(MoveType):
         return 'O-O'
 
 
-class QueenSideCastle(MoveType):
+class LongCastle(MoveType):
     def __init__(self, p, o, k, r):
-        MoveType.__init__(self, p, o, None, MoveTypes.QUEEN_SIDE_CASTLE)
+        MoveType.__init__(self, p, o, None, MoveTypes.LONG_CASTLE)
         self.king = k
         self.rook = r
 
