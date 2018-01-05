@@ -8,7 +8,7 @@ import re
 import math
 import pychess.pieces
 
-from interface import ChessUserInterface
+from examples.interface import ChessUserInterface
 
 
 class ChessConsoleUserInterface(ChessUserInterface):

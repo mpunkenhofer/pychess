@@ -6,10 +6,10 @@
 
 import sys
 
+from examples.interface.console import ChessConsoleUserInterface
+
 from pychess.variant import Standard
 from pychess.pieces import PieceColor
-
-from interface.console import ChessConsoleUserInterface
 
 
 class Game:

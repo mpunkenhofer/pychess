@@ -4,7 +4,7 @@
 # Just for fun xmas 2017 chess project
 #
 
-from interface import ChessUserInterface
+from examples.interface import ChessUserInterface
 
 
 class ChessGraphicalUserInterface(ChessUserInterface):
