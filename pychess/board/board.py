@@ -55,8 +55,11 @@ class Board(ABC):
 
         return filtered
 
-    def get_all_pieces(self):
-        return [p for _, p in self.pieces.items()]
+    def get_all_pieces(self, color=None):
+        if color:
+            return [p for p in self.filter_pieces(color=color)]
+        else:
+            return [p for _, p in self.pieces.items()]
 
     def get_pieces(self, color=None):
         if color:

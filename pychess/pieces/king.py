@@ -121,7 +121,8 @@ class King(pieces.Piece):
         return False
 
     def king_side_castle(self):
-        rook_pos = (self.board.get_last_file(self.color), self.board.get_first_rank(self.color))
+        rook_pos = (self.board.get_last_file(self.color) if self.is_white()
+                    else self.board.get_first_file(self.color), self.board.get_first_rank(self.color))
 
         if rook_pos not in self.board.pieces:
             return None
@@ -154,7 +155,8 @@ class King(pieces.Piece):
         return castle_move
 
     def queen_side_castle(self):
-        rook_pos = (self.board.get_first_file(self.color), self.board.get_first_rank(self.color))
+        rook_pos = (self.board.get_first_file(self.color) if self.is_white()
+                    else self.board.get_last_file(self.color), self.board.get_first_rank(self.color))
 
         if rook_pos not in self.board.pieces:
             return None

@@ -9,7 +9,6 @@ import math
 import pychess.pieces
 
 from interface import ChessUserInterface
-from pychess.pieces import PieceColor
 
 
 class ChessConsoleUserInterface(ChessUserInterface):
@@ -40,7 +39,7 @@ class ChessConsoleUserInterface(ChessUserInterface):
             self.do_command(move_input)
             return self.move(player)
 
-        move = self.find_move(self.board.get_pieces(player), move_input)
+        move = self.find_move(self.board.get_all_pieces(player), move_input)
 
         if not move:
             print('Invalid move.')
@@ -49,9 +48,9 @@ class ChessConsoleUserInterface(ChessUserInterface):
             return self.board.move(move)
 
     def game_over(self, loser):
-        if loser == PieceColor.BLACK:
+        if loser == pychess.pieces.PieceColor.BLACK:
             print('1-0')
-        elif loser == PieceColor.WHITE:
+        elif loser == pychess.pieces.PieceColor.WHITE:
             print('0-1')
         else:
             print('1/2-1/2')
@@ -70,7 +69,8 @@ class ChessConsoleUserInterface(ChessUserInterface):
                     '([a-h])([1-8])',
                     '([a-h])([18])=([QRBN])',
                     '([KQRBN])([a-h])([1-8])',
-                    '([QRBN])([a-h]|[1-8])([a-h])([1-8])']
+                    '([QRBN])([a-h]|[1-8])([a-h])([1-8])',
+                    'O-O', 'O-O-O']
 
         for p in patterns:
             if re.match(p, move_input):
@@ -87,11 +87,19 @@ class ChessConsoleUserInterface(ChessUserInterface):
             self.display_moves(value)
 
     def display_moves(self, piece):
-        move_dict = self.build_move_dict(self.board.get_all_pieces())
+        piece = self.find_piece(piece)
+        move_dict = self.build_move_dict(self.board.get_all_pieces(piece.color))
 
-        moves = [k for k, m in move_dict.items() if m and m.piece.position_to_algebraic() == piece]
+        moves = [k for k, m in move_dict.items() if m and m.piece == piece]
 
         print('[' + ', '.join(moves) + ']')
+
+    def find_piece(self, piece):
+        for p in self.board.get_all_pieces():
+            if p.position_to_algebraic() == piece:
+                return p
+
+        return None
 
     def find_move(self, pieces, move_input):
         move_dict = self.build_move_dict(pieces)

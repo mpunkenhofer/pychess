@@ -45,7 +45,7 @@ class MoveType(ABC):
         return self.type == MoveTypes.KING_SIDE_CASTLE
 
     def is_queen_side_castle(self):
-        return self.type == MoveTypes.KING_SIDE_CASTLE
+        return self.type == MoveTypes.QUEEN_SIDE_CASTLE
 
     def is_attack(self):
         return self.type == MoveTypes.ATTACK
@@ -79,6 +79,9 @@ class MoveType(ABC):
 
     @staticmethod
     def position_to_algebraic(board, pos):
+        if not pos or not board:
+            return ''
+
         file_diff = board.get_top_right()[0] - board.get_bottom_left()[0]
         rank_diff = board.get_top_right()[1] - board.get_bottom_left()[0]
 
