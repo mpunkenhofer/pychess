@@ -4,8 +4,12 @@
 # Just for fun xmas 2017 chess project
 #
 
+import math
+
 from pychess import pieces
 from abc import ABC, abstractmethod
+from pychess.util import rules
+from pychess.util import position
 
 
 class Board(ABC):
@@ -35,6 +39,14 @@ class Board(ABC):
 
     @abstractmethod
     def get_long_castle_positions(self, color):
+        pass
+
+    @abstractmethod
+    def get_queen_side_rook(self, color):
+        pass
+
+    @abstractmethod
+    def get_king_side_rook(self, color):
         pass
 
     @abstractmethod
@@ -76,7 +88,59 @@ class Board(ABC):
             return None
 
     def fen(self):
-        return ''
+        file_diff = self.get_top_right()[0] - self.get_bottom_left()[0]
+        rank_diff = self.get_top_right()[1] - self.get_bottom_left()[0]
+
+        ranks = []
+
+        for y in reversed(range(0, rank_diff + 1)):
+            rank = ''
+            space_count = 0
+            for x in range(0, file_diff + 1):
+                if self.piece_on((x, y)):
+
+                    if space_count > 0:
+                        rank += str(space_count)
+                    space_count = 0
+
+                    piece = self.get_piece((x, y))
+                    rank += piece.shorthand() if piece.is_white() else piece.shorthand().lower()
+                else:
+                    space_count += 1
+
+            if space_count > 0:
+                rank += str(space_count)
+
+            ranks.append(rank)
+
+        last_move = self.get_last_move()
+
+        if not last_move:
+            active_color = 'w'
+        else:
+            active_color = 'b' if last_move.piece.is_white() else 'w'
+
+        white_king = self.get_king(pieces.PieceColor.WHITE)
+        black_king = self.get_king(pieces.PieceColor.BLACK)
+
+        castling = 'K' if self.enable_white_short_castle and \
+            not self.king_or_rook_moved(white_king, self.get_king_side_rook(pieces.PieceColor.WHITE)) else ''
+        castling += 'Q' if self.enable_white_long_castle and \
+            not self.king_or_rook_moved(white_king, self.get_queen_side_rook(pieces.PieceColor.WHITE)) else ''
+
+        castling += 'k' if self.enable_black_short_castle and \
+            not self.king_or_rook_moved(black_king, self.get_king_side_rook(pieces.PieceColor.BLACK)) else ''
+        castling += 'q' if self.enable_black_long_castle and \
+            not self.king_or_rook_moved(black_king, self.get_queen_side_rook(pieces.PieceColor.BLACK)) else ''
+
+        en_passant_target_square = self.en_passant_square()
+
+        half_move_clock = str(rules.half_move_clock(self.move_history()))
+
+        full_move_clock = str(int(math.ceil((len(self.move_history()) + 1) / 2)))
+
+        return '/'.join(ranks) + ' ' + active_color + ' ' + castling + ' ' + en_passant_target_square + ' ' + \
+               half_move_clock + ' ' + full_move_clock
 
     def filter_pieces(self, type=None, color=None):
         filtered = []
@@ -162,4 +226,24 @@ class Board(ABC):
         x, _ = pos
         return x == self.get_last_file(color)
 
+    @staticmethod
+    def king_or_rook_moved(king, rook):
+        if not king or not rook:
+            return True
 
+        if not king.is_king() or not rook.is_rook():
+            return True
+
+        if len(king.history) > 0 or len(rook.history) > 0:
+            return True
+
+        return False
+
+    def en_passant_square(self):
+        m = self.get_last_move()
+
+        if m and m.piece.is_pawn() and abs(m.destination[1] - m.origin[1]) > 1:
+            c = 1 if m.piece.is_white() else -1
+            return position.to_algebraic((m.piece.position[0], m.piece.position[1] - 1 * c), self)
+
+        return '-'

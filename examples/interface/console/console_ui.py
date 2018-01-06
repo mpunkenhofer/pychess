@@ -18,13 +18,17 @@ class ChessConsoleUserInterface(ChessUserInterface):
         ChessUserInterface.__init__(self, board)
 
     def draw(self):
-        for y in reversed(range(0, 8)):
-            for x in range(0, 8):
-                if (x, y) in self.board.pieces:
-                    if self.board.pieces[(x, y)].is_white():
-                        print(self.board.pieces[(x, y)].shorthand(), end='')
+        file_diff = self.board.get_top_right()[0] - self.board.get_bottom_left()[0]
+        rank_diff = self.board.get_top_right()[1] - self.board.get_bottom_left()[0]
+
+        for y in reversed(range(0, rank_diff + 1)):
+            for x in range(0, file_diff + 1):
+                if self.board.piece_on((x, y)):
+                    piece = self.board.get_piece((x, y))
+                    if piece.is_white():
+                        print(piece.shorthand(), end='')
                     else:
-                        print(self.board.pieces[(x, y)].shorthand().lower(), end='')
+                        print(piece.shorthand().lower(), end='')
                 else:
                     print('.', end='')
 
@@ -75,7 +79,7 @@ class ChessConsoleUserInterface(ChessUserInterface):
         print('\n')
 
     def get_input(self):
-        return input(str(int(math.ceil((len(self.board.history) + 1) / 2))) + ': ')
+        return input(str(int(math.ceil((len(self.board.move_history()) + 1) / 2))) + ': ')
 
     def valid_input(self, move_input):
         move_input = re.sub('[+#]', '', move_input)
@@ -89,7 +93,7 @@ class ChessConsoleUserInterface(ChessUserInterface):
                     '([a-h])([18])=([QRBN])',
                     '([KQRBN])([a-h])([1-8])',
                     '([QRBN])([a-h]|[1-8])([a-h])([1-8])',
-                    'O-O', 'O-O-O']
+                    'O-O', 'O-O-O', 'fen', 'history']
 
         for p in patterns:
             if re.match(p, move_input):
@@ -98,12 +102,16 @@ class ChessConsoleUserInterface(ChessUserInterface):
         return False
 
     def is_command(self, move_input):
-        return move_input[0] == 'p'
+        return move_input[0] == 'p' or move_input == 'fen' or move_input == 'history'
 
     def do_command(self, cmd):
-        cmd, value = cmd.split(' ')
-        if cmd == 'p':
+        if cmd[0] == 'p':
+            _, value = cmd.split(' ')
             self.display_moves(value)
+        elif cmd == 'history':
+            self.print_history()
+        elif cmd == 'fen':
+            print(self.board.fen())
 
     def display_moves(self, piece):
         piece = self.find_piece(piece)

@@ -127,13 +127,10 @@ class King(pieces.Piece):
         if not short_castle_enabled:
             return None
 
-        rook_pos = (self.board.get_last_file(self.color) if self.is_white()
-                    else self.board.get_first_file(self.color), self.board.get_first_rank(self.color))
+        rook = self.board.get_king_side_rook(self.color)
 
-        if rook_pos not in self.board.pieces:
+        if not rook:
             return None
-
-        rook = self.board.pieces[rook_pos]
         
         if self.history or rook.history:
             return None
@@ -167,13 +164,10 @@ class King(pieces.Piece):
         if not long_castle_enabled:
             return None
 
-        rook_pos = (self.board.get_first_file(self.color) if self.is_white()
-                    else self.board.get_last_file(self.color), self.board.get_first_rank(self.color))
+        rook = self.board.get_queen_side_rook(self.color)
 
-        if rook_pos not in self.board.pieces:
+        if not rook:
             return None
-
-        rook = self.board.pieces[rook_pos]
 
         if self.history or rook.history:
             return None
