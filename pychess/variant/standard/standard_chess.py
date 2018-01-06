@@ -2,8 +2,8 @@
 # code.mpunkenhofer@gmail.com
 #
 
-from pychess import variant
-from pychess.board.standard import StandardBoard
+from pychess.variant import variant
+from pychess.board import StandardBoard
 from pychess.pieces import PieceColor
 from pychess.util import rules
 

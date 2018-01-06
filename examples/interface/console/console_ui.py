@@ -16,21 +16,24 @@ class ChessConsoleUserInterface(ChessUserInterface):
         ChessUserInterface.__init__(self, board)
 
     def draw(self):
-        file_diff = self.board.get_top_right()[0] - self.board.get_bottom_left()[0]
-        rank_diff = self.board.get_top_right()[1] - self.board.get_bottom_left()[0]
+        self.draw_board(self.board)
+
+    @staticmethod
+    def draw_board(board):
+        file_diff = board.get_top_right()[0] - board.get_bottom_left()[0]
+        rank_diff = board.get_top_right()[1] - board.get_bottom_left()[0]
 
         for y in reversed(range(0, rank_diff + 1)):
             for x in range(0, file_diff + 1):
-                if self.board.piece_on((x, y)):
-                    piece = self.board.get_piece((x, y))
+                if board.piece_on((x, y)):
+                    piece = board.get_piece((x, y))
                     if piece.is_white():
                         print(piece.shorthand(), end='')
                     else:
                         print(piece.shorthand().lower(), end='')
                 else:
                     print('.', end='')
-
-            print()
+        print()
 
     def move(self, player):
         move_input = self.get_input()

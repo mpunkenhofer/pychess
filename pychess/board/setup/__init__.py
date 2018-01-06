@@ -2,4 +2,4 @@
 # code.mpunkenhofer@gmail.com
 #
 
-from pychess.variant.standard import Standard
+from .setup_board import SetupBoard

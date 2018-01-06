@@ -2,4 +2,6 @@
 # code.mpunkenhofer@gmail.com
 #
 
-from .board import Board
+from pychess.board.standard import StandardBoard
+from pychess.board.setup import SetupBoard
+
