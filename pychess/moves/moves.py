@@ -33,6 +33,12 @@ class MoveType(ABC):
 
         self.promoted_piece = self.captured_piece = self.king = self.rook = None
 
+        self.algebraic = None
+
+    @abstractmethod
+    def __str__(self):
+        pass
+
     def is_move(self):
         return self.type == MoveTypes.MOVE
 
@@ -55,7 +61,10 @@ class MoveType(ABC):
         return self.type == MoveTypes.ATTACK
 
     def to_algebraic(self):
-        pass
+        if not self.algebraic:
+            self.algebraic = self.__str__()
+
+        return self.algebraic
 
     def get_piece_id(self):
         if self.piece.is_pawn() or self.piece.is_king():
@@ -94,7 +103,7 @@ class Move(MoveType):
     def __init__(self, p, o, d):
         MoveType.__init__(self, p, o, d, MoveTypes.MOVE)
 
-    def to_algebraic(self):
+    def __str__(self):
         if self.piece.is_pawn():
             return position.to_algebraic(self.destination, self.piece.board)
         else:
@@ -108,9 +117,9 @@ class Capture(MoveType):
 
         self.captured_piece = captured_piece
 
-    def to_algebraic(self):
+    def __str__(self):
         if self.piece.is_pawn():
-            return position.to_algebraic(self.piece.board, self.origin)[0] + 'x' + \
+            return position.to_algebraic(self.origin, self.piece.board)[0] + 'x' + \
                    position.to_algebraic(self.destination, self.piece.board)
         else:
             piece_id = self.get_piece_id()
@@ -124,7 +133,7 @@ class Promotion(MoveType):
         MoveType.__init__(self, p, o, d, MoveTypes.PROMOTION)
         self.promoted_piece = promoted_piece
 
-    def to_algebraic(self):
+    def __str__(self):
         return position.to_algebraic(self.destination, self.piece.board) + '=' + \
                self.promoted_piece.shorthand()
 
@@ -135,7 +144,7 @@ class CapturePromotion(MoveType):
         self.captured_piece = captured_piece
         self.promoted_piece = promoted_piece
 
-    def to_algebraic(self):
+    def __str__(self):
         return position.to_algebraic(self.origin, self.piece.board)[0] + 'x' + \
                position.to_algebraic(self.destination, self.piece.board) + '=' + \
                self.promoted_piece.shorthand()
@@ -147,7 +156,7 @@ class ShortCastle(MoveType):
         self.king = k
         self.rook = r
 
-    def to_algebraic(self):
+    def __str__(self):
         return 'O-O'
 
 
@@ -157,7 +166,7 @@ class LongCastle(MoveType):
         self.king = k
         self.rook = r
 
-    def to_algebraic(self):
+    def __str__(self):
         return 'O-O-O'
 
 
@@ -165,6 +174,6 @@ class Attack(MoveType):
     def __init__(self, p, o, d):
         MoveType.__init__(self, p, o, d, MoveTypes.ATTACK)
 
-    def to_algebraic(self):
+    def __str__(self):
         return 'A ' + position.to_algebraic(self.destination, self.piece.board)
 

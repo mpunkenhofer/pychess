@@ -14,11 +14,8 @@ class Board(ABC):
         self.history = []
         self.pieces = None
 
-        self.white_long_castle = self.white_short_castle = self.black_short_castle = self.black_long_castle = True
-
-    @abstractmethod
-    def move(self, move):
-        pass
+        self.enable_white_long_castle = self.enable_white_short_castle = True
+        self.enable_black_short_castle = self.enable_black_long_castle = True
 
     @abstractmethod
     def get_bottom_left(self):
@@ -43,6 +40,43 @@ class Board(ABC):
     @abstractmethod
     def get_piece(self, pos):
         pass
+
+    @abstractmethod
+    def piece_on(self, pos):
+        pass
+
+    @abstractmethod
+    def _move(self, move):
+        pass
+
+    def move(self, move):
+        algebraic_move = move.to_algebraic()
+
+        move.piece.history.append(move)
+        self.history.append((move, algebraic_move))
+
+        self._move(move)
+
+        check = '+' if self.get_enemy_king(move.piece.color).in_check() else ''
+        check = '#' if self.get_enemy_king(move.piece.color).is_checkmated() else check
+
+        if check:
+            self.history[-1] = (move, algebraic_move + check)
+
+    def algebraic_history(self):
+        return [h for _, h in self.history]
+
+    def move_history(self):
+        return [m for m, _ in self.history]
+
+    def get_last_move(self):
+        if self.history:
+            return self.history[-1][0]
+        else:
+            return None
+
+    def fen(self):
+        return ''
 
     def filter_pieces(self, type=None, color=None):
         filtered = []

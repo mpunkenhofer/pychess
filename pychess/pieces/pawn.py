@@ -78,7 +78,7 @@ class Pawn(pieces.Piece):
         p_x, p_y = self.position
 
         if self.board.is_en_passant_rank(self.color, self.position):
-            last_move = self.board.history[-1]
+            last_move = self.board.get_last_move()
 
             if last_move and last_move.piece.is_pawn() and last_move.piece.color != self.color and \
                     abs(last_move.origin[1] - last_move.destination[1]) > 1:

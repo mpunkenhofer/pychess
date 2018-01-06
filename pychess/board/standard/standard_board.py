@@ -26,7 +26,7 @@ class StandardBoard(board.Board):
             self.pieces[(i, 1)] = Pawn(self, (i, 1), PieceColor.WHITE)
             self.pieces[(i, 6)] = Pawn(self, (i, 6), PieceColor.BLACK)
 
-    def move(self, move):
+    def _move(self, move):
         if not move:
             raise RuntimeError('moves(piece, m): no moves!')
 
@@ -38,8 +38,6 @@ class StandardBoard(board.Board):
             self.castle(move)
         else:
             self.simple_move(move)
-
-        self.history.append(move)
 
         return move
 
@@ -58,18 +56,12 @@ class StandardBoard(board.Board):
 
         piece = self.pieces.pop(move.piece.position)
 
-        piece.history.append(move)
-
         piece.position = move.destination
         self.pieces[move.destination] = piece
 
     def castle(self, move):
         king = self.pieces.pop(move.king.position)
         rook = self.pieces.pop(move.rook.position)
-
-        # add moves also to piece history
-        king.history.append(move)
-        rook.history.append(move)
 
         king_pos, rook_pos = self.get_short_castle_positions(king.color) if move.is_king_side_castle() \
             else self.get_long_castle_positions(king.color)
@@ -83,8 +75,6 @@ class StandardBoard(board.Board):
     def simple_move(self, move):
         piece = self.pieces.pop(move.piece.position)
 
-        piece.history.append(move)
-
         piece.position = move.destination
         self.pieces[move.destination] = piece
 
@@ -96,6 +86,9 @@ class StandardBoard(board.Board):
 
     def get_piece(self, pos):
         return self.pieces[pos]
+
+    def piece_on(self, pos):
+        return pos in self.pieces
 
     def get_en_passant_rank(self, color):
         return 4 if color == PieceColor.WHITE else 3

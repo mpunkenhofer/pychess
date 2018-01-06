@@ -121,6 +121,12 @@ class King(pieces.Piece):
         return False
 
     def short_castle(self):
+        short_castle_enabled = self.board.enable_white_short_castle if self.is_white() \
+            else self.board.enable_black_short_castle
+
+        if not short_castle_enabled:
+            return None
+
         rook_pos = (self.board.get_last_file(self.color) if self.is_white()
                     else self.board.get_first_file(self.color), self.board.get_first_rank(self.color))
 
@@ -155,6 +161,12 @@ class King(pieces.Piece):
         return castle_move
 
     def long_castle(self):
+        long_castle_enabled = self.board.enable_white_long_castle if self.is_white() \
+            else self.board.enable_black_long_castle
+
+        if not long_castle_enabled:
+            return None
+
         rook_pos = (self.board.get_first_file(self.color) if self.is_white()
                     else self.board.get_last_file(self.color), self.board.get_first_rank(self.color))
 

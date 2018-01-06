@@ -50,12 +50,29 @@ class ChessConsoleUserInterface(ChessUserInterface):
             return self.board.move(move)
 
     def game_over(self, loser):
+        self.print_history()
         if loser == pychess.pieces.PieceColor.BLACK:
             print('1-0')
         elif loser == pychess.pieces.PieceColor.WHITE:
             print('0-1')
         else:
             print('1/2-1/2')
+
+    def print_history(self):
+        history = self.board.algebraic_history()
+        longest = max(map(lambda x: len(x), history)) + 1
+
+        print()
+
+        for i, m in enumerate(history):
+            if i % 2 == 0:
+                print(str(int(i / 2 + 1)) + '. ', end='')
+                print('{move: <{width}}'.format(move=m, width=longest),  end='')
+            else:
+                print(m, end='')
+                print()
+
+        print('\n')
 
     def get_input(self):
         return input(str(int(math.ceil((len(self.board.history) + 1) / 2))) + ': ')
