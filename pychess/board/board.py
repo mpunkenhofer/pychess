@@ -166,7 +166,11 @@ class Board(ABC):
             return [p for _, p in self.pieces.items() if not p.is_king()]
 
     def get_king(self, color):
-        return self.filter_pieces(pieces.PieceType.KING, color)[0]
+        filtered_king = self.filter_pieces(pieces.PieceType.KING, color)
+        if filtered_king:
+            return filtered_king[0]
+        else:
+            return None
 
     def get_queens(self, color):
         return self.filter_pieces(pieces.PieceType.QUEEN, color)

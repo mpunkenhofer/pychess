@@ -44,7 +44,7 @@ class SetupBoard(StandardBoard):
 
         for y, rank in enumerate(reversed(ranks)):
             for x, p in enumerate(rank):
-                if p.lower() in ['prnbqk']:
+                if p.lower() in ['p', 'r', 'n', 'b', 'q', 'k']:
                     piece_type = p.lower()
                     color = PieceColor.BLACK if p.islower() else PieceColor.WHITE
                     pos = (x, y)

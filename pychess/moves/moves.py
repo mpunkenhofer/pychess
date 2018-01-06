@@ -3,7 +3,6 @@
 #
 
 import pychess.pieces
-import copy
 
 from enum import Enum
 from abc import ABC, abstractmethod
