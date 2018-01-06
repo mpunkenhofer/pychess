@@ -2,4 +2,4 @@
 # code.mpunkenhofer@gmail.com
 #
 
-from .console_ui import ChessConsoleUserInterface
+from .pgn_player import PGNPlayer
