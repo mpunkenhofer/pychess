@@ -1,0 +1,18 @@
+[Event "Live Chess - Chess960"]
+[Site "Chess.com"]
+[Date "2018.01.03"]
+[White "MagnusCarlsen"]
+[Black "Hikaru"]
+[Result "0-1"]
+[ECO "A00"]
+[WhiteElo "2706"]
+[BlackElo "2940"]
+[TimeControl "60+1"]
+[EndTime "13:54:22 PST"]
+[Termination "Hikaru won on time"]
+[SetUp "1"]
+[FEN "rnbkqbrn/pppppppp/8/8/8/8/PPPPPPPP/RNBKQBRN w KQkq -"]
+[Variant "Chess960"]
+[CurrentPosition "5rk1/Q6p/1N1p4/1KqP2p1/5p2/1P1n1P2/P3R1PP/8 w - - 1 38"]
+
+1.Nc3 g5 2.b3 Ng6 3.Bb2 Bg7 4.O-O-O c5 5.e3 Nc6 6.Bb5 d6 7.d4 cxd4 8.exd4 Bd7 9.Bxc6 Bxc6 10.d5 Bd7 11.Ne4 Bxb2+ 12.Kxb2 Ne5 13.Qa5+ b6 14.Qc3 f5 15.Nd2 Rc8 16.Qd4 f4 17.f3 Bf5 18.Rc1 Qg6 19.Nf2 Bxc2 20.Rge1 Bf5 21.Qa4 Qf6 22.Ka3 Bd7 23.Rxc8+ Bxc8 24.Nfe4 Qf7 25.Qxa7 O-O 26.Nc3 Bf5 27.Nc4 Nd3 28.Rxe7 Qf6 29.Nb5 Qa1 30.Re2 Qc1+ 31.Ka4 Nc5+ 32.Kb4 Nd3+ 33.Ka4 Nc5+ 34.Kb4 Bd7 35.Nxb6 Nd3+ 36.Ka5 Bxb5 37.Kxb5 Qc5+  0-1

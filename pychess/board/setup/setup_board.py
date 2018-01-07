@@ -7,7 +7,7 @@ from pychess.pieces import King, Queen, Rook, Bishop, Knight, Pawn, PieceColor
 
 
 class SetupBoard(StandardBoard):
-    def __init__(self, fen_string,
+    def __init__(self, fen_string='',
                  white_short_castle=True, white_long_castle=True, black_short_castle=True, black_long_castle=True):
         StandardBoard.__init__(self)
 
@@ -17,13 +17,15 @@ class SetupBoard(StandardBoard):
         self.enable_black_long_castle = black_long_castle
 
         self.pieces.clear()
-        self.setup_board(fen_string)
+
+        if fen_string:
+            self.setup_board(fen_string)
 
     def setup_board(self, fen_string):
         fen_elements = fen_string.split(' ')
 
         if not fen_elements or len(fen_elements) < 6:
-            raise ValueError('setup_board(fen_string): corrupt fen string')
+            raise ValueError('corrupt fen string')
 
         piece_string = fen_elements[0]
         active_color = fen_elements[1]
@@ -62,7 +64,7 @@ class SetupBoard(StandardBoard):
         black_king = self.get_king(PieceColor.BLACK)
 
         if not white_king or not black_king:
-            raise ValueError('setup_board(fen_string): missing a king!')
+            raise ValueError('missing a king!')
 
         if 'K' not in castling:
             self.enable_white_short_castle = False
@@ -77,15 +79,20 @@ class SetupBoard(StandardBoard):
 
     def put_piece(self, piece):
         if piece.position in self.pieces:
-            raise ValueError('put_piece(piece): position occupied!')
+            raise ValueError('position occupied!')
 
         if piece.is_king():
+            king = self.get_king(piece.color)
+
+            if king:
+                raise ValueError("one color can only have one king!")
+
             other_king = self.get_king(piece.other_color())
 
             if other_king and piece.position in other_king.influenced_squares():
-                raise ValueError("put_piece(piece): can't put king on a square next to the other king!")
+                raise ValueError("can't put king on a square next to the other king!")
         elif piece.is_pawn() and self.is_last_rank(piece.color, piece.position):
-            raise ValueError("put_piece(piece): can't put pawn on the last rank!")
+            raise ValueError("can't put pawn on the last rank!")
 
         self.pieces[piece.position] = piece
 

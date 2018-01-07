@@ -1,0 +1,15 @@
+[Event "Live Chess"]
+[Site "Chess.com"]
+[Date "2018.01.03"]
+[White "Hikaru"]
+[Black "MagnusCarlsen"]
+[Result "1-0"]
+[ECO "A01"]
+[WhiteElo "3069"]
+[BlackElo "3135"]
+[TimeControl "60+1"]
+[EndTime "13:46:57 PST"]
+[Termination "Hikaru won by resignation"]
+[CurrentPosition "r1bq2k1/1pp2ppB/5n2/4r3/2p5/pP2P3/P2QNPPP/R4RK1 b - - 0 16"]
+
+1.b3 {[%clk 0:01:00]} a5 {[%clk 0:00:58]} 2.Bb2 {[%clk 0:01:01]} a4 {[%clk 0:00:59]} 3.e3 {[%clk 0:01:02]} e6 {[%clk 0:00:58]} 4.Nf3 {[%clk 0:01:02]} Nf6 {[%clk 0:00:58]} 5.Nc3 {[%clk 0:01:02]} a3 {[%clk 0:00:58]} 6.Bc1 {[%clk 0:01:02]} d5 {[%clk 0:00:58]} 7.d4 {[%clk 0:01:02]} Bb4 {[%clk 0:00:55]} 8.Bd2 {[%clk 0:01:03]} O-O {[%clk 0:00:55]} 9.Bd3 {[%clk 0:01:02]} Re8 {[%clk 0:00:54]} 10.Ne2 {[%clk 0:01:01]} Bxd2+ {[%clk 0:00:53]} 11.Qxd2 {[%clk 0:01:01]} Nbd7 {[%clk 0:00:53]} 12.c4 {[%clk 0:01:01]} e5 {[%clk 0:00:52]} 13.dxe5 {[%clk 0:01:00]} Nxe5 {[%clk 0:00:53]} 14.Nxe5 {[%clk 0:01:01]} Rxe5 {[%clk 0:00:54]} 15.O-O {[%clk 0:01:01]} dxc4 {[%clk 0:00:54]} 16.Bxh7+ {[%clk 0:01:01]}  1-0

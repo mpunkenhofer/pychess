@@ -1,0 +1,15 @@
+[Event "Live Chess"]
+[Site "Chess.com"]
+[Date "2018.01.03"]
+[White "Hikaru"]
+[Black "MagnusCarlsen"]
+[Result "1-0"]
+[ECO "A01"]
+[WhiteElo "3069"]
+[BlackElo "3135"]
+[TimeControl "60+1"]
+[EndTime "13:46:57 PST"]
+[Termination "Hikaru won by resignation"]
+[CurrentPosition "r1bq2k1/1pp2ppB/5n2/4r3/2p5/pP2P3/P2QNPPP/R4RK1 b - - 0 16"]
+
+1.b3 a5 2.Bb2 a4 3.e3 e6 4.Nf3 Nf6 5.Nc3 a3 6.Bc1 d5 7.d4 Bb4 8.Bd2 O-O 9.Bd3 Re8 10.Ne2 Bxd2+ 11.Qxd2 Nbd7 12.c4 e5 13.dxe5 Nxe5 14.Nxe5 Rxe5 15.O-O dxc4 16.Bxh7+  1-0
