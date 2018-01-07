@@ -33,7 +33,7 @@ class ChessConsoleUserInterface(ChessUserInterface):
                         print(piece.shorthand().lower(), end='')
                 else:
                     print('.', end='')
-        print()
+            print()
 
     def move(self, player):
         move_input = self.get_input()
