@@ -150,6 +150,11 @@ class SetupBoardTests(unittest.TestCase):
             # putting one a king to close to the other one should raise an Error
             board.put_piece(King(board, (0, 1), PieceColor.BLACK))
 
+    def test_put_piece_missing_king(self):
+        with self.assertRaises(ValueError):
+            # forgetting one king should raise an Error
+            board = SetupBoard('4k3/pppppppp/8/8/8/8/PPPPPPPP/8 w KQkq - 0 1')
+
     def test_put_piece_pawn_on_last_rank(self):
         board = SetupBoard()
 

@@ -4,12 +4,12 @@
 
 import unittest
 
-from pychess.board import StandardBoard
+from pychess.board import SetupBoard
 
 
-class FENTests(unittest.TestCase):
-    def test_fen_chess_starting_postion(self):
-        board = StandardBoard()
+class StalemateTests(unittest.TestCase):
+    def test_stalemate_1(self):
+        board = SetupBoard('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1')
         self.assertEqual(board.fen(), 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1')
 
 

@@ -5,8 +5,8 @@
 import re
 import math
 import pychess.pieces
-
-from pychess.util import position
+import pychess.util.position
+import pychess.util.move
 
 from examples.interface import ChessUserInterface
 
@@ -46,7 +46,7 @@ class ChessConsoleUserInterface(ChessUserInterface):
             self.do_command(move_input)
             return self.move(player)
 
-        move = self.find_move(self.board.get_all_pieces(player), move_input)
+        move = pychess.util.move.from_algebraic(self.board, player, move_input)
 
         if not move:
             print('Invalid move.')
@@ -125,26 +125,7 @@ class ChessConsoleUserInterface(ChessUserInterface):
 
     def find_piece(self, piece):
         for p in self.board.get_all_pieces():
-            if position.to_algebraic(p.position, self.board) == piece:
+            if pychess.util.position.to_algebraic(p.position, self.board) == piece:
                 return p
 
         return None
-
-    def find_move(self, pieces, move_input):
-        move_dict = self.build_move_dict(pieces)
-
-        return move_dict[move_input] if move_input in move_dict else None
-
-    def build_move_dict(self, pieces):
-        move_dict = {}
-
-        for p in pieces:
-            for move in p.moves():
-                k = move.to_algebraic()
-                if not k:
-                    continue
-
-                if k not in move_dict:
-                    move_dict[k] = move
-
-        return move_dict
