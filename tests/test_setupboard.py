@@ -4,6 +4,8 @@
 
 import unittest
 
+import pychess.util.move
+
 from pychess.pieces import King, Queen, Rook, Bishop, Knight, Pawn, PieceColor
 
 from pychess.board import SetupBoard
@@ -154,6 +156,7 @@ class SetupBoardTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             # forgetting one king should raise an Error
             board = SetupBoard('4k3/pppppppp/8/8/8/8/PPPPPPPP/8 w KQkq - 0 1')
+            print(to_string_array(board))
 
     def test_put_piece_pawn_on_last_rank(self):
         board = SetupBoard()
@@ -168,6 +171,72 @@ class SetupBoardTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             # putting one a pawn on its respective last rank should raise an Error
             board.put_piece(Pawn(board, (0, 0), PieceColor.WHITE))
+
+    def test_pawn_en_passant_setup_wP(self):
+        board = SetupBoard('rnbqkbnr/pppp1ppp/8/3PpP2/8/8/PPP2PPP/RNBQKBNR w KQkq e6')
+
+        pawns = board.get_pawns(PieceColor.WHITE)
+
+        moves = []
+        for p in pawns:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        en_passant_moves = ['dxe6', 'fxe6']
+        en_passants_found = []
+
+        for em in en_passant_moves:
+            if em in en_passant_moves:
+                en_passants_found.append(em)
+
+        self.assertCountEqual(en_passant_moves, en_passants_found)
+
+    def test_pawn_en_passant_setup_bP(self):
+        board = SetupBoard('rnbqkbnr/ppp1p1pp/8/8/3pPp2/8/PPPP1PPP/RNBQKBNR b KQkq e3')
+
+        pawns = board.get_pawns(PieceColor.BLACK)
+
+        moves = []
+        for p in pawns:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        en_passant_moves = ['dxe3', 'fxe3']
+        en_passants_found = []
+
+        for em in en_passant_moves:
+            if em in en_passant_moves:
+                en_passants_found.append(em)
+
+        self.assertCountEqual(en_passant_moves, en_passants_found)
+
+    def test_corrupt_fen_1(self):
+        with self.assertRaises(ValueError):
+            board = SetupBoard('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPP')
+
+    def test_corrupt_fen_2(self):
+        with self.assertRaises(ValueError):
+            board = SetupBoard('rnbqkbnr/ppp1p1pp/8/8/3pPp2/8/PPPP1PPP/RNBQKBNR ? KQkq e3')
+
+    def test_corrupt_fen_3(self):
+        with self.assertRaises(ValueError):
+            board = SetupBoard('rnbqkbnr/ppp1p1pp/8/8/3pPp2/8/PPPP1PPP/RNBQKBNR w KQkq A3')
+
+    def test_corrupt_fen_4(self):
+        with self.assertRaises(ValueError):
+            board = SetupBoard('rnbqkbnr/ppp1p1pp/8/8/3pPp2/8/PPPP1PPP/RNBQKBNR w KQkq ??')
+
+    def test_corrupt_fen_5(self):
+        with self.assertRaises(ValueError):
+            board = SetupBoard('rnbqkbnr/ppp1p1pp/8/8/3p1p2/8/PPPPPPPP/RNBQKBNR b KQkq e3')
+
+    def test_corrupt_fen_6(self):
+        with self.assertRaises(ValueError):
+            board = SetupBoard('rnbqkbnr/ppp1p1pp/8/8/3pNp2/8/PPPP1PPP/RNBQKBNR b KQkq e3')
+
+    def test_corrupt_fen_7(self):
+        with self.assertRaises(ValueError):
+            board = SetupBoard('rnbqkbnr/ppp1p1pp/8/8/3ppp2/8/PPPP1PPP/RNBQKBNR b KQkq e3')
 
 
 if __name__ == '__main__':

@@ -23,6 +23,9 @@ def from_algebraic(pos, board=None):
     if not pos:
         raise ValueError('pos argument is None')
 
+    if not pos[0].isalpha() or not pos[0].islower() or not pos[1].isdigit():
+        raise ValueError('pos must have algebraic format')
+
     if not board:
         bottom_left = (0, 0)
     else:

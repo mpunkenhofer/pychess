@@ -2,8 +2,12 @@
 # code.mpunkenhofer@gmail.com
 #
 
+import pychess.util.position
+
 from pychess.board import StandardBoard
 from pychess.pieces import King, Queen, Rook, Bishop, Knight, Pawn, PieceColor
+
+from pychess import moves
 
 
 class SetupBoard(StandardBoard):
@@ -28,10 +32,14 @@ class SetupBoard(StandardBoard):
             raise ValueError('corrupt fen string')
 
         piece_string = fen_elements[0]
-        # active_color = fen_elements[1]
+        active_color = fen_elements[1]
         castling = fen_elements[2]
+        en_passant_target_square = fen_elements[3]
         # half_move_clock = fen_elements[4]
         # full_move_clock = fen_elements[5]
+
+        if active_color not in ['w', 'b']:
+            raise ValueError('corrupt fen string')
 
         ranks = piece_string.split('/')
 
@@ -74,6 +82,30 @@ class SetupBoard(StandardBoard):
             self.enable_black_short_castle = False
         if 'q' not in castling:
             self.enable_black_long_castle = False
+
+        try:
+            if en_passant_target_square != '-':
+                color = PieceColor.BLACK if active_color == 'w' else PieceColor.WHITE
+                c = 1 if color == PieceColor.WHITE else -1
+
+                pos = pychess.util.position.from_algebraic(en_passant_target_square)
+
+                origin = pos[0], pos[1] - 1 * c
+                destination = pos[0], pos[1] + 1 * c
+
+                piece = self.pieces[destination]
+
+                if piece.color != color or not piece.is_pawn():
+                    raise ValueError('corrupt fen string')
+
+                move = moves.Move(piece, origin, destination)
+
+                piece.history.append(move)
+                self.history.append((move, move.to_algebraic()))
+        except ValueError:
+            raise ValueError('corrupt fen string')
+        except KeyError:
+            raise ValueError('corrupt fen string')
 
         # TODO: incorporate halfmove_clock and fullmove_clock (mainly usefull for pgns and 50-move-rule)
 

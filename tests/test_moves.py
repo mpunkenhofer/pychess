@@ -679,6 +679,32 @@ class MoveTests(unittest.TestCase):
                                       'Bag2', 'Baf3', 'Bae4', 'Bad5', 'Bac6', 'Bab7'   # falling diagonal down
                                       ])
 
+    def test_two_w_rooks_on_same_rank(self):
+        board = SetupBoard('8/5k2/8/8/8/8/5K2/R6R w KQkq -')
+        bishops = board.get_bishops(PieceColor.WHITE)
+
+        moves = []
+        for p in bishops:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        self.assertCountEqual(moves, ['Bhg2', 'Bhf3', 'Bhe4', 'Bhd5', 'Bhc6', 'Bhb7',  # falling diagonal up
+                                      'Bag2', 'Baf3', 'Bae4', 'Bad5', 'Bac6', 'Bab7'   # falling diagonal down
+                                      ])
+
+    def test_two_b_rooks_on_same_rank(self):
+        board = SetupBoard('8/5k2/8/8/8/8/5K2/R6R w KQkq -')
+        bishops = board.get_bishops(PieceColor.BLACK)
+
+        moves = []
+        for p in bishops:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        self.assertCountEqual(moves, ['Bhg2', 'Bhf3', 'Bhe4', 'Bhd5', 'Bhc6', 'Bhb7',  # falling diagonal up
+                                      'Bag2', 'Baf3', 'Bae4', 'Bad5', 'Bac6', 'Bab7'   # falling diagonal down
+                                      ])
+
 
 if __name__ == '__main__':
     unittest.main()
