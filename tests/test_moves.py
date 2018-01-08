@@ -10,11 +10,6 @@ from pychess.pieces import PieceColor
 
 
 class MoveTests(unittest.TestCase):
-    def test_pawn_moves(self):
-        fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
-        board = SetupBoard(fen)
-        self.assertEqual(board.fen(), fen)
-
     def test_queen_moves_with_wQ_on_d4(self):
         board = SetupBoard('4k3/8/8/8/3Q4/8/8/4K3 w KQkq -')
         queen = board.get_queens(PieceColor.WHITE)[0]
@@ -432,7 +427,7 @@ class MoveTests(unittest.TestCase):
         en_passants_found = []
 
         for em in en_passant_moves:
-            if em in en_passant_moves:
+            if em in moves:
                 en_passants_found.append(em)
 
         self.assertCountEqual(en_passant_moves, en_passants_found)
@@ -454,7 +449,7 @@ class MoveTests(unittest.TestCase):
         en_passants_found = []
 
         for em in en_passant_moves:
-            if em in en_passant_moves:
+            if em in moves:
                 en_passants_found.append(em)
 
         self.assertCountEqual(en_passant_moves, en_passants_found)
@@ -708,6 +703,48 @@ class MoveTests(unittest.TestCase):
                                       'Ra2', 'Ra3', 'Ra4', 'Ra5', 'Ra6', 'Ra7', 'Ra8',
                                       'Rh2', 'Rh3', 'Rh4', 'Rh5', 'Rh6', 'Rh7', 'Rh8'
                                       ])
+
+    def test_w_knights_with_same_squares(self):
+        board = SetupBoard('3k4/8/8/2N1N3/1N3N2/8/1N3N2/K7 w - -')
+        knights = board.get_knights(PieceColor.WHITE)
+
+        moves = []
+        for p in knights:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        duplicates = False
+        seen = set()
+
+        for m in moves:
+            if m not in seen:
+                seen.add(m)
+            else:
+                duplicates = True
+                break
+
+        self.assertFalse(duplicates)
+
+    def test_b_knights_with_same_squares(self):
+        board = SetupBoard('3k4/8/8/2n1n3/1n3n2/8/1n3n2/K7 w - -')
+        knights = board.get_knights(PieceColor.BLACK)
+
+        moves = []
+        for p in knights:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        duplicates = False
+        seen = set()
+
+        for m in moves:
+            if m not in seen:
+                seen.add(m)
+            else:
+                duplicates = True
+                break
+
+        self.assertFalse(duplicates)
 
 
 if __name__ == '__main__':

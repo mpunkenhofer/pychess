@@ -83,15 +83,20 @@ class MoveType(ABC):
                 return ''
 
             same_file = False
+            same_file_and_rank = False
 
             for p in pieces_with_same_destination:
                 if pychess.pieces.Piece.same_file(p, self.piece):
+                    for p in pieces_with_same_destination:
+                        if pychess.pieces.Piece.same_rank(p, self.piece):
+                            same_file_and_rank = True
+                            break
                     same_file = True
                     break
 
             algebraic_pos = position.to_algebraic(self.origin, self.piece.board)
 
-            return algebraic_pos[1] if same_file else algebraic_pos[0]
+            return algebraic_pos if same_file_and_rank else (algebraic_pos[1] if same_file else algebraic_pos[0])
 
         return ''
 

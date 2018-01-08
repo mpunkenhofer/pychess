@@ -186,7 +186,7 @@ class SetupBoardTests(unittest.TestCase):
         en_passants_found = []
 
         for em in en_passant_moves:
-            if em in en_passant_moves:
+            if em in moves:
                 en_passants_found.append(em)
 
         self.assertCountEqual(en_passant_moves, en_passants_found)
@@ -205,7 +205,7 @@ class SetupBoardTests(unittest.TestCase):
         en_passants_found = []
 
         for em in en_passant_moves:
-            if em in en_passant_moves:
+            if em in moves:
                 en_passants_found.append(em)
 
         self.assertCountEqual(en_passant_moves, en_passants_found)
