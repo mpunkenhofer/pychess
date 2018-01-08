@@ -44,19 +44,19 @@ class PGNPlayerTests(unittest.TestCase):
         self.assertFalse(game.get_moves() and game.next_game())
 
     def test_pgn_player_one_game(self):
-        game = PGNPlayer(os.path.join(THIS_DIR, 'pgns/games/Hikaru_vs_MagnusCarlsen_2018-01-03-1.pgn'))
+        game = PGNPlayer(os.path.join(THIS_DIR, 'pgns/Hikaru_vs_MagnusCarlsen_2018-01-03-1.pgn'))
         self.assertEqual(game.get_moves(), ['b3', 'a5', 'Bb2', 'a4', 'e3', 'e6', 'Nf3', 'Nf6', 'Nc3', 'a3', 'Bc1',
                                             'd5', 'd4', 'Bb4', 'Bd2', 'O-O', 'Bd3', 'Re8', 'Ne2', 'Bxd2+', 'Qxd2',
                                             'Nbd7', 'c4', 'e5', 'dxe5', 'Nxe5', 'Nxe5', 'Rxe5', 'O-O', 'dxc4', 'Bxh7+'])
 
     def test_pgn_player_one_game_with_timestamps(self):
-        game = PGNPlayer(os.path.join(THIS_DIR, 'pgns/games/Hikaru_vs_MagnusCarlsen_2018-01-03-1-timestamps.pgn'))
+        game = PGNPlayer(os.path.join(THIS_DIR, 'pgns/Hikaru_vs_MagnusCarlsen_2018-01-03-1-timestamps.pgn'))
         self.assertEqual(game.get_moves(), ['b3', 'a5', 'Bb2', 'a4', 'e3', 'e6', 'Nf3', 'Nf6', 'Nc3', 'a3', 'Bc1',
                                             'd5', 'd4', 'Bb4', 'Bd2', 'O-O', 'Bd3', 'Re8', 'Ne2', 'Bxd2+', 'Qxd2',
                                             'Nbd7', 'c4', 'e5', 'dxe5', 'Nxe5', 'Nxe5', 'Rxe5', 'O-O', 'dxc4', 'Bxh7+'])
 
     def test_pgn_player_next_move(self):
-        game = PGNPlayer(os.path.join(THIS_DIR, 'pgns/games/Hikaru_vs_MagnusCarlsen_2018-01-03-1-timestamps.pgn'))
+        game = PGNPlayer(os.path.join(THIS_DIR, 'pgns/Hikaru_vs_MagnusCarlsen_2018-01-03-1-timestamps.pgn'))
 
         moves = []
         next_move = game.next_move()
@@ -70,7 +70,7 @@ class PGNPlayerTests(unittest.TestCase):
                                  'Nbd7', 'c4', 'e5', 'dxe5', 'Nxe5', 'Nxe5', 'Rxe5', 'O-O', 'dxc4', 'Bxh7+'])
 
     def test_pgn_player_reset(self):
-        game = PGNPlayer(os.path.join(THIS_DIR, 'pgns/games/Hikaru_vs_MagnusCarlsen_2018-01-03-1-timestamps.pgn'))
+        game = PGNPlayer(os.path.join(THIS_DIR, 'pgns/Hikaru_vs_MagnusCarlsen_2018-01-03-1-timestamps.pgn'))
 
         moves = []
         next_move = game.next_move()
@@ -92,23 +92,23 @@ class PGNPlayerTests(unittest.TestCase):
                                  'Nbd7', 'c4', 'e5', 'dxe5', 'Nxe5', 'Nxe5', 'Rxe5', 'O-O', 'dxc4', 'Bxh7+'] * 2)
 
     def test_pgn_player_white_win(self):
-        game = PGNPlayer(os.path.join(THIS_DIR, 'pgns/games/Hikaru_vs_MagnusCarlsen_2018-01-03-1.pgn'))
+        game = PGNPlayer(os.path.join(THIS_DIR, 'pgns/Hikaru_vs_MagnusCarlsen_2018-01-03-1.pgn'))
         game_timestamps = PGNPlayer(os.path.join(THIS_DIR,
-                                                 'pgns/games/Hikaru_vs_MagnusCarlsen_2018-01-03-1-timestamps.pgn'))
+                                                 'pgns/Hikaru_vs_MagnusCarlsen_2018-01-03-1-timestamps.pgn'))
         self.assertTrue(game.white_win() and game_timestamps.white_win())
 
     def test_pgn_player_black_win(self):
-        game = PGNPlayer(os.path.join(THIS_DIR, 'pgns/games/MagnusCarlsen_vs_Hikaru_2018-01-03-1.pgn'))
+        game = PGNPlayer(os.path.join(THIS_DIR, 'pgns/MagnusCarlsen_vs_Hikaru_2018-01-03-1.pgn'))
         self.assertTrue(game.black_win())
 
     def test_pgn_player_draw(self):
-        game = PGNPlayer(os.path.join(THIS_DIR, 'pgns/games/Hikaru_vs_MagnusCarlsen_2018-01-03-2.pgn'))
+        game = PGNPlayer(os.path.join(THIS_DIR, 'pgns/Hikaru_vs_MagnusCarlsen_2018-01-03-2.pgn'))
         self.assertTrue(game.draw())
 
     def test_pgn_player_two_games(self):
         games = []
 
-        current_game = PGNPlayer(os.path.join(THIS_DIR, 'pgns/games/lichess_necator_2018-01-06-two_games.pgn'))
+        current_game = PGNPlayer(os.path.join(THIS_DIR, 'pgns/lichess_necator_2018-01-06-two_games.pgn'))
         games.append(current_game.get_moves())
 
         while current_game.next_game():
@@ -136,7 +136,7 @@ class PGNPlayerTests(unittest.TestCase):
     def test_pgn_player_three_games(self):
         games = []
 
-        current_game = PGNPlayer(os.path.join(THIS_DIR, 'pgns/games/lichess_necator_2018-01-06-three_games.pgn'))
+        current_game = PGNPlayer(os.path.join(THIS_DIR, 'pgns/lichess_necator_2018-01-06-three_games.pgn'))
         games.append(current_game.get_moves())
 
         while current_game.next_game():

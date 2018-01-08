@@ -16,16 +16,21 @@ def half_move_clock(move_history):
 
 
 def insufficient_material(board):
-        white_pieces = board.get_pieces(PieceColor.WHITE)
-        black_pieces = board.get_pieces(PieceColor.BLACK)
+    # TODO: This function is incomplete
 
-        if len(white_pieces) > 1 or len(black_pieces) > 1:
-            return False
+    white_pieces = board.get_pieces(PieceColor.WHITE)
+    black_pieces = board.get_pieces(PieceColor.BLACK)
 
-        if white_pieces and not (white_pieces[0].is_knight() or white_pieces[0].is_bishop()):
-            return False
+    if len(white_pieces) > 1 or len(black_pieces) > 1:
+        return False
 
-        if black_pieces and not (black_pieces[0].is_knight() or black_pieces[0].is_bishop()):
-            return False
-
+    if not white_pieces or not black_pieces:
         return True
+
+    if white_pieces and not white_pieces[0].is_bishop():
+        return False
+
+    if black_pieces and not black_pieces[0].is_bishop():
+        return False
+
+    return True

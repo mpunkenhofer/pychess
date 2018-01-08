@@ -24,14 +24,14 @@ class SetupBoard(StandardBoard):
     def setup_board(self, fen_string):
         fen_elements = fen_string.split(' ')
 
-        if not fen_elements or len(fen_elements) < 6:
+        if not fen_elements or len(fen_elements) < 4:
             raise ValueError('corrupt fen string')
 
         piece_string = fen_elements[0]
-        active_color = fen_elements[1]
+        # active_color = fen_elements[1]
         castling = fen_elements[2]
-        halfmove_clock = fen_elements[4]
-        fullmove_clock = fen_elements[5]
+        # half_move_clock = fen_elements[4]
+        # full_move_clock = fen_elements[5]
 
         ranks = piece_string.split('/')
 
