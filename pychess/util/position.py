@@ -5,7 +5,7 @@
 
 def to_algebraic(pos, board=None):
     if not pos:
-        raise ValueError('position_to_algebraic: pos argument is None')
+        raise ValueError('pos argument is None')
 
     if not board:
         file_diff = rank_diff = 7
@@ -20,4 +20,15 @@ def to_algebraic(pos, board=None):
 
 
 def from_algebraic(pos, board=None):
-    return ''
+    if not pos:
+        raise ValueError('pos argument is None')
+
+    if not board:
+        bottom_left = (0, 0)
+    else:
+        bottom_left = board.get_bottom_left()
+
+    file = ord(pos[0]) - ord('a')
+    rank = int(pos[1]) - 1
+
+    return bottom_left[0] + file, bottom_left[1] + rank

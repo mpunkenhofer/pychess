@@ -3,6 +3,7 @@
 #
 
 import unittest
+import pychess.util.move
 
 from pychess.board import SetupBoard
 from pychess.pieces import PieceColor
@@ -273,6 +274,190 @@ class MoveTests(unittest.TestCase):
         moves = [m.to_algebraic() for m in knight.moves()]
 
         self.assertCountEqual(moves, ['Nxd2', 'Nxf2', 'Nxg3', 'Nxg5', 'Nxf6', 'Nxd6', 'Nxc5', 'Nxc3'])
+
+    def test_king_moves_with_wK_on_e4(self):
+        board = SetupBoard('4k3/8/8/8/4K3/8/8/8 w KQkq -')
+        king = board.get_king(PieceColor.WHITE)
+
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertCountEqual(moves, ['Ke5', 'Ke3', 'Kd3', 'Kd4', 'Kd5', 'Kf3', 'Kf4', 'Kf5'])
+
+    def test_king_moves_with_bK_on_e4(self):
+        board = SetupBoard('4K3/8/8/8/4k3/8/8/8 w KQkq -')
+        king = board.get_king(PieceColor.BLACK)
+
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertCountEqual(moves, ['Ke5', 'Ke3', 'Kd3', 'Kd4', 'Kd5', 'Kf3', 'Kf4', 'Kf5'])
+
+    def test_king_moves_with_wK_on_a1(self):
+        board = SetupBoard('4k3/8/8/8/8/8/8/K7 w KQkq -')
+        king = board.get_king(PieceColor.WHITE)
+
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertCountEqual(moves, ['Kb1', 'Kb2', 'Ka2'])
+
+    def test_king_moves_with_bK_on_h8(self):
+        board = SetupBoard('7k/8/8/8/8/8/8/4K3 w KQkq -')
+        king = board.get_king(PieceColor.BLACK)
+
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertCountEqual(moves, ['Kh7', 'Kg8', 'Kg7'])
+
+    def test_pawn_moves_with_wPs(self):
+        board = SetupBoard('7k/5P2/4P3/3P4/2P5/1P6/P7/4K3 w KQkq -')
+        pawns = board.get_pawns(PieceColor.WHITE)
+
+        moves = []
+
+        for p in pawns:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        self.assertCountEqual(moves, ['a3', 'a4', 'b4', 'c5', 'd6', 'e7', 'f8=Q', 'f8=R', 'f8=B', 'f8=N'])
+
+    def test_pawn_moves_with_wPs_and_blocker(self):
+        board = SetupBoard('4k3/8/8/8/5N1N/1N1NPPPP/PPPP4/1K6 w KQkq -')
+        pawns = board.get_pawns(PieceColor.WHITE)
+
+        moves = []
+
+        for p in pawns:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        self.assertCountEqual(moves, ['a3', 'a4', 'c3', 'c4', 'e4', 'g4'])
+
+    def test_pawn_moves_with_bPs(self):
+        board = SetupBoard('4k3/p7/1p6/2p5/3p4/4p3/5p2/1K6 w KQkq -')
+        pawns = board.get_pawns(PieceColor.BLACK)
+
+        moves = []
+
+        for p in pawns:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        self.assertCountEqual(moves, ['a6', 'a5', 'b5', 'c4', 'd3', 'e2', 'f1=Q', 'f1=R', 'f1=B', 'f1=N'])
+
+    def test_pawn_moves_with_bPs_and_blocker(self):
+        board = SetupBoard('4k3/4pppp/ppppn1n1/n1n5/8/8/8/1K6 w KQkq -')
+        pawns = board.get_pawns(PieceColor.BLACK)
+
+        moves = []
+
+        for p in pawns:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        self.assertCountEqual(moves, ['h6', 'h5', 'f6', 'f5', 'd5', 'b5'])
+
+    def test_pawn_captures_with_wPs(self):
+        board = SetupBoard('4k3/nnnnnnnn/1P1P1P1P/nnnnnnnn/P1P1P1P1/8/8/1K6 w KQkq -')
+        pawns = board.get_pawns(PieceColor.WHITE)
+
+        moves = []
+
+        for p in pawns:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        self.assertCountEqual(moves, ['axb5', 'cxb5', 'cxd5', 'exd5', 'exf5', 'gxf5', 'gxh5',  # rank 4 pawns
+                                      'bxa7', 'bxc7', 'dxc7', 'dxe7', 'fxe7', 'fxg7', 'hxg7'  # rank 6 pawns
+                                      ])
+
+    def test_pawn_captures_with_bPs(self):
+        board = SetupBoard('4k3/8/8/p1p1p1p1/NNNNNNNN/1p1p1p1p/NNNNNNNN/1K6 w KQkq -')
+        pawns = board.get_pawns(PieceColor.BLACK)
+
+        moves = []
+
+        for p in pawns:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        self.assertCountEqual(moves, ['axb4', 'cxb4', 'cxd4', 'exd4', 'exf4', 'gxf4', 'gxh4',  # rank 5 pawns
+                                      'bxa2', 'bxc2', 'dxc2', 'dxe2', 'fxe2', 'fxg2', 'hxg2'  # rank 3 pawns
+                                      ])
+
+    def test_pawn_promotion_captures_with_wPs(self):
+        board = SetupBoard('nnnn3k/PPPP4/8/8/8/8/8/1K6 w KQkq -')
+        pawns = board.get_pawns(PieceColor.WHITE)
+
+        moves = []
+
+        for p in pawns:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        self.assertCountEqual(moves, ['axb8=Q', 'axb8=R', 'axb8=B', 'axb8=N',  # a pawn
+                                      'bxa8=Q', 'bxa8=R', 'bxa8=B', 'bxa8=N', 'bxc8=Q', 'bxc8=R', 'bxc8=B', 'bxc8=N',
+                                      'cxb8=Q', 'cxb8=R', 'cxb8=B', 'cxb8=N', 'cxd8=Q', 'cxd8=R', 'cxd8=B', 'cxd8=N',
+                                      'dxc8=Q', 'dxc8=R', 'dxc8=B', 'dxc8=N'   # d pawn
+                                      ])
+
+    def test_pawn_promotion_captures_with_bPs(self):
+        board = SetupBoard('7k/8/8/8/8/8/pppp4/NNNN3K w KQkq -')
+        pawns = board.get_pawns(PieceColor.BLACK)
+
+        moves = []
+
+        for p in pawns:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        self.assertCountEqual(moves, ['axb1=Q', 'axb1=R', 'axb1=B', 'axb1=N',  # a pawn
+                                      'bxa1=Q', 'bxa1=R', 'bxa1=B', 'bxa1=N', 'bxc1=Q', 'bxc1=R', 'bxc1=B', 'bxc1=N',
+                                      'cxb1=Q', 'cxb1=R', 'cxb1=B', 'cxb1=N', 'cxd1=Q', 'cxd1=R', 'cxd1=B', 'cxd1=N',
+                                      'dxc1=Q', 'dxc1=R', 'dxc1=B', 'dxc1=N'   # d pawn
+                                      ])
+
+    def test_pawn_en_passant_wPs(self):
+        board = SetupBoard('rnbqkbnr/pppppppp/8/3P1P2/8/8/PPP2PPP/RNBQKBNR b KQkq -')
+
+        e5 = pychess.util.move.from_algebraic(board, PieceColor.BLACK, 'e5')
+        board.move(e5)
+
+        pawns = board.get_pawns(PieceColor.WHITE)
+
+        moves = []
+        for p in pawns:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        en_passant_moves = ['dxe6', 'fxe6']
+        en_passants_found = []
+
+        for em in en_passant_moves:
+            if em in en_passant_moves:
+                en_passants_found.append(em)
+
+        self.assertCountEqual(en_passant_moves, en_passants_found)
+
+    def test_pawn_en_passant_bPs(self):
+        board = SetupBoard('rnbqkbnr/ppp1p1pp/8/8/3p1p2/8/PPPPPPPP/RNBQKBNR w KQkq -')
+
+        e4 = pychess.util.move.from_algebraic(board, PieceColor.WHITE, 'e4')
+        board.move(e4)
+
+        pawns = board.get_pawns(PieceColor.BLACK)
+
+        moves = []
+        for p in pawns:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        en_passant_moves = ['dxe3', 'fxe3']
+        en_passants_found = []
+
+        for em in en_passant_moves:
+            if em in en_passant_moves:
+                en_passants_found.append(em)
+
+        self.assertCountEqual(en_passant_moves, en_passants_found)
 
 
 if __name__ == '__main__':

@@ -34,8 +34,11 @@ class Pawn(pieces.Piece):
         c = 1 if self.is_white() else -1
         p_x, p_y = self.position
 
+        second_rank = self.board.get_first_rank(self.color) + 1 * c
+        two_move_rank = p_y <= second_rank if self.is_white() else p_y >= second_rank
+
         if not self.history and self.board.in_board((p_x, p_y + 2 * c)) and \
-                not self.pieces_between((p_x, p_y + 3 * c)):
+                not self.pieces_between((p_x, p_y + 3 * c)) and two_move_rank:
             m.append(moves.Move(self, (p_x, p_y), (p_x, p_y + 2 * c)))
 
         if self.board.in_board((p_x, p_y + 1 * c)) and \

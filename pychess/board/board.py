@@ -40,14 +40,6 @@ class Board(ABC):
         pass
 
     @abstractmethod
-    def get_queen_side_rook(self, color):
-        pass
-
-    @abstractmethod
-    def get_king_side_rook(self, color):
-        pass
-
-    @abstractmethod
     def get_piece(self, pos):
         pass
 

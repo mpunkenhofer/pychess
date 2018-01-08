@@ -24,12 +24,9 @@ class StandardBoard(board.Board):
             self.pieces[(i, 1)] = Pawn(self, (i, 1), PieceColor.WHITE)
             self.pieces[(i, 6)] = Pawn(self, (i, 6), PieceColor.BLACK)
 
-        self.king_side_rooks = self.pieces[(7, 0)], self.pieces[(7, 7)]
-        self.queen_side_rooks = self.pieces[(0, 0)], self.pieces[(0, 7)]
-
     def _move(self, move):
         if not move:
-            raise RuntimeError('moves(piece, m): no moves!')
+            raise RuntimeError('move is None')
 
         if move.is_capture():
             self.capture(move)
@@ -100,8 +97,4 @@ class StandardBoard(board.Board):
     def get_long_castle_positions(self, color):
         return ((2, 0), (3, 0)) if color == PieceColor.WHITE else ((2, 7), (3, 7))
 
-    def get_queen_side_rook(self, color):
-        return self.queen_side_rooks[0] if color == PieceColor.WHITE else self.queen_side_rooks[1]
 
-    def get_king_side_rook(self, color):
-        return self.king_side_rooks[0] if color == PieceColor.WHITE else self.king_side_rooks[1]

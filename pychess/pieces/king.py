@@ -125,7 +125,7 @@ class King(pieces.Piece):
         if not short_castle_enabled:
             return None
 
-        rook = self.board.get_king_side_rook(self.color)
+        rook = self.get_right_castle_rook() if self.is_white() else self.get_left_castle_rook()
 
         if not rook:
             return None
@@ -162,7 +162,7 @@ class King(pieces.Piece):
         if not long_castle_enabled:
             return None
 
-        rook = self.board.get_queen_side_rook(self.color)
+        rook = self.get_left_castle_rook() if self.is_white() else self.get_right_castle_rook()
 
         if not rook:
             return None
@@ -191,4 +191,48 @@ class King(pieces.Piece):
         castle_move = moves.LongCastle(self, (p_x, p_y), self, rook)
 
         return castle_move
+
+    def get_left_castle_rook(self):
+        first_rank = self.board.get_first_rank(self.color)
+        first_file = self.board.get_first_file(self.color)
+
+        rooks = []
+
+        for x in range(first_file, self.position[0]) if self.is_white() \
+                else range(self.position[0] + 1, first_file + 1):
+            if not self.board.in_board((x, first_rank)):
+                break
+
+            if self.board.piece_on((x, first_rank)):
+                piece = self.board.get_piece((x, first_rank))
+
+                if piece.color == self.color and piece.is_rook():
+                    rooks.append(piece)
+
+        if len(rooks) == 1:
+            return rooks[0]
+        else:
+            return None
+
+    def get_right_castle_rook(self):
+        first_rank = self.board.get_first_rank(self.color)
+        last_file = self.board.get_last_file(self.color)
+
+        rooks = []
+
+        for x in range(self.position[0] + 1, last_file + 1) if self.is_white() \
+                else range(last_file, self.position[0]):
+            if not self.board.in_board((x, first_rank)):
+                break
+
+            if self.board.piece_on((x, first_rank)):
+                piece = self.board.get_piece((x, first_rank))
+
+                if piece.color == self.color and piece.is_rook():
+                    rooks.append(piece)
+
+        if len(rooks) == 1:
+            return rooks[0]
+        else:
+            return None
 
