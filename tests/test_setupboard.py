@@ -162,6 +162,13 @@ class SetupBoardTests(unittest.TestCase):
             # putting one a pawn on its respective last rank should raise an Error
             board.put_piece(Pawn(board, (0, board.get_last_rank(PieceColor.WHITE)), PieceColor.WHITE))
 
+    def test_put_piece_occupied(self):
+        board = SetupBoard('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1')
+
+        with self.assertRaises(ValueError):
+            # putting one a pawn on its respective last rank should raise an Error
+            board.put_piece(Pawn(board, (0, 0), PieceColor.WHITE))
+
 
 if __name__ == '__main__':
     unittest.main()

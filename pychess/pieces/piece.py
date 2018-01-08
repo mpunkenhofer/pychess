@@ -370,16 +370,6 @@ class Piece(ABC):
 
         return False
 
-    def position_to_algebraic(self):
-        file_diff = self.board.get_top_right()[0] - self.board.get_bottom_left()[0]
-        rank_diff = self.board.get_top_right()[1] - self.board.get_bottom_left()[0]
-
-        files = {self.board.get_bottom_left()[0] + (i - ord('a')): chr(i)
-                 for i in range(ord('a'), ord('a') + file_diff + 1)}
-        ranks = {self.board.get_bottom_left()[1] + (i - 1): str(i) for i in range(1, 1 + rank_diff + 1)}
-
-        return files[self.position[0]] + ranks[self.position[1]]
-
     @staticmethod
     def same_rank(p1, p2):
         p1_x, p1_y, p2_x, p2_y = Piece.get_coordinates(p1, p2)

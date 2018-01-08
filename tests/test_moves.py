@@ -459,6 +459,226 @@ class MoveTests(unittest.TestCase):
 
         self.assertCountEqual(en_passant_moves, en_passants_found)
 
+    def test_castling_short_w(self):
+        board = SetupBoard('rnbqk2r/pppppppp/8/8/8/8/PPPPPPPP/RNBQK2R w KQkq -')
+
+        king = board.get_king(PieceColor.WHITE)
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertCountEqual(moves, ['Kf1', 'O-O'])
+
+    def test_castling_short_b(self):
+        board = SetupBoard('rnbqk2r/pppppppp/8/8/8/8/PPPPPPPP/RNBQK2R w KQkq -')
+
+        king = board.get_king(PieceColor.BLACK)
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertCountEqual(moves, ['Kf8', 'O-O'])
+
+    def test_castling_long_w(self):
+        board = SetupBoard('r3kbnr/pppppppp/8/8/8/8/PPPPPPPP/R3KBNR w KQkq -')
+
+        king = board.get_king(PieceColor.WHITE)
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertCountEqual(moves, ['Kd1', 'O-O-O'])
+
+    def test_castling_long_b(self):
+        board = SetupBoard('r3kbnr/pppppppp/8/8/8/8/PPPPPPPP/R3KBNR w KQkq -')
+
+        king = board.get_king(PieceColor.BLACK)
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertCountEqual(moves, ['Kd8', 'O-O-O'])
+
+    def test_castling_short_and_long_w(self):
+        board = SetupBoard('r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq -')
+
+        king = board.get_king(PieceColor.WHITE)
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertCountEqual(moves, ['Kd1', 'O-O-O', 'Kf1', 'O-O'])
+
+    def test_castling_short_and_long_b(self):
+        board = SetupBoard('r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq -')
+
+        king = board.get_king(PieceColor.BLACK)
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertCountEqual(moves, ['Kd8', 'O-O-O', 'Kf8', 'O-O'])
+
+    def test_not_castling_short_1_w(self):
+        board = SetupBoard('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKB1R w KQkq -')
+
+        king = board.get_king(PieceColor.WHITE)
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertFalse(moves)
+
+    def test_not_castling_short_1_b(self):
+        board = SetupBoard('rnbqkb1r/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq -')
+
+        king = board.get_king(PieceColor.BLACK)
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertFalse(moves)
+
+    def test_not_castling_short_2_w(self):
+        board = SetupBoard('rnbqk1nr/pppppppp/8/8/8/8/PPPPPPPP/RNBQK1NR w KQkq -')
+
+        king = board.get_king(PieceColor.WHITE)
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertCountEqual(moves, ['Kf1'])
+
+    def test_not_castling_short_2_b(self):
+        board = SetupBoard('rnbqk1nr/pppppppp/8/8/8/8/PPPPPPPP/RNBQK1NR w KQkq -')
+
+        king = board.get_king(PieceColor.BLACK)
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertCountEqual(moves, ['Kf8'])
+
+    def test_not_castling_long_1_w(self):
+        board = SetupBoard('r1bqkbnr/pppppppp/8/8/8/8/PPPPPPPP/R1BQKBNR w KQkq -')
+
+        king = board.get_king(PieceColor.WHITE)
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertFalse(moves)
+
+    def test_not_castling_long_1_b(self):
+        board = SetupBoard('r1bqkbnr/pppppppp/8/8/8/8/PPPPPPPP/R1BQKBNR w KQkq -')
+
+        king = board.get_king(PieceColor.BLACK)
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertFalse(moves)
+
+    def test_not_castling_long_2_w(self):
+        board = SetupBoard('r2qkbnr/pppppppp/8/8/8/8/PPPPPPPP/R2QKBNR w KQkq -')
+
+        king = board.get_king(PieceColor.WHITE)
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertFalse(moves)
+
+    def test_not_castling_long_2_b(self):
+        board = SetupBoard('r2qkbnr/pppppppp/8/8/8/8/PPPPPPPP/R2QKBNR w KQkq -')
+
+        king = board.get_king(PieceColor.BLACK)
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertFalse(moves)
+
+    def test_not_castling_long_3_w(self):
+        board = SetupBoard('rnb1kbnr/pppppppp/8/8/8/8/PPPPPPPP/RNB1KBNR w KQkq -')
+
+        king = board.get_king(PieceColor.WHITE)
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertCountEqual(moves, ['Kd1'])
+
+    def test_not_castling_long_3_b(self):
+        board = SetupBoard('rnb1kbnr/pppppppp/8/8/8/8/PPPPPPPP/RNB1KBNR w KQkq -')
+
+        king = board.get_king(PieceColor.BLACK)
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertCountEqual(moves, ['Kd8'])
+
+    def test_not_castling_short_missing_rook_w(self):
+        board = SetupBoard('rnbqk3/pppppppp/8/8/8/8/PPPPPPPP/RNBQK3 w KQkq -')
+
+        king = board.get_king(PieceColor.WHITE)
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertCountEqual(moves, ['Kf1'])
+
+    def test_not_castling_short_missing_rook_b(self):
+        board = SetupBoard('rnbqk3/pppppppp/8/8/8/8/PPPPPPPP/RNBQK3 w KQkq -')
+
+        king = board.get_king(PieceColor.BLACK)
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertCountEqual(moves, ['Kf8'])
+
+    def test_not_castling_long_missing_rook_w(self):
+        board = SetupBoard('4kbnr/pppppppp/8/8/8/8/PPPPPPPP/4KBNR w KQkq -')
+
+        king = board.get_king(PieceColor.WHITE)
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertCountEqual(moves, ['Kd1'])
+
+    def test_not_castling_long_missing_rook_b(self):
+        board = SetupBoard('4kbnr/pppppppp/8/8/8/8/PPPPPPPP/4KBNR w KQkq -')
+
+        king = board.get_king(PieceColor.BLACK)
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertCountEqual(moves, ['Kd8'])
+
+    def test_two_w_queen_on_same_diagonal(self):
+        board = SetupBoard('Q7/6k1/8/8/8/8/5K2/7Q w - -')
+        queens = board.get_queens(PieceColor.WHITE)
+
+        moves = []
+        for p in queens:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        self.assertCountEqual(moves, ['Qa7', 'Qa6', 'Qa5', 'Qa4', 'Qa3', 'Qa2', 'Qaa1',  # file
+                                      'Qh2', 'Qh3', 'Qh4', 'Qh5', 'Qh6', 'Qh7', 'Qhh8',
+                                      'Qb8', 'Qc8', 'Qd8', 'Qe8', 'Qf8', 'Qg8', 'Qah8',  # rank
+                                      'Qg1', 'Qf1', 'Qe1', 'Qd1', 'Qc1', 'Qb1', 'Qha1',
+                                      'Qhg2', 'Qhf3', 'Qhe4', 'Qhd5', 'Qhc6', 'Qhb7',  # falling diagonal up
+                                      'Qag2', 'Qaf3', 'Qae4', 'Qad5', 'Qac6', 'Qab7'   # falling diagonal down
+                                      ])
+
+    def test_two_b_queen_on_same_diagonal(self):
+        board = SetupBoard('q7/6k1/8/8/8/8/5K2/7q w - -')
+        queens = board.get_queens(PieceColor.BLACK)
+
+        moves = []
+        for p in queens:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        self.assertCountEqual(moves, ['Qa7', 'Qa6', 'Qa5', 'Qa4', 'Qa3', 'Qa2', 'Qaa1',  # file
+                                      'Qh2', 'Qh3', 'Qh4', 'Qh5', 'Qh6', 'Qh7', 'Qhh8',
+                                      'Qb8', 'Qc8', 'Qd8', 'Qe8', 'Qf8', 'Qg8', 'Qah8',  # rank
+                                      'Qg1', 'Qf1', 'Qe1', 'Qd1', 'Qc1', 'Qb1', 'Qha1',
+                                      'Qhg2', 'Qhf3', 'Qhe4', 'Qhd5', 'Qhc6', 'Qhb7',  # falling diagonal up
+                                      'Qag2', 'Qaf3', 'Qae4', 'Qad5', 'Qac6', 'Qab7'   # falling diagonal down
+                                      ])
+
+    def test_two_w_bishops_on_same_diagonal(self):
+        board = SetupBoard('B7/6k1/8/8/8/8/5K2/7B w - -')
+        bishops = board.get_bishops(PieceColor.WHITE)
+
+        moves = []
+        for p in bishops:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        self.assertCountEqual(moves, ['Bhg2', 'Bhf3', 'Bhe4', 'Bhd5', 'Bhc6', 'Bhb7',  # falling diagonal up
+                                      'Bag2', 'Baf3', 'Bae4', 'Bad5', 'Bac6', 'Bab7'   # falling diagonal down
+                                      ])
+
+    def test_two_b_bishops_on_same_diagonal(self):
+        board = SetupBoard('b7/6k1/8/8/8/8/5K2/7b w - -')
+        bishops = board.get_bishops(PieceColor.BLACK)
+
+        moves = []
+        for p in bishops:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        self.assertCountEqual(moves, ['Bhg2', 'Bhf3', 'Bhe4', 'Bhd5', 'Bhc6', 'Bhb7',  # falling diagonal up
+                                      'Bag2', 'Baf3', 'Bae4', 'Bad5', 'Bac6', 'Bab7'   # falling diagonal down
+                                      ])
+
 
 if __name__ == '__main__':
     unittest.main()
