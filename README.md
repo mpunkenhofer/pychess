@@ -1,4 +1,7 @@
 # pychess
+[![Build Status](https://travis-ci.org/mpunkenhofer/pychess.svg?branch=master)](https://travis-ci.org/mpunkenhofer/pychess)
+[![codecov](https://codecov.io/gh/mpunkenhofer/pychess/branch/master/graph/badge.svg)](https://codecov.io/gh/mpunkenhofer/pychess)
+
 **UNFINISHED**
 
 A simple chess implementation which enforces legal chess moves in python.
