@@ -681,28 +681,32 @@ class MoveTests(unittest.TestCase):
 
     def test_two_w_rooks_on_same_rank(self):
         board = SetupBoard('8/5k2/8/8/8/8/5K2/R6R w KQkq -')
-        bishops = board.get_bishops(PieceColor.WHITE)
+        rooks = board.get_rooks(PieceColor.WHITE)
 
         moves = []
-        for p in bishops:
+        for p in rooks:
             for m in p.moves():
                 moves.append(m.to_algebraic())
 
-        self.assertCountEqual(moves, ['Bhg2', 'Bhf3', 'Bhe4', 'Bhd5', 'Bhc6', 'Bhb7',  # falling diagonal up
-                                      'Bag2', 'Baf3', 'Bae4', 'Bad5', 'Bac6', 'Bab7'   # falling diagonal down
+        self.assertCountEqual(moves, ['Rab1', 'Rac1', 'Rad1', 'Rae1', 'Raf1', 'Rag1',  # rank
+                                      'Rhb1', 'Rhc1', 'Rhd1', 'Rhe1', 'Rhf1', 'Rhg1',  # files
+                                      'Ra2', 'Ra3', 'Ra4', 'Ra5', 'Ra6', 'Ra7', 'Ra8',
+                                      'Rh2', 'Rh3', 'Rh4', 'Rh5', 'Rh6', 'Rh7', 'Rh8'
                                       ])
 
     def test_two_b_rooks_on_same_rank(self):
-        board = SetupBoard('8/5k2/8/8/8/8/5K2/R6R w KQkq -')
-        bishops = board.get_bishops(PieceColor.BLACK)
+        board = SetupBoard('8/5k2/8/8/8/8/5K2/r6r w KQkq -')
+        rooks = board.get_rooks(PieceColor.BLACK)
 
         moves = []
-        for p in bishops:
+        for p in rooks:
             for m in p.moves():
                 moves.append(m.to_algebraic())
 
-        self.assertCountEqual(moves, ['Bhg2', 'Bhf3', 'Bhe4', 'Bhd5', 'Bhc6', 'Bhb7',  # falling diagonal up
-                                      'Bag2', 'Baf3', 'Bae4', 'Bad5', 'Bac6', 'Bab7'   # falling diagonal down
+        self.assertCountEqual(moves, ['Rab1', 'Rac1', 'Rad1', 'Rae1', 'Raf1', 'Rag1',  # rank
+                                      'Rhb1', 'Rhc1', 'Rhd1', 'Rhe1', 'Rhf1', 'Rhg1',  # files
+                                      'Ra2', 'Ra3', 'Ra4', 'Ra5', 'Ra6', 'Ra7', 'Ra8',
+                                      'Rh2', 'Rh3', 'Rh4', 'Rh5', 'Rh6', 'Rh7', 'Rh8'
                                       ])
 
 
