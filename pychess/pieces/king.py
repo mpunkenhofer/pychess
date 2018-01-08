@@ -119,22 +119,12 @@ class King(pieces.Piece):
         return False
 
     def short_castle(self):
-        short_castle_enabled = self.board.enable_white_short_castle if self.is_white() \
-            else self.board.enable_black_short_castle
-
-        if not short_castle_enabled:
+        if not self.short_castle_requirements():
             return None
 
         rook = self.get_right_castle_rook() if self.is_white() else self.get_left_castle_rook()
 
         if not rook:
-            return None
-        
-        if self.history or rook.history:
-            return None
-
-        if not self.board.is_first_rank(self.color, self.position) \
-                or not self.board.is_first_rank(self.color, rook.position):
             return None
 
         if self.pieces_between(rook):
@@ -156,22 +146,12 @@ class King(pieces.Piece):
         return castle_move
 
     def long_castle(self):
-        long_castle_enabled = self.board.enable_white_long_castle if self.is_white() \
-            else self.board.enable_black_long_castle
-
-        if not long_castle_enabled:
+        if not self.long_castle_requirements():
             return None
 
         rook = self.get_left_castle_rook() if self.is_white() else self.get_right_castle_rook()
 
         if not rook:
-            return None
-
-        if self.history or rook.history:
-            return None
-
-        if not self.board.is_first_rank(self.color, self.position) \
-                or not self.board.is_first_rank(rook.color, rook.position):
             return None
 
         if self.pieces_between(rook):
@@ -235,4 +215,46 @@ class King(pieces.Piece):
             return rooks[0]
         else:
             return None
+
+    def long_castle_requirements(self):
+        long_castle_enabled = self.board.enable_white_long_castle if self.is_white() \
+            else self.board.enable_black_long_castle
+
+        if not long_castle_enabled:
+            return False
+
+        rook = self.get_left_castle_rook() if self.is_white() else self.get_right_castle_rook()
+
+        if not rook:
+            return False
+
+        if self.history or rook.history:
+            return False
+
+        if not self.board.is_first_rank(self.color, self.position) \
+                or not self.board.is_first_rank(rook.color, rook.position):
+            return False
+
+        return True
+
+    def short_castle_requirements(self):
+        short_castle_enabled = self.board.enable_white_short_castle if self.is_white() \
+            else self.board.enable_black_short_castle
+
+        if not short_castle_enabled:
+            return False
+
+        rook = self.get_right_castle_rook() if self.is_white() else self.get_left_castle_rook()
+
+        if not rook:
+            return False
+
+        if self.history or rook.history:
+            return False
+
+        if not self.board.is_first_rank(self.color, self.position) \
+                or not self.board.is_first_rank(self.color, rook.position):
+            return False
+
+        return True
 

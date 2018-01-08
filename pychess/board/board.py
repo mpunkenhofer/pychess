@@ -113,15 +113,11 @@ class Board(ABC):
         white_king = self.get_king(pieces.PieceColor.WHITE)
         black_king = self.get_king(pieces.PieceColor.BLACK)
 
-        castling = 'K' if self.enable_white_short_castle and \
-            not self.king_or_rook_moved(white_king, self.get_king_side_rook(pieces.PieceColor.WHITE)) else ''
-        castling += 'Q' if self.enable_white_long_castle and \
-            not self.king_or_rook_moved(white_king, self.get_queen_side_rook(pieces.PieceColor.WHITE)) else ''
+        castling = 'K' if white_king.short_castle_requirements() else ''
+        castling += 'Q' if white_king.long_castle_requirements() else ''
 
-        castling += 'k' if self.enable_black_short_castle and \
-            not self.king_or_rook_moved(black_king, self.get_king_side_rook(pieces.PieceColor.BLACK)) else ''
-        castling += 'q' if self.enable_black_long_castle and \
-            not self.king_or_rook_moved(black_king, self.get_queen_side_rook(pieces.PieceColor.BLACK)) else ''
+        castling += 'k' if black_king.short_castle_requirements() else ''
+        castling += 'q' if black_king.long_castle_requirements() else ''
 
         en_passant_target_square = self.en_passant_square()
 
@@ -219,19 +215,6 @@ class Board(ABC):
     def is_last_file(self, color, pos):
         x, _ = pos
         return x == self.get_last_file(color)
-
-    @staticmethod
-    def king_or_rook_moved(king, rook):
-        if not king or not rook:
-            return True
-
-        if not king.is_king() or not rook.is_rook():
-            return True
-
-        if len(king.history) > 0 or len(rook.history) > 0:
-            return True
-
-        return False
 
     def en_passant_square(self):
         m = self.get_last_move()
