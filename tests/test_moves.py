@@ -743,6 +743,62 @@ class MoveTests(unittest.TestCase):
 
         self.assertFalse(duplicates)
 
+    def test_king_moves_with_protected_backrank_1(self):
+        board = SetupBoard('7k/8/8/8/8/8/5P1P/2q3K1 w - -')
+        king = board.get_king(PieceColor.WHITE)
+
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertCountEqual(moves, ['Kg2'])
+
+    def test_king_moves_with_protected_backrank_2(self):
+        board = SetupBoard('7k/8/8/8/8/8/5P2/2q3K1 w - -')
+        king = board.get_king(PieceColor.WHITE)
+
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertCountEqual(moves, ['Kg2', 'Kh2'])
+
+    def test_king_moves_with_protected_squares_by_dark_square_bishops(self):
+        board = SetupBoard('1b3b1k/8/8/b7/3K4/8/8/2b5 w - -')
+        king = board.get_king(PieceColor.WHITE)
+
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertCountEqual(moves, ['Kd3', 'Ke4', 'Kd5', 'Kc4'])
+
+    def test_king_moves_with_protected_squares_by_light_square_bishops(self):
+        board = SetupBoard('7k/8/4b3/1b3b2/3K4/8/8/8 w - -')
+        king = board.get_king(PieceColor.WHITE)
+
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertCountEqual(moves, ['Kc5', 'Kc3', 'Ke5', 'Ke3'])
+
+    def test_king_moves_with_rank_only_possible(self):
+        board = SetupBoard('7k/8/8/q7/3K4/7r/8/8 w - -')
+        king = board.get_king(PieceColor.WHITE)
+
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertCountEqual(moves, ['Kc4', 'Ke4'])
+
+    def test_king_moves_with_file_only_possible(self):
+        board = SetupBoard('2q4k/8/8/8/3K4/8/8/4r3 w - -')
+        king = board.get_king(PieceColor.WHITE)
+
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertCountEqual(moves, ['Kd3', 'Kd5'])
+
+    def test_king_moves_with_protected_squares_and_blocking_pieces(self):
+        board = SetupBoard('5b1k/8/1n3p2/8/3K4/2RNB3/8/8 w - -')
+        king = board.get_king(PieceColor.WHITE)
+
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertCountEqual(moves, ['Ke4'])
+
 
 if __name__ == '__main__':
     unittest.main()
