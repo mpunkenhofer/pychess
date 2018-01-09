@@ -94,6 +94,9 @@ class Board(ABC):
         """
 
     def move(self, move):
+        if not move:
+            raise RuntimeError('move is None')
+
         algebraic_move = move.to_algebraic()
 
         move.piece.history.append(move)

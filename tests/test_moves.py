@@ -805,6 +805,18 @@ class MoveTests(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             board.algebraic_move(PieceColor.BLACK, 'e4')
 
+    def test_none__move(self):
+        board = StandardBoard()
+
+        with self.assertRaises(RuntimeError):
+            board._move(None)
+
+    def test_none_move(self):
+        board = StandardBoard()
+
+        with self.assertRaises(RuntimeError):
+            board.move(None)
+
 
 if __name__ == '__main__':
     unittest.main()
