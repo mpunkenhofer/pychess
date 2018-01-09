@@ -46,7 +46,7 @@ class ChessConsoleUserInterface(ChessUserInterface):
             self.do_command(move_input)
             return self.move(player)
 
-        move = pychess.util.move.from_algebraic(self.board, player, move_input)
+        move = self.board.algebraic_move(player, move_input)
 
         if not move:
             print('Invalid move.')

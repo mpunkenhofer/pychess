@@ -3,7 +3,6 @@
 #
 
 import unittest
-import pychess.util.move
 
 from pychess.board import SetupBoard
 from pychess.pieces import PieceColor
@@ -413,8 +412,7 @@ class MoveTests(unittest.TestCase):
     def test_pawn_en_passant_wPs(self):
         board = SetupBoard('rnbqkbnr/pppppppp/8/3P1P2/8/8/PPP2PPP/RNBQKBNR b KQkq -')
 
-        e5 = pychess.util.move.from_algebraic(board, PieceColor.BLACK, 'e5')
-        board.move(e5)
+        board.algebraic_move(PieceColor.BLACK, 'e5')
 
         pawns = board.get_pawns(PieceColor.WHITE)
 
@@ -435,8 +433,7 @@ class MoveTests(unittest.TestCase):
     def test_pawn_en_passant_bPs(self):
         board = SetupBoard('rnbqkbnr/ppp1p1pp/8/8/3p1p2/8/PPPPPPPP/RNBQKBNR w KQkq -')
 
-        e4 = pychess.util.move.from_algebraic(board, PieceColor.WHITE, 'e4')
-        board.move(e4)
+        board.algebraic_move(PieceColor.WHITE, 'e4')
 
         pawns = board.get_pawns(PieceColor.BLACK)
 

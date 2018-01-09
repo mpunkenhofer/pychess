@@ -3,6 +3,7 @@
 #
 
 import math
+import pychess.util.move
 
 from pychess import pieces
 from abc import ABC, abstractmethod
@@ -64,6 +65,10 @@ class Board(ABC):
 
         if check:
             self.history[-1] = (move, algebraic_move + check)
+
+    def algebraic_move(self, active_color, algebraic_move):
+        m = pychess.util.move.from_algebraic(self, active_color, algebraic_move)
+        self.move(m)
 
     def algebraic_history(self):
         return [h for _, h in self.history]

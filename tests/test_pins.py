@@ -202,10 +202,151 @@ class PinTests(unittest.TestCase):
 
         self.assertCountEqual(moves, ['e6'])
 
-    # TODO: file pinned bishops
-    # TODO: file pinned knights
-    # TODO: file pinned rooks
-    # TODO: file pinned queens
+    def test_file_pinned_bishops_all_pinned(self):
+        board = SetupBoard('3kq3/8/5p2/4B3/4K3/4B3/3r4/4r3 w - -')
+
+        pinned_piece = board.get_bishops(PieceColor.WHITE)
+
+        moves = []
+        for p in pinned_piece:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        self.assertFalse(moves)
+
+    def test_file_pinned_bishops_one_not_pinned(self):
+        board = SetupBoard('3kq3/8/5p2/4B3/3nKn2/4B3/8/4n3 w - -')
+
+        pinned_piece = board.get_bishops(PieceColor.WHITE)
+
+        moves = []
+        for p in pinned_piece:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        self.assertCountEqual(moves, ['Bf2', 'Bg1', 'Bd2', 'Bc1', 'Bxd4', 'Bxf4'])
+
+    def test_file_pinned_bishops_one_not_pinned_by_block(self):
+        board = SetupBoard('3kq3/8/5p2/4B3/3nKn2/4B3/4N3/4r3 w - -')
+
+        pinned_piece = board.get_bishops(PieceColor.WHITE)
+
+        moves = []
+        for p in pinned_piece:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        self.assertCountEqual(moves, ['Bf2', 'Bg1', 'Bd2', 'Bc1', 'Bxd4', 'Bxf4'])
+
+    def test_file_pinned_knights_all_pinned(self):
+        board = SetupBoard('3kq3/8/6n1/4N3/4K3/4N3/6n1/4r3 w - -')
+
+        pinned_piece = board.get_knights(PieceColor.WHITE)
+
+        moves = []
+        for p in pinned_piece:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        self.assertFalse(moves)
+
+    def test_file_pinned_knights_one_not_pinned(self):
+        board = SetupBoard('3kq3/8/6n1/3PNP2/2P1K1P1/4N3/2P3n1/4n3 w - -')
+
+        pinned_piece = board.get_knights(PieceColor.WHITE)
+
+        moves = []
+        for p in pinned_piece:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        self.assertCountEqual(moves, ['Nxg2', 'Nd1', 'Nf1'])
+
+    def test_file_pinned_knights_one_not_pinned_by_block(self):
+        board = SetupBoard('3kq3/8/6n1/3PNP2/2PPKPP1/4N3/2P1N1n1/4r3 w - -')
+
+        pinned_piece = board.get_knights(PieceColor.WHITE)
+
+        moves = []
+        for p in pinned_piece:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        self.assertCountEqual(moves, ['Nxg2', 'Nd1', 'Nf1', 'Nc3', 'Ng3', 'Nc1', 'Ng1'])
+
+    def test_file_pinned_rooks_all_pinned(self):
+        board = SetupBoard('3kq3/8/5r2/4R3/4K3/4R3/3r4/4r3 w - -')
+
+        pinned_piece = board.get_rooks(PieceColor.WHITE)
+
+        moves = []
+        for p in pinned_piece:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        self.assertCountEqual(moves, ['Re2', 'Rxe1', 'Re6', 'Re7', 'Rxe8'])
+
+    def test_file_pinned_rooks_one_not_pinned(self):
+        board = SetupBoard('3kq3/8/5r2/4R3/3pKp2/3PR3/3r4/4n3 w - - 0 1')
+
+        pinned_piece = board.get_rooks(PieceColor.WHITE)
+
+        moves = []
+        for p in pinned_piece:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        self.assertCountEqual(moves, ['Re2', 'Rxe1', 'Rf3', 'Rg3', 'Rh3', 'Re6', 'Re7', 'Rxe8'])
+
+    def test_file_pinned_rooks_one_not_pinned_by_block(self):
+        board = SetupBoard('3kq3/8/5r2/3nR3/4Kp2/3PR3/3rR3/4n3 w - -')
+
+        pinned_piece = board.get_rooks(PieceColor.WHITE)
+
+        moves = []
+        for p in pinned_piece:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        self.assertCountEqual(moves, ['Rf3', 'Rg3', 'Rh3', 'Re6', 'Re7', 'Rxe8', 'Rxd2', 'Rxe1', 'Rf2', 'Rg2', 'Rh2'])
+
+    def test_file_pinned_queens_all_pinned(self):
+        board = SetupBoard('3kq3/8/5r2/4Q3/4K3/4Q3/3r4/4r3 w - -')
+
+        pinned_piece = board.get_queens(PieceColor.WHITE)
+
+        moves = []
+        for p in pinned_piece:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        self.assertCountEqual(moves, ['Qe2', 'Qxe1', 'Qe6', 'Qe7', 'Qxe8'])
+
+    def test_file_pinned_queens_one_not_pinned(self):
+        board = SetupBoard('3kq3/8/5r2/4Q3/3pKp2/3PQ3/3r4/4n3 w - - 0 1')
+
+        pinned_piece = board.get_queens(PieceColor.WHITE)
+
+        moves = []
+        for p in pinned_piece:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        self.assertCountEqual(moves, ['Qe2', 'Qxe1', 'Qxd2', 'Qf2', 'Qg1', 'Qf3', 'Qg3', 'Qh3', 'Qxd4', 'Qxf4',
+                                      'Qe6', 'Qe7', 'Qxe8'])
+
+    def test_file_pinned_queens_one_not_pinned_by_block(self):
+        board = SetupBoard('3kq3/8/5r2/4Q3/3pKp2/3PQ3/3rR3/4n3 w - -')
+
+        pinned_piece = board.get_queens(PieceColor.WHITE)
+
+        moves = []
+        for p in pinned_piece:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        self.assertCountEqual(moves, ['Qxd2', 'Qf2', 'Qg1', 'Qf3', 'Qg3', 'Qh3', 'Qxd4', 'Qxf4',
+                                      'Qe6', 'Qe7', 'Qxe8'])
 
     def test_rank_pinned_pawns_all_pinned(self):
         board = SetupBoard('44k3/8/8/8/6r1/r2PKP1q/8/8 w - -')
@@ -279,9 +420,113 @@ class PinTests(unittest.TestCase):
 
         self.assertCountEqual(moves, ['Be2', 'Bd1', 'Bxg4', 'Bxe4', 'Bg2', 'Bh1'])
 
-    # TODO: rank pinned Knights
-    # TODO: rank pinned rooks
-    # TODO: rank pinned Queens
+    def test_rank_pinned_knights_all_pinned(self):
+        board = SetupBoard('7k/8/1P1P1n2/r5P1/r1NKN2q/6P1/1n1P1P2/8 w - -')
+
+        pinned_piece = board.get_knights(PieceColor.WHITE)
+
+        moves = []
+        for p in pinned_piece:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        self.assertFalse(moves)
+
+    def test_rank_pinned_knights_one_not_pinned(self):
+        board = SetupBoard('7k/8/1P1P1n2/r5P1/n1NKN2q/6P1/1n1P1P2/8 w - -')
+
+        pinned_piece = board.get_knights(PieceColor.WHITE)
+
+        moves = []
+        for p in pinned_piece:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        self.assertCountEqual(moves, ['Nxb2', 'Ne3', 'Nxa5', 'Ne5', 'Na3'])
+
+    def test_rank_pinned_knights_one_not_pinned_by_block(self):
+        board = SetupBoard('7k/8/1P1P1n2/r5P1/nBNKN2q/6P1/1n1P1P2/8 w - -')
+
+        pinned_piece = board.get_knights(PieceColor.WHITE)
+
+        moves = []
+        for p in pinned_piece:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        self.assertCountEqual(moves, ['Nxb2', 'Ne3', 'Nxa5', 'Ne5', 'Na3'])
+
+    def test_rank_pinned_rooks_all_pinned(self):
+        board = SetupBoard('7k/8/8/2P1n3/r1RKR2q/2n5/4P3/8 w - -')
+
+        pinned_piece = board.get_rooks(PieceColor.WHITE)
+
+        moves = []
+        for p in pinned_piece:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        self.assertCountEqual(moves, ['Rb4', 'Rxa4', 'Rf4', 'Rg4', 'Rxh4'])
+
+    def test_rank_pinned_rooks_one_not_pinned(self):
+        board = SetupBoard('7k/8/8/2P1n3/n1RKR2q/2n5/4P3/8 w - -')
+
+        pinned_piece = board.get_rooks(PieceColor.WHITE)
+
+        moves = []
+        for p in pinned_piece:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        self.assertCountEqual(moves, ['Rb4', 'Rxa4', 'Rf4', 'Rg4', 'Rxh4', 'Rxc3'])
+
+    def test_rank_pinned_rooks_one_not_pinned_by_block(self):
+        board = SetupBoard('7k/8/8/2P1n3/r1RKRQ1q/2n5/4P3/8 w - -')
+
+        pinned_piece = board.get_rooks(PieceColor.WHITE)
+
+        moves = []
+        for p in pinned_piece:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        self.assertCountEqual(moves, ['Rb4', 'Rxa4', 'Rxe5', 'Re3'])
+
+    def test_rank_pinned_queens_all_pinned(self):
+        board = SetupBoard('7k/8/2R1R3/2P1nb2/r1QKQ2q/2nP4/4P3/8 w - -')
+
+        pinned_piece = board.get_queens(PieceColor.WHITE)
+
+        moves = []
+        for p in pinned_piece:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        self.assertCountEqual(moves, ['Qb4', 'Qxa4', 'Qf4', 'Qg4', 'Qxh4'])
+
+    def test_rank_pinned_queens_one_not_pinned(self):
+        board = SetupBoard('7k/8/2R1R3/2P1nb2/n1QKQ2q/2nP4/4P3/8 w - -')
+
+        pinned_piece = board.get_queens(PieceColor.WHITE)
+
+        moves = []
+        for p in pinned_piece:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        self.assertCountEqual(moves, ['Qb4', 'Qxa4', 'Qf4', 'Qg4', 'Qxh4', 'Qd5', 'Qb3', 'Qa2', 'Qb5', 'Qa6', 'Qxc3'])
+
+    def test_rank_pinned_queens_one_not_pinned_by_block(self):
+        board = SetupBoard('7k/8/2R1R3/2P1nb2/qRQKQ2q/2nP4/4P3/8 w - -')
+
+        pinned_piece = board.get_queens(PieceColor.WHITE)
+
+        moves = []
+        for p in pinned_piece:
+            for m in p.moves():
+                moves.append(m.to_algebraic())
+
+        self.assertCountEqual(moves, ['Qf4', 'Qg4', 'Qxh4', 'Qd5', 'Qb3', 'Qa2', 'Qb5', 'Qa6', 'Qxc3'])
 
 
 if __name__ == '__main__':
