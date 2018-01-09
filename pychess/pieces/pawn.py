@@ -57,6 +57,7 @@ class Pawn(pieces.Piece):
         m = []
         squares = self.influenced_squares()
         p_x, p_y = self.position
+        pining_piece = self.diagonal_pin_piece()
 
         for s in squares:
             if s in self.board.pieces:
@@ -66,7 +67,10 @@ class Pawn(pieces.Piece):
                     elif self.board.is_last_rank(self.color, s):
                         m += self.generate_all_promotions((p_x, p_y), s, self.board.pieces[s])
                     else:
-                        m.append(moves.Capture(self, (p_x, p_y), s, self.board.pieces[s]))
+                        if pining_piece and pining_piece == self.board.pieces[s]:
+                            m.append(moves.Capture(self, (p_x, p_y), s, self.board.pieces[s]))
+                        elif not pining_piece:
+                            m.append(moves.Capture(self, (p_x, p_y), s, self.board.pieces[s]))
 
         return m
 

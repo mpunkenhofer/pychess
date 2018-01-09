@@ -197,7 +197,7 @@ class Piece(ABC):
     def diagonal_pin_piece(self):
         king = self.board.get_king(self.color)
 
-        if self.same_rising_diagonal(king, self) and self.pieces_between(king):
+        if self.same_rising_diagonal(king, self) and not self.pieces_between(king):
             bishops = self.board.get_bishops(self.other_color())
             queens = self.board.get_queens(self.other_color())
 
@@ -210,8 +210,8 @@ class Piece(ABC):
                     return q
 
         elif self.same_falling_diagonal(king, self) and not self.pieces_between(king):
-            bishops = self.board.get_bishops(self.color)
-            queens = self.board.get_queens(self.color)
+            bishops = self.board.get_bishops(self.other_color())
+            queens = self.board.get_queens(self.other_color())
 
             for b in bishops:
                 if self.same_falling_diagonal(b, self) and not self.pieces_between(b):
@@ -382,21 +382,16 @@ class Piece(ABC):
 
     @staticmethod
     def same_diagonal(p1, p2):
-        p1_x, p1_y, p2_x, p2_y = Piece.get_coordinates(p1, p2)
-
-        falling = p1_y == p1_x + p2_y - p2_x
-        rising = p1_y == -p1_x + p2_y + p2_x
-
-        return falling or rising
+        return Piece.same_rising_diagonal(p1, p2) or Piece.same_falling_diagonal(p1, p2)
 
     @staticmethod
-    def same_rising_diagonal(p1, p2):
+    def same_falling_diagonal(p1, p2):
         p1_x, p1_y, p2_x, p2_y = Piece.get_coordinates(p1, p2)
 
         return p1_y == -p1_x + p2_y + p2_x
 
     @staticmethod
-    def same_falling_diagonal(p1, p2):
+    def same_rising_diagonal(p1, p2):
         p1_x, p1_y, p2_x, p2_y = Piece.get_coordinates(p1, p2)
 
         return p1_y == p1_x + p2_y - p2_x
