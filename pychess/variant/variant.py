@@ -12,8 +12,17 @@ class Variant(ABC):
 
     @abstractmethod
     def is_draw(self):
-        pass
+        """
+        Returns true if the game is drawn
+
+        :return boolean
+        """
 
     @abstractmethod
     def is_checkmated(self, color):
-        pass
+        """
+        Returns true if the player represented by color is checkmated
+
+        :param color: color representing player
+        :return boolean
+        """

@@ -34,11 +34,20 @@ class Piece(ABC):
 
     @abstractmethod
     def get_moves(self):
-        pass
+        """
+        Get all available moves for this piece
+
+        :return: a list of available moves
+        """
 
     @abstractmethod
     def get_influenced_squares(self, ignored):
-        pass
+        """
+        Get a list of all influenced squares regardless if the move is possible or not
+
+        :param ignored: pieces which are to be ignored during finding influenced squares
+        :return: a list of all influenced squares
+        """
 
     def is_king(self):
         return self.type == PieceType.KING

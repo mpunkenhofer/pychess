@@ -7,8 +7,8 @@ import unittest
 from pychess.board import SetupBoard
 
 
-class FullGameTests(unittest.TestCase):
-    def test_game_1(self):
+class FullGameTest(unittest.TestCase):
+    def test_one_standard_game(self):
         self.assertEqual(True, True)
 
 

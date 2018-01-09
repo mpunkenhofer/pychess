@@ -14,8 +14,6 @@ def from_algebraic(board, active_color, algebraic_move):
     for p in pieces:
         for move in p.moves():
             k = move.to_algebraic()
-            if not k:
-                continue
 
             if k not in move_dict:
                 move_dict[k] = move

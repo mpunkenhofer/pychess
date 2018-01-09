@@ -22,35 +22,76 @@ class Board(ABC):
 
     @abstractmethod
     def get_bottom_left(self):
-        pass
+        """
+        Get a tuple of integers representing the bottom left corner of the board
+
+        :return a tuple of integers
+        """
 
     @abstractmethod
     def get_top_right(self):
-        pass
+        """
+        Get a tuple of integers representing the top right corner of the board
+
+        :return a tuple of integers
+        """
 
     @abstractmethod
     def get_en_passant_rank(self, color):
-        pass
+        """
+        Get an integer representing the rank a pawn of color has to be one to be able to capture en passant
+
+        :param color: the color you want the respective en passant rank for
+        :return integer
+        """
 
     @abstractmethod
     def get_short_castle_positions(self, color):
-        pass
+        """
+        Get a tuple of a (tuple of integers) representing the respective king and rook positions after short castle
+        for example for a board with a bottom left corner of (0, 0) and a standard board style:
+        return ((6, 0), (5, 0)) if color == PieceColor.WHITE else ((6, 7), (5, 7))
+
+        :param color: the color for the respective castle positions
+        :return a tuple of a tuple of integers
+        """
 
     @abstractmethod
     def get_long_castle_positions(self, color):
-        pass
+        """
+        Get a tuple of a (tuple of integers) representing the respective king and rook positions after long castle
+        for example for a board with a bottom left corner of (0, 0) and a standard board style:
+        return ((2, 0), (3, 0)) if color == PieceColor.WHITE else ((2, 7), (3, 7))
+
+        :param color: the color for the respective castle positions
+        :return a tuple of a tuple of integers
+        """
 
     @abstractmethod
     def get_piece(self, pos):
-        pass
+        """
+        Get a piece on position pos
+
+        :param pos: position on the board
+        :return: the piece which resides on pos
+        """
 
     @abstractmethod
     def piece_on(self, pos):
-        pass
+        """
+        Checks if there is a piece on position pos
+
+        :param pos: position on the board
+        :return: true if there resides a piece on pos
+        """
 
     @abstractmethod
     def _move(self, move):
-        pass
+        """
+        Executes one move on the board
+
+        :param move: a move. See: pychess.moves
+        """
 
     def move(self, move):
         algebraic_move = move.to_algebraic()

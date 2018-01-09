@@ -124,9 +124,6 @@ class King(pieces.Piece):
 
         rook = self.get_right_castle_rook() if self.is_white() else self.get_left_castle_rook()
 
-        if not rook:
-            return None
-
         if self.pieces_between(rook):
             return None
 
@@ -150,9 +147,6 @@ class King(pieces.Piece):
             return None
 
         rook = self.get_left_castle_rook() if self.is_white() else self.get_right_castle_rook()
-
-        if not rook:
-            return None
 
         if self.pieces_between(rook):
             return None

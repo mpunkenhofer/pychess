@@ -34,7 +34,11 @@ class MoveType(ABC):
 
     @abstractmethod
     def __str__(self):
-        pass
+        """
+        Returns a string representing the move human readable
+
+        :return: a string
+        """
 
     def is_move(self):
         return self.type == MoveTypes.MOVE
@@ -177,5 +181,8 @@ class Attack(MoveType):
         MoveType.__init__(self, p, o, d, MoveTypes.ATTACK)
 
     def __str__(self):
+        """
+        Was used for testing purposes
         return 'A ' + position.to_algebraic(self.destination, self.piece.board)
+        """
 
