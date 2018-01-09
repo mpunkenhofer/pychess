@@ -16,8 +16,8 @@ class PieceType(Enum):
 
 
 class PieceColor(Enum):
-    WHITE = 'White'
-    BLACK = 'Black'
+    WHITE = 'white'
+    BLACK = 'black'
 
 
 class Piece(ABC):
@@ -119,7 +119,7 @@ class Piece(ABC):
         captures = []
 
         for m in self._move_cache[1]:
-            if m.is_capture() and m.piece == checker:
+            if m.is_capture() and m.captured_piece == checker:
                 captures.append(m)
 
         return captures
@@ -364,7 +364,7 @@ class Piece(ABC):
                     return True
         elif Piece.same_diagonal(p1, p2) and Piece.same_diagonal(square, p2):
             if Piece.same_falling_diagonal(p1, p2):
-                x_range = reversed(range(min(p1_x + 1, p2_x + 1), max(p1_x, p2_x)))
+                x_range = range(min(p1_x + 1, p2_x + 1), max(p1_x, p2_x))
                 y = max(p1_y - 1, p2_y - 1)
                 increment = -1
             else:

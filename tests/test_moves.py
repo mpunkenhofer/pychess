@@ -4,7 +4,7 @@
 
 import unittest
 
-from pychess.board import SetupBoard
+from pychess.board import SetupBoard, StandardBoard
 from pychess.pieces import PieceColor
 
 
@@ -798,6 +798,12 @@ class MoveTests(unittest.TestCase):
         moves = [m.to_algebraic() for m in king.moves()]
 
         self.assertCountEqual(moves, ['Ke4'])
+
+    def test_invalid_algebraic_move(self):
+        board = StandardBoard()
+
+        with self.assertRaises(RuntimeError):
+            board.algebraic_move(PieceColor.BLACK, 'e4')
 
 
 if __name__ == '__main__':

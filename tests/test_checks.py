@@ -179,6 +179,32 @@ class CheckTests(unittest.TestCase):
         self.assertTrue(king.in_check() and board.algebraic_history()[-1] == 'hxg8=Q+'
                         and len(board.get_queens(PieceColor.WHITE)) > 0)
 
+    def test_block_bishop_check_with_bishop(self):
+        board = SetupBoard('rnbqk1nr/ppp2ppp/4p3/3p4/1b1P4/1P3N2/P1P1PPPP/RNBQKB1R w KQkq - 1 4')
+
+        pieces = board.get_all_pieces(PieceColor.WHITE)
+
+        legal_moves = []
+
+        for p in pieces:
+            for m in p.moves():
+                legal_moves.append(m.to_algebraic())
+
+        self.assertCountEqual(legal_moves, ['c3', 'Nc3', 'Bd2', 'Qd2', 'Nbd2', 'Nfd2'])
+
+    def test_force_capture_bishop(self):
+        board = SetupBoard('rnbqk1nr/ppp2ppp/4p3/3p4/3P4/1P3N2/P1PbPPPP/RN1QKB1R w KQkq - 0 5')
+
+        pieces = board.get_all_pieces(PieceColor.WHITE)
+
+        legal_moves = []
+
+        for p in pieces:
+            for m in p.moves():
+                legal_moves.append(m.to_algebraic())
+
+        self.assertCountEqual(legal_moves, ['Qxd2', 'Nfxd2', 'Nbxd2', 'Kxd2'])
+
 
 if __name__ == '__main__':
     unittest.main()

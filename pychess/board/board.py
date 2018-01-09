@@ -109,6 +109,10 @@ class Board(ABC):
 
     def algebraic_move(self, active_color, algebraic_move):
         m = pychess.util.move.from_algebraic(self, active_color, algebraic_move)
+
+        if not m:
+            raise RuntimeError('Could not make the move ' + algebraic_move + '.')
+
         self.move(m)
 
     def algebraic_history(self):

@@ -4,8 +4,6 @@
 
 import unittest
 
-import pychess.util.move
-
 from pychess.pieces import King, Queen, Rook, Bishop, Knight, Pawn, PieceColor
 
 from pychess.board import SetupBoard
