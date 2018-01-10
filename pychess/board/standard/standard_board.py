@@ -30,9 +30,9 @@ class StandardBoard(board.Board):
 
         if move.is_capture():
             self.capture(move)
-        elif move.type in [moves.MoveTypes.PROMOTION, moves.MoveTypes.CAPTURE_PROMOTION]:
+        elif move.is_promotion() or move.is_capture_promotion():
             self.promote(move)
-        elif move.type in [moves.MoveTypes.SHORT_CASTLE, moves.MoveTypes.LONG_CASTLE]:
+        elif move.is_short_castle() or move.is_long_castle():
             self.castle(move)
         else:
             self.simple_move(move)
@@ -61,7 +61,7 @@ class StandardBoard(board.Board):
         king = self.pieces.pop(move.king.position)
         rook = self.pieces.pop(move.rook.position)
 
-        king_pos, rook_pos = self.get_short_castle_positions(king.color) if move.is_king_side_castle() \
+        king_pos, rook_pos = self.get_short_castle_positions(king.color) if move.is_short_castle() \
             else self.get_long_castle_positions(king.color)
 
         king.position = king_pos

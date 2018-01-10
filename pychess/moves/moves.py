@@ -52,10 +52,10 @@ class MoveType(ABC):
     def is_capture_promotion(self):
         return self.type == MoveTypes.CAPTURE_PROMOTION
 
-    def is_king_side_castle(self):
+    def is_short_castle(self):
         return self.type == MoveTypes.SHORT_CASTLE
 
-    def is_queen_side_castle(self):
+    def is_long_castle(self):
         return self.type == MoveTypes.LONG_CASTLE
 
     def is_attack(self):

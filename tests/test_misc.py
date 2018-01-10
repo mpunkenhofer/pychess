@@ -4,6 +4,8 @@
 
 import unittest
 
+import pychess.pieces
+
 from pychess.board import StandardBoard
 
 
@@ -32,6 +34,42 @@ class MiscellaneousTests(unittest.TestCase):
                     and king.is_black()
 
         self.assertTrue(white_pcs and black_pcs)
+
+    def test_is_first_and_is_last_file(self):
+        board = StandardBoard()
+
+        king_rook = board.get_piece((0, 0))
+        queen_rook = board.get_piece((7, 0))
+
+        self.assertTrue(board.is_last_file(queen_rook.color, queen_rook.position)
+                        and board.is_first_file(king_rook.color, king_rook.position))
+
+    def test_get_coordinates_1(self):
+        board = StandardBoard()
+
+        king_rook = board.get_piece((0, 0))
+        queen_rook = board.get_piece((7, 0))
+
+        x1, y1, x2, y2 = pychess.pieces.Piece.get_coordinates(king_rook, queen_rook)
+
+        self.assertTrue(king_rook.position == (x1, y1) and queen_rook.position == (x2, y2))
+
+    def test_get_coordinates_2(self):
+        board = StandardBoard()
+
+        king_rook = board.get_piece((0, 0))
+
+        x1, y1 = pychess.pieces.Piece.get_coordinates(king_rook)
+
+        self.assertTrue(king_rook.position == (x1, y1))
+
+    def test_no_pieces_between(self):
+        board = StandardBoard()
+
+        king_rook = board.get_piece((0, 0))
+        black_king = board.get_king(pychess.pieces.PieceColor.BLACK)
+
+        self.assertEqual(king_rook.pieces_between(black_king), [])
 
 
 if __name__ == '__main__':
