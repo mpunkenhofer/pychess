@@ -96,5 +96,3 @@ class StandardBoard(board.Board):
 
     def get_long_castle_positions(self, color):
         return ((2, 0), (3, 0)) if color == PieceColor.WHITE else ((2, 7), (3, 7))
-
-
