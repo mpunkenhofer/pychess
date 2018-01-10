@@ -611,6 +611,84 @@ class MoveTests(unittest.TestCase):
 
         self.assertCountEqual(moves, ['Kd8'])
 
+    def test_not_castling_long_king_in_check_w(self):
+        board = SetupBoard('r3k1nr/pppp1ppp/8/8/7b/8/PPPPP1PP/R3KBNR w Kk -')
+
+        king = board.get_king(PieceColor.WHITE)
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertTrue(moves == ['Kd1'] and king.in_check())
+
+    def test_not_castling_long_king_in_check_b(self):
+        board = SetupBoard('r3kbnr/ppppp1pp/8/7B/8/8/PPPP1PPP/R3KBNR w Kk -')
+
+        king = board.get_king(PieceColor.BLACK)
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertTrue(moves == ['Kd8'] and king.in_check())
+
+    def test_not_castling_short_king_in_check_w(self):
+        board = SetupBoard('rnbqk2r/ppp1pppp/8/b7/8/8/PPP1PPPP/RNBQK2R w KQkq -')
+
+        king = board.get_king(PieceColor.WHITE)
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertTrue(moves == ['Kf1'] and king.in_check())
+
+    def test_not_castling_short_king_in_check_b(self):
+        board = SetupBoard('rnbqk2r/ppp1pppp/8/8/B7/8/PPP1PPPP/RNBQK2R w KQkq -')
+
+        king = board.get_king(PieceColor.BLACK)
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertTrue(moves == ['Kf8'] and king.in_check())
+
+    def test_not_castling_short_king_move_in_check_w(self):
+        board = SetupBoard('rnbqk2r/ppp3pp/5p2/2b1p3/2B1P3/5P2/PPP3PP/RNBQK2R w KQkq -')
+
+        king = board.get_king(PieceColor.WHITE)
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertCountEqual(moves, ['Kf1', 'Ke2'])
+
+    def test_not_castling_short_king_move_in_check_b(self):
+        board = SetupBoard('rnbqk2r/ppp3pp/5p2/2b1p3/2B1P3/5P2/PPP3PP/RNBQK2R w KQkq -')
+
+        king = board.get_king(PieceColor.BLACK)
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertCountEqual(moves, ['Ke7', 'Kf8'])
+
+    def test_not_castling_short_king_move_through_check_w(self):
+        board = SetupBoard('rnbqkr2/ppppp1pp/8/8/8/8/PPPPP1PP/RNBQK2R w KQkq -')
+
+        king = board.get_king(PieceColor.WHITE)
+
+        self.assertFalse(king.moves())
+
+    def test_not_castling_short_king_move_through_check_b(self):
+        board = SetupBoard('rnbqk2r/ppppp1pp/8/8/8/8/PPPPP1PP/RNBQKR2 w KQkq -')
+
+        king = board.get_king(PieceColor.BLACK)
+
+        self.assertFalse(king.moves())
+
+    def test_not_castling_long_king_through_check_w(self):
+        board = SetupBoard('r3k1nr/pp2qppp/3p4/B3p3/b3P3/3P4/PP2QPPP/R3K1NR w KQkq -')
+
+        king = board.get_king(PieceColor.WHITE)
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertCountEqual(moves, ['Kd2', 'Kf1'])
+
+    def test_not_castling_long_king_through_check_b(self):
+        board = SetupBoard('r3k1nr/pp2qppp/3p4/B3p3/b3P3/3P4/PP2QPPP/R3K1NR w KQkq -')
+
+        king = board.get_king(PieceColor.BLACK)
+        moves = [m.to_algebraic() for m in king.moves()]
+
+        self.assertCountEqual(moves, ['Kd7', 'Kf8'])
+
     def test_two_w_queen_on_same_diagonal(self):
         board = SetupBoard('Q7/6k1/8/8/8/8/5K2/7Q w - -')
         queens = board.get_queens(PieceColor.WHITE)

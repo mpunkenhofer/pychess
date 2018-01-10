@@ -112,7 +112,7 @@ class King(pieces.Piece):
         return self._checked_by_cache[1]
 
     def protected_square(self, square):
-        for p in self.board.get_pieces(self.other_color()):
+        for p in self.board.get_all_pieces(self.other_color()):
             for i in p.get_influenced_squares([self]):
                 if i == square:
                     return True
@@ -134,7 +134,7 @@ class King(pieces.Piece):
         
         king_pos, rook_pos = self.board.get_short_castle_positions(self.color)
         
-        for x in range(min(p_x + 1, king_pos[0] + 1), max(p_x, king_pos[0])):
+        for x in range(min(p_x, king_pos[0]), max(p_x + 1, king_pos[0] + 1)):
             if self.protected_square((x, p_y)):
                 return None
             
@@ -158,7 +158,7 @@ class King(pieces.Piece):
 
         king_pos, rook_pos = self.board.get_long_castle_positions(self.color)
 
-        for x in range(min(p_x + 1, king_pos[0] + 1), max(p_x, king_pos[0])):
+        for x in range(min(p_x, king_pos[0]), max(p_x + 1, king_pos[0] + 1)):
             if self.protected_square((x, p_y)):
                 return None
 
