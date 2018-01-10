@@ -3,68 +3,53 @@
 #
 
 import re
+import sys
 import math
-import pychess.pieces
-import pychess.util.position
-import pychess.util.move
 
-from examples.interface import ChessUserInterface
+from pychess.variant import Standard
+from pychess.pieces import PieceColor
+from pychess.util import position
+from pychess.util.board import to_string_array
 
 
-class ChessConsoleUserInterface(ChessUserInterface):
-    def __init__(self, board):
-        ChessUserInterface.__init__(self, board)
+class ConsoleInterfaceChess:
+    def __init__(self, variant, player=PieceColor.WHITE):
+        self.variant = variant
+        self.current_player = player
+        self.print_board()
 
-    def draw(self):
-        self.draw_board(self.board)
-
-    @staticmethod
-    def draw_board(board):
-        file_diff = board.get_top_right()[0] - board.get_bottom_left()[0]
-        rank_diff = board.get_top_right()[1] - board.get_bottom_left()[0]
-
-        for y in reversed(range(0, rank_diff + 1)):
-            for x in range(0, file_diff + 1):
-                if board.piece_on((x, y)):
-                    piece = board.get_piece((x, y))
-                    if piece.is_white():
-                        print(piece.shorthand(), end='')
-                    else:
-                        print(piece.shorthand().lower(), end='')
-                else:
-                    print('.', end='')
-            print()
-
-    def move(self, player):
+    def move(self):
         move_input = self.get_input()
 
         while not self.valid_input(move_input):
-            print('Invalid move format. (see algebraic notation for chess)')
+            print('Invalid move format. (see aelgebraic notation for chess)')
             move_input = self.get_input()
 
         if self.is_command(move_input):
             self.do_command(move_input)
-            return self.move(player)
-
-        move = self.board.algebraic_move(player, move_input)
-
-        if not move:
-            print('Invalid move.')
-            return self.move(player)
         else:
-            return self.board.move(move)
+            try:
+                self.variant.board.algebraic_move(self.current_player, move_input)
+                self.print_board()
+            except RuntimeError:
+                print('Invalid move.')
 
-    def game_over(self, loser):
-        self.print_history()
-        if loser == pychess.pieces.PieceColor.BLACK:
-            print('1-0')
-        elif loser == pychess.pieces.PieceColor.WHITE:
-            print('0-1')
-        else:
+            self.current_player = PieceColor.BLACK if self.current_player == PieceColor.WHITE else PieceColor.WHITE
+
+    def game_over(self):
+        if self.variant.is_draw():
             print('1/2-1/2')
+            self.print_history()
+            return True
+        elif self.variant.is_checkmated(self.current_player):
+            print('1-0' if self.current_player == PieceColor.BLACK else '0-1')
+            self.print_history()
+            return True
+        else:
+            return False
 
     def print_history(self):
-        history = self.board.algebraic_history()
+        history = self.variant.board.algebraic_history()
         longest = max(map(lambda x: len(x), history)) + 1
 
         print()
@@ -80,7 +65,7 @@ class ChessConsoleUserInterface(ChessUserInterface):
         print('\n')
 
     def get_input(self):
-        return input(str(int(math.ceil((len(self.board.move_history()) + 1) / 2))) + ': ')
+        return input(str(int(math.ceil((len(self.variant.board.move_history()) + 1) / 2))) + ': ')
 
     def valid_input(self, move_input):
         move_input = re.sub('[+#]', '', move_input)
@@ -112,7 +97,7 @@ class ChessConsoleUserInterface(ChessUserInterface):
         elif cmd == 'history':
             self.print_history()
         elif cmd == 'fen':
-            print(self.board.fen())
+            print(self.variant.board.fen())
 
     def display_moves(self, piece):
         piece = self.find_piece(piece)
@@ -124,8 +109,27 @@ class ChessConsoleUserInterface(ChessUserInterface):
             print('[' + ', '.join(moves) + ']')
 
     def find_piece(self, piece):
-        for p in self.board.get_all_pieces():
-            if pychess.util.position.to_algebraic(p.position, self.board) == piece:
+        for p in self.variant.board.get_all_pieces(PieceColor.WHITE):
+            if position.to_algebraic(p.position, self.variant.board) == piece:
+                return p
+
+        for p in self.variant.board.get_all_pieces(PieceColor.BLACK):
+            if position.to_algebraic(p.position, self.variant.board) == piece:
                 return p
 
         return None
+
+    def print_board(self):
+        for l in to_string_array(self.variant.board):
+            print(l)
+
+
+def main():
+    chess_game = ConsoleInterfaceChess(Standard())
+
+    while not chess_game.game_over():
+        chess_game.move()
+
+
+if __name__ == "__main__":
+    sys.exit(main())

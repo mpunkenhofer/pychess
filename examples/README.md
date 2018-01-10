@@ -1,4 +1,4 @@
-### game.py example session
+### console_chess.py example session
 ```
 rnbqkbnr
 pppppppp
