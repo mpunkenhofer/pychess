@@ -22,7 +22,7 @@ class ConsoleInterfaceChess:
         move_input = self.get_input()
 
         while not self.valid_input(move_input):
-            print('Invalid move format. (see aelgebraic notation for chess)')
+            print('Invalid move format. (see algebraic notation for chess)')
             move_input = self.get_input()
 
         if self.is_command(move_input):
@@ -99,22 +99,22 @@ class ConsoleInterfaceChess:
         elif cmd == 'fen':
             print(self.variant.board.fen())
 
-    def display_moves(self, piece):
-        piece = self.find_piece(piece)
+    def display_moves(self, square):
+        piece = self.find_piece(square)
 
         if not piece:
-            print('No piece on: ' + piece)
+            print('No piece on: ' + square)
         else:
             moves = [m.to_algebraic() for m in piece.moves()]
             print('[' + ', '.join(moves) + ']')
 
-    def find_piece(self, piece):
+    def find_piece(self, square):
         for p in self.variant.board.get_all_pieces(PieceColor.WHITE):
-            if position.to_algebraic(p.position, self.variant.board) == piece:
+            if position.to_algebraic(p.position, self.variant.board) == square:
                 return p
 
         for p in self.variant.board.get_all_pieces(PieceColor.BLACK):
-            if position.to_algebraic(p.position, self.variant.board) == piece:
+            if position.to_algebraic(p.position, self.variant.board) == square:
                 return p
 
         return None
