@@ -9,7 +9,7 @@ import math
 import pychess
 
 
-class ConsoleInterfaceChess:
+class Chess:
     def __init__(self, variant, player=pychess.PieceColor.WHITE):
         self.variant = variant
         self.current_player = player
@@ -123,7 +123,7 @@ class ConsoleInterfaceChess:
 
 
 def main():
-    chess_game = ConsoleInterfaceChess(pychess.variant.Standard())
+    chess_game = Chess(pychess.variant.Standard())
 
     while not chess_game.game_over():
         chess_game.move()
