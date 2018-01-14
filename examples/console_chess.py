@@ -123,7 +123,7 @@ class ConsoleInterfaceChess:
 
 
 def main():
-    chess_game = ConsoleInterfaceChess(pychess.variant.Standard)
+    chess_game = ConsoleInterfaceChess(pychess.variant.Standard())
 
     while not chess_game.game_over():
         chess_game.move()

@@ -9,7 +9,7 @@ class GraphicalChess:
 
 
 def main():
-    chess_game = GraphicalChess(pychess.variant.Standard)
+    chess_game = GraphicalChess(pychess.variant.Standard())
 
     
 if __name__ == "__main__":
