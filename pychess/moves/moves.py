@@ -2,12 +2,10 @@
 # code.mpunkenhofer@gmail.com
 #
 
-import pychess.pieces
-
-from enum import Enum
 from abc import ABC, abstractmethod
+from enum import Enum
 
-from pychess.util import position
+import pychess
 
 
 class MoveTypes(Enum):
@@ -98,7 +96,7 @@ class MoveType(ABC):
                     same_file = True
                     break
 
-            algebraic_pos = position.to_algebraic(self.origin, self.piece.board)
+            algebraic_pos = pychess.util.position.to_algebraic(self.origin, self.piece.board)
 
             return algebraic_pos if same_file_and_rank else (algebraic_pos[1] if same_file else algebraic_pos[0])
 
@@ -111,10 +109,11 @@ class Move(MoveType):
 
     def __str__(self):
         if self.piece.is_pawn():
-            return position.to_algebraic(self.destination, self.piece.board)
+            return pychess.util.position.to_algebraic(self.destination, self.piece.board)
         else:
             piece_id = self.get_piece_id()
-            return self.piece.shorthand() + piece_id + position.to_algebraic(self.destination, self.piece.board)
+            return self.piece.shorthand() + piece_id + \
+                   pychess.util.position.to_algebraic(self.destination, self.piece.board)
 
 
 class Capture(MoveType):
@@ -125,13 +124,13 @@ class Capture(MoveType):
 
     def __str__(self):
         if self.piece.is_pawn():
-            return position.to_algebraic(self.origin, self.piece.board)[0] + 'x' + \
-                   position.to_algebraic(self.destination, self.piece.board)
+            return pychess.util.position.to_algebraic(self.origin, self.piece.board)[0] + 'x' + \
+                   pychess.util.position.to_algebraic(self.destination, self.piece.board)
         else:
             piece_id = self.get_piece_id()
 
             return self.piece.shorthand() + piece_id + 'x' + \
-                   position.to_algebraic(self.destination, self.piece.board)
+                   pychess.util.position.to_algebraic(self.destination, self.piece.board)
 
 
 class Promotion(MoveType):
@@ -140,7 +139,7 @@ class Promotion(MoveType):
         self.promoted_piece = promoted_piece
 
     def __str__(self):
-        return position.to_algebraic(self.destination, self.piece.board) + '=' + \
+        return pychess.util.position.to_algebraic(self.destination, self.piece.board) + '=' + \
                self.promoted_piece.shorthand()
 
 
@@ -151,8 +150,8 @@ class CapturePromotion(MoveType):
         self.promoted_piece = promoted_piece
 
     def __str__(self):
-        return position.to_algebraic(self.origin, self.piece.board)[0] + 'x' + \
-               position.to_algebraic(self.destination, self.piece.board) + '=' + \
+        return pychess.util.position.to_algebraic(self.origin, self.piece.board)[0] + 'x' + \
+               pychess.util.position.to_algebraic(self.destination, self.piece.board) + '=' + \
                self.promoted_piece.shorthand()
 
 
@@ -185,4 +184,3 @@ class Attack(MoveType):
         Was used for testing purposes
         return 'A ' + position.to_algebraic(self.destination, self.piece.board)
         """
-

@@ -3,9 +3,7 @@
 #
 
 import unittest
-
-from pychess.variant import Standard
-from pychess.pieces import PieceColor
+import pychess
 
 from unittest.mock import patch, mock_open
 from textwrap import dedent
@@ -30,15 +28,15 @@ class VariantTests(unittest.TestCase):
 
     @patch("builtins.open", mock_open(read_data=game))
     def test_standard_variant(self):
-        variant = Standard()
+        variant = pychess.variant.Standard()
         pgn = PGNPlayer('filename')
 
         pgn_move = pgn.next_move()
-        player = PieceColor.WHITE
+        player = pychess.PieceColor.WHITE
 
         while pgn_move and not variant.is_checkmated(player) and not variant.is_draw():
             variant.board.algebraic_move(player, pgn_move)
-            player = PieceColor.WHITE if player == PieceColor.BLACK else PieceColor.BLACK
+            player = pychess.PieceColor.WHITE if player == pychess.PieceColor.BLACK else pychess.PieceColor.BLACK
             pgn_move = pgn.next_move()
 
         self.assertEqual(variant.board.algebraic_history(), pgn.get_moves())

@@ -6,14 +6,11 @@ import re
 import sys
 import math
 
-from pychess.variant import Standard
-from pychess.pieces import PieceColor
-from pychess.util import position
-from pychess.util.board import to_string_array
+import pychess
 
 
 class ConsoleInterfaceChess:
-    def __init__(self, variant, player=PieceColor.WHITE):
+    def __init__(self, variant, player=pychess.PieceColor.WHITE):
         self.variant = variant
         self.current_player = player
         self.print_board()
@@ -34,7 +31,8 @@ class ConsoleInterfaceChess:
             except RuntimeError:
                 print('Invalid move.')
 
-            self.current_player = PieceColor.BLACK if self.current_player == PieceColor.WHITE else PieceColor.WHITE
+            self.current_player = pychess.PieceColor.BLACK if self.current_player == pychess.PieceColor.WHITE \
+                else pychess.PieceColor.WHITE
 
     def game_over(self):
         if self.variant.is_draw():
@@ -42,7 +40,7 @@ class ConsoleInterfaceChess:
             self.print_history()
             return True
         elif self.variant.is_checkmated(self.current_player):
-            print('1-0' if self.current_player == PieceColor.BLACK else '0-1')
+            print('1-0' if self.current_player == pychess.PieceColor.BLACK else '0-1')
             self.print_history()
             return True
         else:
@@ -109,23 +107,23 @@ class ConsoleInterfaceChess:
             print('[' + ', '.join(moves) + ']')
 
     def find_piece(self, square):
-        for p in self.variant.board.get_all_pieces(PieceColor.WHITE):
-            if position.to_algebraic(p.position, self.variant.board) == square:
+        for p in self.variant.board.get_all_pieces(pychess.PieceColor.WHITE):
+            if pychess.util.position.to_algebraic(p.position, self.variant.board) == square:
                 return p
 
-        for p in self.variant.board.get_all_pieces(PieceColor.BLACK):
-            if position.to_algebraic(p.position, self.variant.board) == square:
+        for p in self.variant.board.get_all_pieces(pychess.PieceColor.BLACK):
+            if pychess.util.position.to_algebraic(p.position, self.variant.board) == square:
                 return p
 
         return None
 
     def print_board(self):
-        for l in to_string_array(self.variant.board):
+        for l in pychess.util.board.to_string_array(self.variant.board):
             print(l)
 
 
 def main():
-    chess_game = ConsoleInterfaceChess(Standard())
+    chess_game = ConsoleInterfaceChess(pychess.variant.Standard)
 
     while not chess_game.game_over():
         chess_game.move()

@@ -2,28 +2,27 @@
 # code.mpunkenhofer@gmail.com
 #
 
+import pychess
+
 from pychess.variant import variant
-from pychess.board import StandardBoard
-from pychess.pieces import PieceColor
-from pychess.util import rules
 
 
 class Standard(variant.Variant):
     def __init__(self):
         variant.Variant.__init__(self)
-        self.board = StandardBoard()
+        self.board = pychess.board.StandardBoard()
 
     def is_draw(self):
-        if self.board.get_king(PieceColor.WHITE).is_stalemated():
+        if self.board.get_king(pychess.PieceColor.WHITE).is_stalemated():
             return True
 
-        if self.board.get_king(PieceColor.BLACK).is_stalemated():
+        if self.board.get_king(pychess.PieceColor.BLACK).is_stalemated():
             return True
 
-        if rules.insufficient_material(self.board):
+        if pychess.util.rules.insufficient_material(self.board):
             return True
 
-        if rules.half_move_clock(self.board.move_history()) >= 50:
+        if pychess.util.rules.half_move_clock(self.board.move_history()) >= 50:
             return True
 
         return False

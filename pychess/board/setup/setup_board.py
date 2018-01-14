@@ -2,12 +2,10 @@
 # code.mpunkenhofer@gmail.com
 #
 
-import pychess.util.position
+import pychess
 
 from pychess.board import StandardBoard
 from pychess.pieces import King, Queen, Rook, Bishop, Knight, Pawn, PieceColor
-
-from pychess import moves
 
 
 class SetupBoard(StandardBoard):
@@ -98,7 +96,7 @@ class SetupBoard(StandardBoard):
                 if piece.color != color or not piece.is_pawn():
                     raise ValueError('corrupt fen string')
 
-                move = moves.Move(piece, origin, destination)
+                move = pychess.moves.Move(piece, origin, destination)
 
                 piece.history.append(move)
                 self.history.append((move, move.to_algebraic()))

@@ -3,12 +3,9 @@
 #
 
 import math
-import pychess.util.move
-
-from pychess import pieces
 from abc import ABC, abstractmethod
-from pychess.util import rules
-from pychess.util import position
+
+import pychess
 
 
 class Board(ABC):
@@ -163,8 +160,8 @@ class Board(ABC):
         else:
             active_color = 'b' if last_move.piece.is_white() else 'w'
 
-        white_king = self.get_king(pieces.PieceColor.WHITE)
-        black_king = self.get_king(pieces.PieceColor.BLACK)
+        white_king = self.get_king(pychess.PieceColor.WHITE)
+        black_king = self.get_king(pychess.PieceColor.BLACK)
 
         castling = 'K' if white_king.short_castle_requirements() else ''
         castling += 'Q' if white_king.long_castle_requirements() else ''
@@ -174,7 +171,7 @@ class Board(ABC):
 
         en_passant_target_square = self.en_passant_square()
 
-        half_move_clock = str(rules.half_move_clock(self.move_history()))
+        half_move_clock = str(pychess.util.rules.half_move_clock(self.move_history()))
 
         full_move_clock = str(int(math.ceil((len(self.move_history()) + 1) / 2)))
 
@@ -201,29 +198,30 @@ class Board(ABC):
         return [p for p in self.filter_pieces(color=color) if not p.is_king()]
 
     def get_king(self, color):
-        filtered_king = self.filter_pieces(pieces.PieceType.KING, color)
+        filtered_king = self.filter_pieces(pychess.PieceType.KING, color)
         if filtered_king:
             return filtered_king[0]
         else:
             return None
 
     def get_queens(self, color):
-        return self.filter_pieces(pieces.PieceType.QUEEN, color)
+        return self.filter_pieces(pychess.PieceType.QUEEN, color)
 
     def get_rooks(self, color):
-        return self.filter_pieces(pieces.PieceType.ROOK, color)
+        return self.filter_pieces(pychess.PieceType.ROOK, color)
 
     def get_bishops(self, color):
-        return self.filter_pieces(pieces.PieceType.BISHOP, color)
+        return self.filter_pieces(pychess.PieceType.BISHOP, color)
 
     def get_knights(self, color):
-        return self.filter_pieces(pieces.PieceType.KNIGHT, color)
+        return self.filter_pieces(pychess.PieceType.KNIGHT, color)
 
     def get_pawns(self, color):
-        return self.filter_pieces(pieces.PieceType.PAWN, color)
+        return self.filter_pieces(pychess.PieceType.PAWN, color)
 
     def get_enemy_king(self, color):
-        return self.get_king(pieces.PieceColor.WHITE if color == pieces.PieceColor.BLACK else pieces.PieceColor.BLACK)
+        return self.get_king(pychess.PieceColor.WHITE if color == pychess.PieceColor.BLACK
+                             else pychess.PieceColor.BLACK)
 
     def in_board(self, pos):
         x, y = pos
@@ -232,16 +230,16 @@ class Board(ABC):
         return bot_x <= x <= top_x and bot_y <= y <= top_y
 
     def get_first_rank(self, color):
-        return self.get_bottom_left()[1] if color == pieces.PieceColor.WHITE else self.get_top_right()[1]
+        return self.get_bottom_left()[1] if color == pychess.PieceColor.WHITE else self.get_top_right()[1]
 
     def get_last_rank(self, color):
-        return self.get_top_right()[1] if color == pieces.PieceColor.WHITE else self.get_bottom_left()[1]
+        return self.get_top_right()[1] if color == pychess.PieceColor.WHITE else self.get_bottom_left()[1]
 
     def get_first_file(self, color):
-        return self.get_bottom_left()[0] if color == pieces.PieceColor.WHITE else self.get_top_right()[0]
+        return self.get_bottom_left()[0] if color == pychess.PieceColor.WHITE else self.get_top_right()[0]
 
     def get_last_file(self, color):
-        return self.get_top_right()[0] if color == pieces.PieceColor.WHITE else self.get_bottom_left()[0]
+        return self.get_top_right()[0] if color == pychess.PieceColor.WHITE else self.get_bottom_left()[0]
 
     def is_first_rank(self, color, pos):
         _, y = pos
@@ -268,6 +266,6 @@ class Board(ABC):
 
         if m and m.piece.is_pawn() and abs(m.destination[1] - m.origin[1]) > 1:
             c = 1 if m.piece.is_white() else -1
-            return position.to_algebraic((m.piece.position[0], m.piece.position[1] - 1 * c), self)
+            return pychess.util.position.to_algebraic((m.piece.position[0], m.piece.position[1] - 1 * c), self)
 
         return '-'

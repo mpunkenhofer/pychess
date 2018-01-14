@@ -3,3 +3,4 @@
 #
 
 from pychess.variant.standard import Standard
+

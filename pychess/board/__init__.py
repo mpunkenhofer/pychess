@@ -4,4 +4,3 @@
 
 from pychess.board.standard import StandardBoard
 from pychess.board.setup import SetupBoard
-

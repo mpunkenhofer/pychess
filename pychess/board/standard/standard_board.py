@@ -2,7 +2,6 @@
 # code.mpunkenhofer@gmail.com
 #
 
-from pychess import moves
 from pychess.board import board
 from pychess.pieces import King, Queen, Rook, Bishop, Knight, Pawn, PieceColor
 
