@@ -19,7 +19,7 @@ class Chess:
         # init the clock
         self.clock = pygame.time.Clock()
 
-        self.variant = pychess.variant.Standard(GuiBoard(pychess.PieceColor.WHITE, (800, 800)))
+        self.variant = pychess.variant.Standard(GuiBoard(pychess.PieceColor.WHITE, (800, 800), (0, 0)))
 
     def run(self):
         running = True

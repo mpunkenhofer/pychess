@@ -10,10 +10,12 @@ from examples.guichess.pieces import GuiKing, GuiQueen, GuiRook, GuiBishop, GuiK
 
 
 class GuiBoard(pychess.board.StandardBoard):
-    def __init__(self, player, size, colors=((240, 217, 217), (142, 100, 100))):
+    def __init__(self, player, size, offset=(0, 0), colors=((240, 217, 217), (142, 100, 100))):
         pychess.board.StandardBoard.__init__(self)
 
         self.player = player
+
+        self.offset = offset
 
         self.surface = pygame.Surface(size)
 
@@ -136,12 +138,15 @@ class GuiBoard(pychess.board.StandardBoard):
     def position_to_surface_position(self, position):
         x, y = position
         x, y = x + 1, y + 1
+
         size = self.get_square_size()
+
+        x_offset, y_offset = self.offset
 
         file_max = (self.get_top_right()[0] - self.get_bottom_left()[0] + 1) * size
         rank_max = (self.get_top_right()[1] - self.get_bottom_left()[0] + 1) * size
 
-        return file_max - (x * size), rank_max - (y * size)
+        return (file_max + x_offset) - (x * size), (rank_max + y_offset) - (y * size)
 
     def surface_position_to_position(self, position):
         px, py = position
