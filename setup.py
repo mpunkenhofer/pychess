@@ -19,6 +19,6 @@ setup(
     author=about['__author__'],
     author_email=about['__email__'],
     packages=find_packages(
-        exclude=['examples', 'examples.*', 'pygame', 'examples.guichess', 'tests', 'tests.*', 'docs']
+        exclude=['examples', 'examples.*', 'tests', 'tests.*', 'docs']
     )
 )

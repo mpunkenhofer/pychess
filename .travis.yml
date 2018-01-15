@@ -8,8 +8,8 @@ install:
 
 script:
   - python setup.py install
-  - python -m unittest discover
-  - coverage run --source pychess -m unittest discover
+  - python -m unittest discover -s tests
+  - coverage run --source pychess -m unittest discover -s tests
 
 after_success:
   - codecov
