@@ -156,8 +156,8 @@ class CapturePromotion(MoveType):
 
 
 class ShortCastle(MoveType):
-    def __init__(self, p, o, k, r):
-        MoveType.__init__(self, p, o, None, MoveTypes.SHORT_CASTLE)
+    def __init__(self, p, o, d, k, r):
+        MoveType.__init__(self, p, o, d, MoveTypes.SHORT_CASTLE)
         self.king = k
         self.rook = r
 
@@ -166,8 +166,8 @@ class ShortCastle(MoveType):
 
 
 class LongCastle(MoveType):
-    def __init__(self, p, o, k, r):
-        MoveType.__init__(self, p, o, None, MoveTypes.LONG_CASTLE)
+    def __init__(self, p, o, d, k, r):
+        MoveType.__init__(self, p, o, d, MoveTypes.LONG_CASTLE)
         self.king = k
         self.rook = r
 

@@ -26,20 +26,13 @@ class GuiPiece(pygame.sprite.Sprite):
         self.rect = pygame.Rect(self.piece.board.position_to_surface_position(self.piece.position) +
                                 self.piece.board.get_square_dimensions())
 
-        self.selected = False
+        self.selected = 0
+        self.mouse_drag = False
 
-    def update(self, pos=None, drag=False):
-        if pos and drag:
-            x, y = pos
-            size = int(self.piece.board.get_square_size() / 2)
-            pos = x - size, y - size
-            self.rect = pygame.Rect(pos + self.piece.board.get_square_dimensions())
-        else:
+    def update(self, *args):
+        if not self.mouse_drag:
             self.rect = pygame.Rect(self.piece.board.position_to_surface_position(self.piece.position) +
                                     self.piece.board.get_square_dimensions())
-
-    def set_selected(self, boolean=True):
-        self.selected = boolean
 
     def valid_destination(self, pos):
         for m in self.piece.moves():
@@ -48,6 +41,40 @@ class GuiPiece(pygame.sprite.Sprite):
                 return m
 
         return None
+
+    def on_mouse_button_down(self):
+        self.mouse_drag = True
+
+        x, y = pygame.mouse.get_pos()
+
+        if self.rect.collidepoint(x, y):
+            self.selected += 1
+
+            if self.selected > 1:
+                self.selected = 0
+        else:
+            self.selected = False
+
+    def on_mouse_button_up(self):
+        if self.selected:
+            move = self.valid_destination(pygame.mouse.get_pos())
+
+            if move:
+                self.piece.board.move(move)
+                self.selected = 0
+                self.piece.board.game.next_player()
+            else:
+                self.selected = 1
+
+        self.mouse_drag = False
+
+    def on_mouse_move(self):
+        if self.selected and self.mouse_drag:
+            pygame.mouse.set_pos(self.rect.centerx, self.rect.centery)
+            x, y = pygame.mouse.get_pos()
+            size = int(self.piece.board.get_square_size() / 2)
+            pos = x - size, y - size
+            self.rect = pygame.Rect(pos + self.piece.board.get_square_dimensions())
 
 
 class GuiKing(pychess.pieces.King, GuiPiece):

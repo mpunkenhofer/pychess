@@ -137,8 +137,8 @@ class King(pieces.Piece):
         for x in range(min(p_x, king_pos[0]), max(p_x + 1, king_pos[0] + 1)):
             if self.protected_square((x, p_y)):
                 return None
-            
-        castle_move = moves.ShortCastle(self, (p_x, p_y), self, rook)
+
+        castle_move = moves.ShortCastle(self, (p_x, p_y), king_pos, self, rook)
         
         return castle_move
 
@@ -162,7 +162,7 @@ class King(pieces.Piece):
             if self.protected_square((x, p_y)):
                 return None
 
-        castle_move = moves.LongCastle(self, (p_x, p_y), self, rook)
+        castle_move = moves.LongCastle(self, (p_x, p_y), king_pos, self, rook)
 
         return castle_move
 

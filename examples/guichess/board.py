@@ -10,8 +10,10 @@ from examples.guichess.pieces import GuiKing, GuiQueen, GuiRook, GuiBishop, GuiK
 
 
 class GuiBoard(pychess.board.StandardBoard):
-    def __init__(self, size, colors=((240, 217, 217), (142, 100, 100))):
+    def __init__(self, game, size, colors=((240, 217, 217), (142, 100, 100))):
         pychess.board.StandardBoard.__init__(self)
+
+        self.game = game
 
         self.surface = pygame.Surface(size)
 
@@ -40,21 +42,16 @@ class GuiBoard(pychess.board.StandardBoard):
             self.pieces[(i, 1)] = GuiPawn(self, (i, 1), PieceColor.WHITE)
             self.pieces[(i, 6)] = GuiPawn(self, (i, 6), PieceColor.BLACK)
 
-    def get_square_dimensions(self):
-        x_squares = self.get_top_right()[0] - self.get_bottom_left()[0] + 1
-        y_squares = self.get_top_right()[1] - self.get_bottom_left()[0] + 1
+    def handle_event(self, event, player):
+        relevant_pieces = self.get_all_pieces(player)
 
-        size = min(self.surface.get_size()) / max(x_squares, y_squares)
-        size = int(size)
-
-        return size, size
-
-    def get_square_size(self):
-        return min(self.get_square_dimensions())
-
-    def unselect_all(self):
-        for _, p in self.pieces.items():
-            p.set_selected(False)
+        for rp in relevant_pieces:
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                rp.on_mouse_button_down()
+            elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+                rp.on_mouse_button_up()
+            elif event.type == pygame.MOUSEMOTION:
+                rp.on_mouse_move()
 
     def render(self):
         square_size = self.get_square_size()
@@ -71,8 +68,13 @@ class GuiBoard(pychess.board.StandardBoard):
                     pygame.draw.rect(self.surface, self.colors[1], current_square)
 
         for _, s in self.pieces.items():
+            s.update()
+
             if s.selected:
                 self.render_highlight_squares(s)
+
+            if s.is_king() and s.in_check():
+                self.render_highlight_square(s.position, color=(255, 0, 0), alpha=150)
 
             self.surface.blit(s.image, s.rect)
 
@@ -87,10 +89,6 @@ class GuiBoard(pychess.board.StandardBoard):
     def render_highlight_square(self, square, color=(78, 244, 66), alpha=70, type=None):
         color_key = (127, 33, 33)
 
-        if type not in [MoveTypes.MOVE, MoveTypes.CAPTURE, None]:
-            return
-
-        x, y = square
         size = self.get_square_size()
 
         square_surface = pygame.Surface(self.get_square_dimensions())
@@ -104,7 +102,7 @@ class GuiBoard(pychess.board.StandardBoard):
             pygame.draw.circle(square_surface, (255, 0, 0), (center, center), int(size * 0.55))
 
             square_surface.set_colorkey((255, 0, 0))
-        elif type == MoveTypes.MOVE:
+        elif type in [MoveTypes.MOVE, MoveTypes.SHORT_CASTLE, MoveTypes.LONG_CASTLE]:
             center = int(size / 2)
             pygame.draw.circle(square_surface, color, (center, center), int(size * 0.14))
         else:
@@ -115,27 +113,17 @@ class GuiBoard(pychess.board.StandardBoard):
         surface_position = self.position_to_surface_position(square)
         self.surface.blit(square_surface, surface_position + self.get_square_dimensions())
 
-    def get_square(self, point):
-        x, y = point
+    def get_square_dimensions(self):
+        x_squares = self.get_top_right()[0] - self.get_bottom_left()[0] + 1
+        y_squares = self.get_top_right()[1] - self.get_bottom_left()[0] + 1
 
-        for pos, p in self.pieces.items():
-            if p.rect.collidepoint(x, y):
-                return pos
+        size = min(self.surface.get_size()) / max(x_squares, y_squares)
+        size = int(size)
 
-        return -1, -1
+        return size, size
 
-    def select_piece(self, pieces, point):
-        self.unselect_all()
-
-        square = self.get_square(point)
-
-        for p in pieces:
-            if square == p.position:
-                p.set_selected(True)
-                return p
-
-        self.unselect_all()
-        return None
+    def get_square_size(self):
+        return min(self.get_square_dimensions())
 
     def position_to_surface_position(self, position):
         x, y = position

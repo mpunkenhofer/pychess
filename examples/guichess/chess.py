@@ -19,7 +19,7 @@ class Chess:
         # init the clock
         self.clock = pygame.time.Clock()
         # init the board
-        self.board = GuiBoard((800, 800))
+        self.board = GuiBoard(self, (800, 800))
 
         self.player = pychess.PieceColor.WHITE
 
@@ -27,55 +27,31 @@ class Chess:
 
     def run(self):
         running = True
-        drag = False
-        pos = None
 
         while running:
             dt = self.clock.tick(self.fps_limit)
-
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
-                        running = False
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    drag = True
-                    selected = self.board.select_piece(self.board.get_all_pieces(self.player), pygame.mouse.get_pos())
-
-                    if self.selected == selected:
-                        self.board.unselect_all()
-                        self.selected = None
-                    elif not self.selected:
-                        self.selected = selected
-                        pygame.mouse.set_pos(self.selected.rect.centerx, self.selected.rect.centery)
-
-                elif event.type == pygame.MOUSEMOTION:
-                    pos = pygame.mouse.get_pos()
-                elif event.type == pygame.MOUSEBUTTONUP:
-                    drag = False
-
-            if self.selected:
-                self.selected.update(pos, drag)
-                
-                if not drag:
-                    move = self.selected.valid_destination(pos)
-
-                    if move:
-                        self.board.move(move)
-                        self.selected.update()
-                        
-                        self.player = pychess.PieceColor.WHITE if self.player == pychess.PieceColor.BLACK \
-                            else pychess.PieceColor.BLACK
-
-                    self.board.unselect_all()
-                    self.selected = None
+            running = self.handle_events()
 
             self.draw()
+
+    def next_player(self):
+        self.player = pychess.PieceColor.BLACK if self.player == pychess.PieceColor.WHITE else pychess.PieceColor.WHITE
 
     def draw(self):
         self.screen.blit(self.board.render(), (0, 0))
         pygame.display.update()
+
+    def handle_events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return False
+            else:
+                self.board.handle_event(event, self.player)
+
+        return True
 
 
 def main():
