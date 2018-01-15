@@ -28,7 +28,7 @@ class GuiPiece(pygame.sprite.Sprite):
         self.rect = pygame.Rect(self.piece.board.position_to_surface_position(self.piece.position) +
                                 self.piece.board.get_square_dimensions())
 
-        self.selected = 0
+        self.selected = False
         self.mouse_drag = False
 
     def update(self, *args):
@@ -44,33 +44,34 @@ class GuiPiece(pygame.sprite.Sprite):
 
         return None
 
-    def on_mouse_button_down(self):
-        self.mouse_drag = True
-
-        x, y = pygame.mouse.get_pos()
-
-        if self.rect.collidepoint(x, y):
-            self.selected += 1
-
-            if self.selected > 1:
-                self.selected = 0
+    def on_mouse_button_down(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button != 1:
+            self.selected = self.mouse_drag = False
         else:
-            self.selected = False
+            self.mouse_drag = True
 
-    def on_mouse_button_up(self):
-        if self.selected:
-            move = self.valid_destination(pygame.mouse.get_pos())
+            x, y = pygame.mouse.get_pos()
 
-            if move:
-                self.piece.board.move(move)
-                self.selected = 0
-                self.piece.board.game.next_player()
+            if self.rect.collidepoint(x, y):
+                self.selected = True
             else:
-                self.selected = 1
+                self.selected = False
 
-        self.mouse_drag = False
+    def on_mouse_button_up(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button != 1:
+            self.selected = self.mouse_drag = False
+        else:
+            if self.selected:
+                move = self.valid_destination(pygame.mouse.get_pos())
 
-    def on_mouse_move(self):
+                if move:
+                    self.piece.board.move(move)
+                    self.selected = 0
+                    self.piece.board.next_player()
+
+            self.mouse_drag = False
+
+    def on_mouse_move(self, event):
         if self.selected and self.mouse_drag:
             pygame.mouse.set_pos(self.rect.centerx, self.rect.centery)
             x, y = pygame.mouse.get_pos()

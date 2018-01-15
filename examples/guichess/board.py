@@ -10,10 +10,10 @@ from examples.guichess.pieces import GuiKing, GuiQueen, GuiRook, GuiBishop, GuiK
 
 
 class GuiBoard(pychess.board.StandardBoard):
-    def __init__(self, game, size, colors=((240, 217, 217), (142, 100, 100))):
+    def __init__(self, player, size, colors=((240, 217, 217), (142, 100, 100))):
         pychess.board.StandardBoard.__init__(self)
 
-        self.game = game
+        self.player = player
 
         self.surface = pygame.Surface(size)
 
@@ -42,16 +42,19 @@ class GuiBoard(pychess.board.StandardBoard):
             self.pieces[(i, 1)] = GuiPawn(self, (i, 1), PieceColor.WHITE)
             self.pieces[(i, 6)] = GuiPawn(self, (i, 6), PieceColor.BLACK)
 
-    def handle_event(self, event, player):
-        relevant_pieces = self.get_all_pieces(player)
+    def next_player(self):
+        self.player = pychess.PieceColor.BLACK if self.player == pychess.PieceColor.WHITE else pychess.PieceColor.WHITE
+
+    def handle_event(self, event):
+        relevant_pieces = self.get_all_pieces(self.player)
 
         for rp in relevant_pieces:
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                rp.on_mouse_button_down()
-            elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-                rp.on_mouse_button_up()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                rp.on_mouse_button_down(event)
+            elif event.type == pygame.MOUSEBUTTONUP:
+                rp.on_mouse_button_up(event)
             elif event.type == pygame.MOUSEMOTION:
-                rp.on_mouse_move()
+                rp.on_mouse_move(event)
 
     def render(self):
         square_size = self.get_square_size()
@@ -75,6 +78,11 @@ class GuiBoard(pychess.board.StandardBoard):
 
             if s.is_king() and s.in_check():
                 self.render_highlight_square(s.position, color=(255, 0, 0), alpha=150)
+
+            last_move = self.get_last_move()
+            if last_move:
+                self.render_highlight_square(last_move.origin, color=(133, 135, 6), alpha=10)
+                self.render_highlight_square(last_move.destination, color=(133, 135, 6), alpha=10)
 
             self.surface.blit(s.image, s.rect)
 
@@ -149,3 +157,5 @@ class GuiBoard(pychess.board.StandardBoard):
                     return x, y
 
         return -1, -1
+
+

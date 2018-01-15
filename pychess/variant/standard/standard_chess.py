@@ -8,9 +8,11 @@ from pychess.variant import variant
 
 
 class Standard(variant.Variant):
-    def __init__(self):
-        variant.Variant.__init__(self)
-        self.board = pychess.board.StandardBoard()
+    def __init__(self, board=None):
+        if not board:
+            board = pychess.board.StandardBoard()
+
+        variant.Variant.__init__(self, board)
 
     def is_draw(self):
         if self.board.get_king(pychess.PieceColor.WHITE).is_stalemated():

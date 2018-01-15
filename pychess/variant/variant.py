@@ -7,8 +7,8 @@ from abc import ABC, abstractmethod
 
 class Variant(ABC):
     @abstractmethod
-    def __init__(self):
-        self.board = None
+    def __init__(self, board=None):
+        self.board = board
 
     @abstractmethod
     def is_draw(self):

@@ -18,12 +18,8 @@ class Chess:
 
         # init the clock
         self.clock = pygame.time.Clock()
-        # init the board
-        self.board = GuiBoard(self, (800, 800))
 
-        self.player = pychess.PieceColor.WHITE
-
-        self.selected = None
+        self.variant = pychess.variant.Standard(GuiBoard(pychess.PieceColor.WHITE, (800, 800)))
 
     def run(self):
         running = True
@@ -34,11 +30,8 @@ class Chess:
 
             self.draw()
 
-    def next_player(self):
-        self.player = pychess.PieceColor.BLACK if self.player == pychess.PieceColor.WHITE else pychess.PieceColor.WHITE
-
     def draw(self):
-        self.screen.blit(self.board.render(), (0, 0))
+        self.screen.blit(self.variant.board.render(), (0, 0))
         pygame.display.update()
 
     def handle_events(self):
@@ -49,7 +42,7 @@ class Chess:
                 if event.key == pygame.K_ESCAPE:
                     return False
             else:
-                self.board.handle_event(event, self.player)
+                self.variant.board.handle_event(event)
 
         return True
 
