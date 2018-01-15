@@ -21,20 +21,33 @@ class GuiPiece(pygame.sprite.Sprite):
         image = pygame.Surface(rect.size, pygame.SRCALPHA, 32)
         image.blit(self.sprite_sheet, (0, 0), rect)
 
-        self.image = image
+        self.image = pygame.transform.smoothscale(image, self.piece.board.get_square_dimensions())
 
-        self.rect = self.get_position_on_surface()
+        self.rect = pygame.Rect(self.piece.board.position_to_surface_position(self.piece.position) +
+                                self.piece.board.get_square_dimensions())
 
         self.selected = False
 
-    def update(self, *args):
-        self.rect = self.get_position_on_surface()
+    def update(self, pos=None, drag=False):
+        if pos and drag:
+            x, y = pos
+            size = int(self.piece.board.get_square_size() / 2)
+            pos = x - size, y - size
+            self.rect = pygame.Rect(pos + self.piece.board.get_square_dimensions())
+        else:
+            self.rect = pygame.Rect(self.piece.board.position_to_surface_position(self.piece.position) +
+                                    self.piece.board.get_square_dimensions())
 
-    def get_position_on_surface(self):
-        file_max = (self.piece.board.get_top_right()[0] - self.piece.board.get_bottom_left()[0]) * SpriteSize
-        rank_max = (self.piece.board.get_top_right()[1] - self.piece.board.get_bottom_left()[0]) * SpriteSize
+    def set_selected(self, boolean=True):
+        self.selected = boolean
 
-        return file_max - (self.piece.position[0] * SpriteSize), rank_max - (self.piece.position[1] * SpriteSize)
+    def valid_destination(self, pos):
+        for m in self.piece.moves():
+            converted_pos = self.piece.board.surface_position_to_position(pos)
+            if m.destination == converted_pos:
+                return m
+
+        return None
 
 
 class GuiKing(pychess.pieces.King, GuiPiece):
