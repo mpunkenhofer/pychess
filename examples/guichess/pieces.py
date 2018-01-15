@@ -2,6 +2,7 @@
 # code.mpunkenhofer@gmail.com
 #
 
+import os
 import pychess
 import pygame
 
@@ -16,7 +17,8 @@ class GuiPiece(pygame.sprite.Sprite):
 
         rect = pygame.Rect(rectangle)
 
-        self.sprite_sheet = pygame.image.load('examples/guichess/resources/chess_pieces.png')
+        this_dir = os.path.dirname(os.path.abspath(__file__))
+        self.sprite_sheet = pygame.image.load(os.path.join(this_dir, 'resources/chess_pieces.png'))
 
         image = pygame.Surface(rect.size, pygame.SRCALPHA, 32)
         image.blit(self.sprite_sheet, (0, 0), rect)
