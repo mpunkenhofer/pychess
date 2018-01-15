@@ -18,5 +18,7 @@ setup(
     url=about['__uri__'],
     author=about['__author__'],
     author_email=about['__email__'],
-    packages=find_packages(exclude=['examples', 'examples.*', 'pygame', 'tests', 'tests.*', 'docs'])
+    packages=find_packages(
+        exclude=['examples', 'examples.*', 'pygame', 'examples.guichess', 'tests', 'tests.*', 'docs']
+    )
 )
