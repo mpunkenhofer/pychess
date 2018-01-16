@@ -72,10 +72,13 @@ class GuiBoard(pychess.board.StandardBoard):
                 else:
                     pygame.draw.rect(self.surface, self.colors[1], current_square)
 
+        selected_piece = None
+
         for _, s in self.pieces.items():
             s.update()
 
             if s.selected:
+                selected_piece = s
                 self.render_highlight_squares(s)
 
             if s.is_king() and s.in_check():
@@ -87,6 +90,9 @@ class GuiBoard(pychess.board.StandardBoard):
                 self.render_highlight_square(last_move.destination, color=(133, 135, 6), alpha=10)
 
             self.surface.blit(s.image, s.rect)
+
+        if selected_piece:
+            self.surface.blit(selected_piece.image, selected_piece.rect)
 
         return self.surface
 
@@ -137,14 +143,11 @@ class GuiBoard(pychess.board.StandardBoard):
 
     def position_to_surface_position(self, position):
         x, y = position
-        x, y = x + 1, y + 1
-
         size = self.get_square_size()
 
-        file_max = (self.get_top_right()[0] - self.get_bottom_left()[0] + 1) * size
-        rank_max = (self.get_top_right()[1] - self.get_bottom_left()[0] + 1) * size
+        rank_max = (self.get_top_right()[1] - self.get_bottom_left()[0]) * size
 
-        return file_max - (x * size), rank_max - (y * size)
+        return (x * size), rank_max - (y * size)
 
     def surface_position_to_position(self, position):
         px, py = position

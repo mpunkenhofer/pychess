@@ -30,6 +30,9 @@ class Chess:
 
             self.draw()
 
+            if self.variant.is_checkmated(self.variant.board.player) or self.variant.is_draw():
+                self.variant = pychess.variant.Standard(GuiBoard(pychess.PieceColor.WHITE, (800, 800), (0, 0)))
+
     def draw(self):
         self.screen.blit(self.variant.board.render(), (0, 0))
         pygame.display.update()
