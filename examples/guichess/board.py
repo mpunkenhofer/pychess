@@ -141,15 +141,18 @@ class GuiBoard(pychess.board.StandardBoard):
 
         size = self.get_square_size()
 
-        x_offset, y_offset = self.offset
-
         file_max = (self.get_top_right()[0] - self.get_bottom_left()[0] + 1) * size
         rank_max = (self.get_top_right()[1] - self.get_bottom_left()[0] + 1) * size
 
-        return (file_max + x_offset) - (x * size), (rank_max + y_offset) - (y * size)
+        return file_max - (x * size), rank_max - (y * size)
 
     def surface_position_to_position(self, position):
         px, py = position
+
+        x_offset, y_offset = self.offset
+
+        px -= x_offset
+        py -= y_offset
 
         file_diff = self.get_top_right()[0] - self.get_bottom_left()[0]
         rank_diff = self.get_top_right()[1] - self.get_bottom_left()[0]

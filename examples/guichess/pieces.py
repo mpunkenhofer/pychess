@@ -52,8 +52,12 @@ class GuiPiece(pygame.sprite.Sprite):
 
             x, y = pygame.mouse.get_pos()
 
+            x_offset, y_offset = self.piece.board.offset
+            x, y = x - x_offset, y - y_offset
+
             if self.rect.collidepoint(x, y):
                 self.selected = True
+                pygame.mouse.set_pos(self.rect.centerx + x_offset, self.rect.centery + y_offset)
             else:
                 self.selected = False
 
@@ -66,17 +70,17 @@ class GuiPiece(pygame.sprite.Sprite):
 
                 if move:
                     self.piece.board.move(move)
-                    self.selected = 0
+                    self.selected = False
                     self.piece.board.next_player()
 
             self.mouse_drag = False
 
     def on_mouse_move(self, event):
         if self.selected and self.mouse_drag:
-            pygame.mouse.set_pos(self.rect.centerx, self.rect.centery)
             x, y = pygame.mouse.get_pos()
             size = int(self.piece.board.get_square_size() / 2)
-            pos = x - size, y - size
+            x_offset, y_offset = self.piece.board.offset
+            pos = x - size - x_offset, y - size - y_offset
             self.rect = pygame.Rect(pos + self.piece.board.get_square_dimensions())
 
 
